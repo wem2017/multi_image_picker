@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaScannerConnection;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 
@@ -35,9 +36,12 @@ import java.util.List;
 
 import android.Manifest;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
@@ -54,10 +58,15 @@ import static android.media.ThumbnailUtils.OPTIONS_RECYCLE_INPUT;
  * MultiImagePickerPlugin
  */
 public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry.ActivityResultListener {
+    public interface Refresh {
+        void after() ;
+    }
+
     private static final String CHANNEL_NAME = "multi_image_picker";
     private static final String REQUEST_THUMBNAIL = "requestThumbnail";
     private static final String REQUEST_ORIGINAL = "requestOriginal";
     private static final String PICK_IMAGES = "pickImages";
+    private static final String REFRESH_IMAGE = "refreshImage" ;
     private static final String MAX_IMAGES = "maxImages";
     private static final int REQUEST_CODE_CHOOSE = 1001;
     private static final int REQUEST_CODE_GRANT_PERMISSIONS = 2001;
@@ -192,6 +201,9 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
             GetThumbnailTask task = new GetThumbnailTask(this.messenger, identifier, path, width, height);
             task.execute("");
             finishWithSuccess(true);
+        } else if (REFRESH_IMAGE.equals(call.method)) {
+            String path = call.argument("path") ;
+            refreshGallery(path);
         } else {
             pendingResult.notImplemented();
         }
@@ -222,9 +234,28 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
 
     }
 
+    private void refreshGallery(String path) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                MediaScannerConnection.scanFile(context, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                    public void onScanCompleted(String path, Uri uri) {
+                        Log.i("ExternalStorage", "Scanned " + path + ":");
+                        Log.i("ExternalStorage", "-> uri=" + uri);
+                        finishWithSuccess(true);
+                    }
+                });
+            } else {
+                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+                finishWithSuccess(true);
+            }
+        } catch (Exception e) {
+            finishWithError("unknown error", e.toString());
+        }
+    }
+
     private void presentPicker() {
-        int maxImages = this.methodCall.argument(MAX_IMAGES);
-        Matisse.from(this.activity)
+        int maxImages = MultiImagePickerPlugin.this.methodCall.argument(MAX_IMAGES);
+        Matisse.from(MultiImagePickerPlugin.this.activity)
                 .choose(MimeType.ofImage())
                 .countable(true)
                 .maxSelectable(maxImages)
@@ -244,6 +275,8 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
 
         try {
             cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+            Log.d("DEBUG_MSG" , "url : " + uri.toString()) ;
+
             if (cursor != null && cursor.moveToFirst()) {
                 final int column_index = cursor.getColumnIndexOrThrow(column);
                 return cursor.getString(column_index);
@@ -264,7 +297,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
             for (Uri uri : photos) {
                 HashMap<String, Object> map = new HashMap<>();
                 map.put("identifier", uri.toString());
-
+                map.put("filePath", FileDirectory.getPath(context, uri)) ;
                 InputStream is = null;
                 Integer width = 0;
                 Integer height = 0;

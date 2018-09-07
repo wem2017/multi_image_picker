@@ -98,4 +98,21 @@ class MultiImagePicker {
     });
     return ret;
   }
+
+  /// Refresh image gallery with specific path
+  /// [path].
+  ///
+  /// This method is used by refresh image gallery
+  /// Some of the image picker would not be refresh automatically
+  /// You can refresh it manually.
+  static Future<bool> refreshImage({@required String path,}) async {
+    assert(path != null);
+    bool result = await _channel.invokeMethod("refreshImage", <String, dynamic>{
+      "path" : path
+    });
+
+    return result;
+  }
+
+  
 }

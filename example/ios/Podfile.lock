@@ -5,7 +5,7 @@ PODS:
     - BSImageView (~> 1.0.0)
   - BSImageView (1.0.0)
   - Flutter (1.0.0)
-  - multi_image_picker (2.1.02):
+  - multi_image_picker (2.1.22):
     - BSImagePicker (~> 2.8)
     - Flutter
 
@@ -30,7 +30,7 @@ SPEC CHECKSUMS:
   BSImagePicker: b06623bd22f1941bbb04168426b95d38017e3081
   BSImageView: ed9c50d917111d8cac66c21c5a41c03f57908819
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
-  multi_image_picker: 6ac6f395571e093d8ce378e82817378c5d2285ee
+  multi_image_picker: c94f10d464a70615cfad175d861be4cfb9511c98
 
 PODFILE CHECKSUM: ec81a62fe73c7b29f2764dd3fe8c221958ac6739
 

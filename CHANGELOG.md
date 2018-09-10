@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v2.1.26)
+
+## 2018-09-10
+### Fixed
+- Fixed path not passed to the Asset class [#7](https://github.com/Sh1d0w/multi_image_picker/pull/7)
+
 ### Changed (v2.1.25)
 
 ## 2018-09-07

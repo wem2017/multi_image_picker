@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v2.2.10)
+
+## 2018-09-19
+### Changed
+- Update Image picker library to support Swift 4.2 and XCode 10
+- Remove obsolette file path in the asset class
+
 ### Changed (v2.1.26)
 
 ## 2018-09-10

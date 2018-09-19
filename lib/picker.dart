@@ -43,12 +43,7 @@ class MultiImagePicker {
 
     var assets = List<Asset>();
     for (var item in images) {
-      var asset = Asset(
-        item['identifier'],
-        item['width'],
-        item['height'],
-        path : item["filePath"], 
-      );
+      var asset = Asset(item['identifier'], item['width'], item['height']);
       assets.add(asset);
     }
     return assets;
@@ -106,14 +101,13 @@ class MultiImagePicker {
   /// This method is used by refresh image gallery
   /// Some of the image picker would not be refresh automatically
   /// You can refresh it manually.
-  static Future<bool> refreshImage({@required String path,}) async {
+  static Future<bool> refreshImage({
+    @required String path,
+  }) async {
     assert(path != null);
-    bool result = await _channel.invokeMethod("refreshImage", <String, dynamic>{
-      "path" : path
-    });
+    bool result = await _channel
+        .invokeMethod("refreshImage", <String, dynamic>{"path": path});
 
     return result;
   }
-
-  
 }

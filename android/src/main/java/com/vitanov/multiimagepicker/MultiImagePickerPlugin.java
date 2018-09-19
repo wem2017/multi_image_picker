@@ -297,7 +297,6 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
             for (Uri uri : photos) {
                 HashMap<String, Object> map = new HashMap<>();
                 map.put("identifier", uri.toString());
-                map.put("filePath", FileDirectory.getPath(context, uri)) ;
                 InputStream is = null;
                 Integer width = 0;
                 Integer height = 0;

@@ -25,9 +25,8 @@ class Asset {
   Asset(
     this._identifier,
     this._originalWidth,
-    this._originalHeight, {
-    this.path,
-  });
+    this._originalHeight,
+  );
 
   /// The BinaryChannel name this asset is listening on.
   String get _channel {
@@ -68,9 +67,6 @@ class Asset {
   String get identifier {
     return _identifier;
   }
-
-  /// Returns the real image path
-  String get filePath => path; 
 
   /// Releases the thumb data.
   ///

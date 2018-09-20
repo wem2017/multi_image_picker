@@ -33,6 +33,7 @@ class AssetState extends State<AssetView> {
       return Image.memory(
         this._asset.thumbData.buffer.asUint8List(),
         fit: BoxFit.cover,
+        gaplessPlayback: true,
       );
     }
 

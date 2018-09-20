@@ -41,7 +41,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
@@ -239,8 +238,6 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 MediaScannerConnection.scanFile(context, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
                     public void onScanCompleted(String path, Uri uri) {
-                        Log.i("ExternalStorage", "Scanned " + path + ":");
-                        Log.i("ExternalStorage", "-> uri=" + uri);
                         finishWithSuccess(true);
                     }
                 });
@@ -275,7 +272,6 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
 
         try {
             cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
-            Log.d("DEBUG_MSG" , "url : " + uri.toString()) ;
 
             if (cursor != null && cursor.moveToFirst()) {
                 final int column_index = cursor.getColumnIndexOrThrow(column);

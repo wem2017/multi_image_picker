@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v2.2.11)
+
+## 2018-10-28
+### Fixed
+- iOS 12 and Swift 4.2 language fixes
+- Important: In your XCode build setting you must set Swift Version to 4.2
+
 ### Changed (v2.2.10)
 
 ## 2018-09-19

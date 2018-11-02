@@ -1,5 +1,6 @@
 package com.vitanov.multiimagepicker;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -108,8 +109,6 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
 
             try {
                 stream = context.getContentResolver().openInputStream(uri);
-                BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-                bitmapOptions.inSampleSize = 10;
                 Bitmap bitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeStream(stream), this.width, this.height, OPTIONS_RECYCLE_INPUT);
                 ByteArrayOutputStream bitmapStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 20, bitmapStream);
@@ -151,9 +150,11 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
 
             try {
                 stream = context.getContentResolver().openInputStream(uri);
-                stream.read(bytesArray);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                Bitmap bitmap = BitmapFactory.decodeStream(stream);
+                ByteArrayOutputStream bitmapStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bitmapStream);
+                bytesArray = bitmapStream.toByteArray();
+                bitmap.recycle();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -164,6 +165,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
                 }
             }
 
+            assert bytesArray != null;
             final ByteBuffer buffer = ByteBuffer.allocateDirect(bytesArray.length);
             buffer.put(bytesArray);
             this.messenger.send("multi_image_picker/image/" + this.identifier, buffer);

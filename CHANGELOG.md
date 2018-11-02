@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v2.2.43)
+
+## 2018-11-02
+### Fixed
+- requestOriginal now works correctly on Android
+
 ### Changed (v2.2.42)
 
 ## 2018-11-02

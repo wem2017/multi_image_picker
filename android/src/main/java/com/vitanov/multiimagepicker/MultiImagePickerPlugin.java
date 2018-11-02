@@ -242,12 +242,13 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
     private void presentPicker() {
         int maxImages = MultiImagePickerPlugin.this.methodCall.argument(MAX_IMAGES);
         boolean enableCamera = MultiImagePickerPlugin.this.methodCall.argument(ENABLE_CAMERA);
+        String packageName = BuildConfig.APPLICATION_ID;
         Matisse.from(MultiImagePickerPlugin.this.activity)
                 .choose(MimeType.ofImage())
                 .countable(true)
                 .capture(enableCamera)
                 .captureStrategy(
-                    new CaptureStrategy(true, "com.vitanov.multiimagepicker.fileprovider")
+                    new CaptureStrategy(true, packageName + ".fileprovider")
                 )
                 .maxSelectable(maxImages)
                 .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)

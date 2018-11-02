@@ -46,6 +46,7 @@ For example code usage, please see [here](https://github.com/Sh1d0w/multi_image_
 
 If you wish you can enable the camera in the gallery, so the user can not only chosse photos, but take them as well with the camera.
 
+### Enable camera on Android
 To do so you need to, create this file in `android/app/src/main/res/xml/file_paths_public.xml`:
 
 ```xml
@@ -71,7 +72,11 @@ And then add file provider in your `android/app/src/main/AndroidManifest.xml`, b
   </provider>
 ```
 
-That's it. When you invike the image picker you can then have to set `enableCamera` to true, as it is disabled by default:
+### Enable camera on iOS
+
+No additional steps needed
+
+That's it. When you invoke the image picker you can then have to set `enableCamera` to true, as it is disabled by default:
 
 ```dart
   resultList = await MultiImagePicker.pickImages(

@@ -33,6 +33,7 @@ void main() {
           <Matcher>[
             isMethodCall('pickImages', arguments: <String, dynamic>{
               'maxImages': 5,
+              'enableCamera': false,
               'iosOptions': CupertinoOptions().toJson(),
             }),
           ],
@@ -55,6 +56,7 @@ void main() {
           <Matcher>[
             isMethodCall('pickImages', arguments: <String, dynamic>{
               'maxImages': 5,
+              'enableCamera': false,
               'iosOptions': options.toJson(),
             }),
           ],

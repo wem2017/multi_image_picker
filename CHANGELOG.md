@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed (v2.2.40)
 
 ## 2018-11-02
+### Changed
+- Commented out example file provider as it gets included in production bundle. If you want to test the example just uncomment it in the android manifest.
+
+### Changed (v2.2.40)
+
+## 2018-11-02
 ### Added
 - Added new picker option `enableCamera` which allows the user to take pictures directly from the gallery. For more info how to enable this please see README.md
 

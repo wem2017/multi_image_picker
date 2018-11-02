@@ -31,8 +31,13 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
             let vc = BSImagePickerViewController()
             let arguments = call.arguments as! Dictionary<String, AnyObject>
             let maxImages = arguments["maxImages"] as! Int
+            let enableCamera = arguments["enableCamera"] as! Bool
             let options = arguments["iosOptions"] as! Dictionary<String, String>
             vc.maxNumberOfSelections = maxImages
+
+            if (enableCamera) {
+                vc.takePhotos = true
+            }
 
             if let backgroundColor = options["backgroundColor"] {
                 if (!backgroundColor.isEmpty) {

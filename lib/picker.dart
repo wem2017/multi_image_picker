@@ -18,6 +18,9 @@ class MultiImagePicker {
   /// to customize the look of the image picker. On android
   /// you have to provide custom styles via resource files
   /// as specified in the official docs on Github.
+  /// As from version  2.1.40 a new parameter [enableCamera]
+  /// was added, which allows the user to take a picture
+  /// directly from the gallery.
   ///
   /// This method returns list of [Asset] objects. Because
   /// they are just placeholders containing the actual
@@ -27,6 +30,7 @@ class MultiImagePicker {
   /// you can refer to the docs for the Asset class.
   static Future<List<Asset>> pickImages({
     @required int maxImages,
+    bool enableCamera = false,
     CupertinoOptions options = const CupertinoOptions(),
   }) async {
     assert(maxImages != null);
@@ -38,6 +42,7 @@ class MultiImagePicker {
     final List<dynamic> images =
         await _channel.invokeMethod('pickImages', <String, dynamic>{
       'maxImages': maxImages,
+      'enableCamera': enableCamera,
       'iosOptions': options.toJson(),
     });
 

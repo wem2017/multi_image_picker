@@ -1,13 +1,9 @@
 package com.vitanov.multiimagepicker;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaScannerConnection;
@@ -16,19 +12,16 @@ import android.net.Uri;
 
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.internal.entity.CaptureStrategy;
 import com.zhihu.matisse.engine.impl.GlideEngine;
 
 import android.content.pm.ActivityInfo;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,7 +31,6 @@ import android.Manifest;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
@@ -56,7 +48,7 @@ import static android.media.ThumbnailUtils.OPTIONS_RECYCLE_INPUT;
 /**
  * MultiImagePickerPlugin
  */
-public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry.ActivityResultListener {
+public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry.ActivityResultListener, PluginRegistry.RequestPermissionsResultListener {
     public interface Refresh {
         void after() ;
     }
@@ -67,6 +59,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
     private static final String PICK_IMAGES = "pickImages";
     private static final String REFRESH_IMAGE = "refreshImage" ;
     private static final String MAX_IMAGES = "maxImages";
+    private static final String ENABLE_CAMERA = "enableCamera";
     private static final int REQUEST_CODE_CHOOSE = 1001;
     private static final int REQUEST_CODE_GRANT_PERMISSIONS = 2001;
     private final MethodChannel channel;
@@ -95,30 +88,43 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
 
     private class GetThumbnailTask extends AsyncTask<String, Void, Void> {
         BinaryMessenger messenger;
-        String path;
         String identifier;
         int width;
         int height;
 
-        public GetThumbnailTask(BinaryMessenger messenger, String identifier, String path, int width, int height) {
+        public GetThumbnailTask(BinaryMessenger messenger, String identifier, int width, int height) {
             super();
             this.messenger = messenger;
             this.identifier = identifier;
-            this.path = path;
             this.width = width;
             this.height = height;
         }
 
         @Override
         protected Void doInBackground(String... strings) {
-            BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-            bitmapOptions.inSampleSize = 10;
-            Bitmap bitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(this.path, bitmapOptions), this.width, this.height, OPTIONS_RECYCLE_INPUT);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream);
-            byte[] byteArray = stream.toByteArray();
-            bitmap.recycle();
+            final Uri uri = Uri.parse(this.identifier);
+            InputStream stream = null;
+            byte[] byteArray = null;
 
+            try {
+                stream = context.getContentResolver().openInputStream(uri);
+                BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+                bitmapOptions.inSampleSize = 10;
+                Bitmap bitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeStream(stream), this.width, this.height, OPTIONS_RECYCLE_INPUT);
+                ByteArrayOutputStream bitmapStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, bitmapStream);
+                byteArray = bitmapStream.toByteArray();
+                bitmap.recycle();
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
             final ByteBuffer buffer = ByteBuffer.allocateDirect(byteArray.length);
             buffer.put(byteArray);
@@ -129,42 +135,35 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
 
     private class GetImageTask extends AsyncTask<String, Void, Void> {
         BinaryMessenger messenger;
-        String path;
         String identifier;
 
-        public GetImageTask(BinaryMessenger messenger, String identifier, String path) {
+        public GetImageTask(BinaryMessenger messenger, String identifier) {
             super();
             this.messenger = messenger;
             this.identifier = identifier;
-            this.path = path;
         }
 
         @Override
         protected Void doInBackground(String... strings) {
-            File file = new File(this.path);
-
-            FileInputStream fileInputStream = null;
+            final Uri uri = Uri.parse(this.identifier);
             byte[] bytesArray = null;
+            InputStream stream = null;
 
             try {
-                bytesArray = new byte[(int) file.length()];
-
-                //read file into bytes[]
-                fileInputStream = new FileInputStream(file);
-                fileInputStream.read(bytesArray);
-
+                stream = context.getContentResolver().openInputStream(uri);
+                stream.read(bytesArray);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                if (fileInputStream != null) {
-                    try {
-                        fileInputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-
             }
+
             final ByteBuffer buffer = ByteBuffer.allocateDirect(bytesArray.length);
             buffer.put(bytesArray);
             this.messenger.send("multi_image_picker/image/" + this.identifier, buffer);
@@ -173,7 +172,8 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
     }
 
     @Override
-    public void onMethodCall(MethodCall call, Result result) {
+    public void onMethodCall(final MethodCall call, final Result result) {
+
         if (!setPendingMethodCallAndResult(call, result)) {
             finishWithAlreadyActiveError();
             return;
@@ -182,24 +182,20 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
         if (PICK_IMAGES.equals(call.method)) {
             openImagePicker();
         } else if (REQUEST_ORIGINAL.equals(call.method)) {
-            String identifier = call.argument("identifier");
-            Uri uri = Uri.parse(identifier);
-            String path = getDataColumn(this.context, uri, null, null);
-
-            GetImageTask task = new GetImageTask(this.messenger, identifier, path);
+            final String identifier = call.argument("identifier");
+            GetImageTask task = new GetImageTask(this.messenger, identifier);
             task.execute("");
             finishWithSuccess(true);
 
         } else if (REQUEST_THUMBNAIL.equals(call.method)) {
-            String identifier = call.argument("identifier");
-            Integer width = call.argument("width");
-            Integer height = call.argument("height");
-            Uri uri = Uri.parse(identifier);
-            String path = getDataColumn(this.context, uri, null, null);
-
-            GetThumbnailTask task = new GetThumbnailTask(this.messenger, identifier, path, width, height);
+            final String identifier = call.argument("identifier");
+            final Integer width = call.argument("width");
+            final Integer height = call.argument("height");
+            GetThumbnailTask task = new GetThumbnailTask(this.messenger, identifier, width, height);
             task.execute("");
             finishWithSuccess(true);
+
+
         } else if (REFRESH_IMAGE.equals(call.method)) {
             String path = call.argument("path") ;
             refreshGallery(path);
@@ -212,20 +208,13 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
 
         if (ContextCompat.checkSelfPermission(this.activity,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this.activity,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this.activity,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-            } else {
-                // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(this.activity,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        REQUEST_CODE_GRANT_PERMISSIONS);
-            }
+
+            ActivityCompat.requestPermissions(this.activity,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_CODE_GRANT_PERMISSIONS);
             clearMethodCallAndResult();
         } else {
             presentPicker();
@@ -252,38 +241,28 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
 
     private void presentPicker() {
         int maxImages = MultiImagePickerPlugin.this.methodCall.argument(MAX_IMAGES);
+        boolean enableCamera = MultiImagePickerPlugin.this.methodCall.argument(ENABLE_CAMERA);
         Matisse.from(MultiImagePickerPlugin.this.activity)
                 .choose(MimeType.ofImage())
                 .countable(true)
+                .capture(enableCamera)
+                .captureStrategy(
+                    new CaptureStrategy(true, "com.vitanov.multiimagepicker.fileprovider")
+                )
                 .maxSelectable(maxImages)
                 .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                 .imageEngine(new GlideEngine())
                 .forResult(REQUEST_CODE_CHOOSE);
     }
 
-    private static String getDataColumn(Context context, Uri uri, String selection,
-                                        String[] selectionArgs) {
-
-        Cursor cursor = null;
-        final String column = "_data";
-        final String[] projection = {
-                column
-        };
-
-        try {
-            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
-
-            if (cursor != null && cursor.moveToFirst()) {
-                final int column_index = cursor.getColumnIndexOrThrow(column);
-                return cursor.getString(column_index);
-            }
-        } finally {
-            if (cursor != null)
-                cursor.close();
+    @Override
+    public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == REQUEST_CODE_GRANT_PERMISSIONS && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            openImagePicker();
         }
-        return null;
-    }
 
+        return true;
+    }
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {

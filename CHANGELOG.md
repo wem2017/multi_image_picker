@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v2.2.40)
+
+## 2018-11-02
+### Added
+- Added new picker option `enableCamera` which allows the user to take pictures directly from the gallery. For more info how to enable this please see README.md
+
 ### Changed (v2.2.30)
 
 ## 2018-10-28

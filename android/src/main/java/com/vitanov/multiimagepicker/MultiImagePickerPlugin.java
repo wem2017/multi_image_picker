@@ -139,7 +139,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
                 stream = context.getContentResolver().openInputStream(uri);
                 Bitmap bitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeStream(stream), this.width, this.height, OPTIONS_RECYCLE_INPUT);
                 ByteArrayOutputStream bitmapStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, bitmapStream);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 30, bitmapStream);
                 byteArray = bitmapStream.toByteArray();
                 bitmap.recycle();
 

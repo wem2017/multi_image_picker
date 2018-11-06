@@ -7,9 +7,6 @@ class Asset {
   /// The resource identifier
   String _identifier;
 
-  /// The resource real path
-  String path;
-
   /// Original image width
   int _originalWidth;
 

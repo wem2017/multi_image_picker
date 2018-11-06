@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v2.2.45)
+
+## 2018-11-06
+### Fixed
+- Ask for CAMERA permission on Android, and fix opening of the picker after permission grant.
+
 ### Changed (v2.2.44)
 
 ## 2018-11-06

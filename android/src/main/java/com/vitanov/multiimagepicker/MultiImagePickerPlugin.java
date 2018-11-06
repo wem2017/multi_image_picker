@@ -49,7 +49,7 @@ import static android.media.ThumbnailUtils.OPTIONS_RECYCLE_INPUT;
 /**
  * MultiImagePickerPlugin
  */
-public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry.ActivityResultListener, PluginRegistry.RequestPermissionsResultListener {
+public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry.ActivityResultListener {
     public interface Refresh {
         void after() ;
     }
@@ -69,12 +69,38 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
     private BinaryMessenger messenger;
     private Result pendingResult;
     private MethodCall methodCall;
+    private PluginRegistry.RequestPermissionsResultListener mPermissionsResultListener;
 
     private MultiImagePickerPlugin(Activity activity, Context context, MethodChannel channel, BinaryMessenger messenger) {
         this.activity = activity;
         this.context = context;
         this.channel = channel;
         this.messenger = messenger;
+        createPermissionsResultListener();
+    }
+
+    public PluginRegistry.RequestPermissionsResultListener getPermissionsResultListener() {
+        return mPermissionsResultListener;
+    }
+
+    private void createPermissionsResultListener() {
+        mPermissionsResultListener = new PluginRegistry.RequestPermissionsResultListener() {
+            @Override
+            public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+                if (requestCode == REQUEST_CODE_GRANT_PERMISSIONS && permissions.length == 3) {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED
+                            && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                            && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                        presentPicker();
+                    } else {
+                        pendingResult.error("READ_PERMISSION_NOT_GRANTED", "Read, write or camera permission was not granted", null);
+                    }
+
+                    return true;
+                }
+                return false;
+            }
+        };
     }
 
     /**
@@ -84,7 +110,9 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
         final MethodChannel channel = new MethodChannel(registrar.messenger(), CHANNEL_NAME);
         MultiImagePickerPlugin instance = new MultiImagePickerPlugin(registrar.activity(), registrar.context(), channel, registrar.messenger());
         registrar.addActivityResultListener(instance);
+        registrar.addRequestPermissionsResultListener(instance.getPermissionsResultListener());
         channel.setMethodCallHandler(instance);
+
     }
 
     private class GetThumbnailTask extends AsyncTask<String, Void, Void> {
@@ -212,12 +240,13 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this.activity,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this.activity,
+                Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(this.activity,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA},
                     REQUEST_CODE_GRANT_PERMISSIONS);
-            clearMethodCallAndResult();
         } else {
             presentPicker();
         }
@@ -256,15 +285,6 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
                 .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                 .imageEngine(new GlideEngine())
                 .forResult(REQUEST_CODE_CHOOSE);
-    }
-
-    @Override
-    public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == REQUEST_CODE_GRANT_PERMISSIONS && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            openImagePicker();
-        }
-
-        return true;
     }
 
     @Override

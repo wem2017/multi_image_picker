@@ -3,19 +3,7 @@
 [![build](https://img.shields.io/travis/Sh1d0w/multi_image_picker.svg)](https://pub.dartlang.org/packages/multi_image_picker)
 [![pub package](https://img.shields.io/pub/v/multi_image_picker.svg)](https://pub.dartlang.org/packages/multi_image_picker)
 
-> Flutter plugin that allows you to display multi image picker on iOS and Android.
-
-## iOS
-
-![Screenshot iOS 1](screenshots/ios-1.png) ![Screenshot iOS 2](screenshots/ios-2.png) ![Screenshot iOS 3](screenshots/ios-3.png)
-
-For the iOS picker the plugin uses [BSImagePicker](https://github.com/mikaoj/BSImagePicker)
-
-## Android
-
-![Screenshot Anroid 1](screenshots/android-1.png) ![Screenshot Anroid 2](screenshots/android-2.png) ![Screenshot Anroid 3](screenshots/android-3.png)
-
-For the Android picker the plugin uses [Matisse](https://github.com/zhihu/Matisse)
+![Screenshot iOS 1](screenshots/hero.png)
 
 ## Usage
 
@@ -121,6 +109,11 @@ The aim of this plugin is to be fast and efficient, currently you can pick thous
 ## Related
 
 - [image_picker](https://pub.dartlang.org/packages/image_picker) - Official Flutter image picker plugin
+
+## Powered by
+
+- [BSImagePicker](https://github.com/mikaoj/BSImagePicker) - iOS
+- [Matisse](https://github.com/zhihu/Matisse) - Android
 
 ## License
 

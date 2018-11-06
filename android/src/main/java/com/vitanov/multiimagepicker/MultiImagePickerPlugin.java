@@ -244,7 +244,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
     private void presentPicker() {
         int maxImages = MultiImagePickerPlugin.this.methodCall.argument(MAX_IMAGES);
         boolean enableCamera = MultiImagePickerPlugin.this.methodCall.argument(ENABLE_CAMERA);
-        String packageName = BuildConfig.APPLICATION_ID;
+        String packageName = context.getApplicationInfo().packageName;
         Matisse.from(MultiImagePickerPlugin.this.activity)
                 .choose(MimeType.ofImage())
                 .countable(true)

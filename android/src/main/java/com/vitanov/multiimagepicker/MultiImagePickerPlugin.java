@@ -294,7 +294,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
                     BitmapFactory.Options dbo = new BitmapFactory.Options();
                     dbo.inJustDecodeBounds = true;
                     dbo.inScaled = false;
-                    dbo.inSampleSize = 1;
+                    dbo.inSampleSize = 2;
                     BitmapFactory.decodeStream(is, null, dbo);
                     is.close();
 
@@ -350,7 +350,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
         InputStream is = context.getContentResolver().openInputStream(photoUri);
         BitmapFactory.Options dbo = new BitmapFactory.Options();
         dbo.inScaled = false;
-        dbo.inSampleSize = 1;
+        dbo.inSampleSize = 2;
         dbo.inJustDecodeBounds = true;
         BitmapFactory.decodeStream(is, null, dbo);
         is.close();

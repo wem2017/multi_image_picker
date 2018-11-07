@@ -4,12 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v2.2.51)
+
+## 2018-11-07
+### Fixed
+- Don't rescale the image when decoding it on Android
+
 ### Changed (v2.2.50)
 
 ## 2018-11-07
 ### Fixed
 - Correctly handle image orientation on Android phones [ref](https://stackoverflow.com/questions/14066038/why-does-an-image-captured-using-camera-intent-gets-rotated-on-some-devices-on-a?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa)
-  
+
 ### Changed (v2.2.47)
 
 ## 2018-11-06

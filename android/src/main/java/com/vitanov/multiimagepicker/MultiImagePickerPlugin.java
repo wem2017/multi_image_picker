@@ -293,6 +293,8 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
                     is = context.getContentResolver().openInputStream(uri);
                     BitmapFactory.Options dbo = new BitmapFactory.Options();
                     dbo.inJustDecodeBounds = true;
+                    dbo.inScaled = false;
+                    dbo.inSampleSize = 1;
                     BitmapFactory.decodeStream(is, null, dbo);
                     is.close();
 
@@ -347,6 +349,8 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
     private static Bitmap getCorrectlyOrientedImage(Context context, Uri photoUri) throws IOException {
         InputStream is = context.getContentResolver().openInputStream(photoUri);
         BitmapFactory.Options dbo = new BitmapFactory.Options();
+        dbo.inScaled = false;
+        dbo.inSampleSize = 1;
         dbo.inJustDecodeBounds = true;
         BitmapFactory.decodeStream(is, null, dbo);
         is.close();

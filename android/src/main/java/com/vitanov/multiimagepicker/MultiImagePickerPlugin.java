@@ -5,8 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.media.MediaScannerConnection;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
@@ -32,8 +35,10 @@ import android.Manifest;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
 
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
@@ -136,21 +141,15 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
             byte[] byteArray = null;
 
             try {
-                stream = context.getContentResolver().openInputStream(uri);
-                Bitmap bitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeStream(stream), this.width, this.height, OPTIONS_RECYCLE_INPUT);
+                Bitmap sourceBitmap = getCorrectlyOrientedImage(context, uri);
+                Bitmap bitmap = ThumbnailUtils.extractThumbnail(sourceBitmap, this.width, this.height, OPTIONS_RECYCLE_INPUT);
                 ByteArrayOutputStream bitmapStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 30, bitmapStream);
                 byteArray = bitmapStream.toByteArray();
                 bitmap.recycle();
 
-            } catch (FileNotFoundException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                try {
-                    stream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
 
             final ByteBuffer buffer = ByteBuffer.allocateDirect(byteArray.length);
@@ -174,23 +173,15 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
         protected Void doInBackground(String... strings) {
             final Uri uri = Uri.parse(this.identifier);
             byte[] bytesArray = null;
-            InputStream stream = null;
 
             try {
-                stream = context.getContentResolver().openInputStream(uri);
-                Bitmap bitmap = BitmapFactory.decodeStream(stream);
+                Bitmap bitmap = getCorrectlyOrientedImage(context, uri);
                 ByteArrayOutputStream bitmapStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bitmapStream);
                 bytesArray = bitmapStream.toByteArray();
                 bitmap.recycle();
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                try {
-                    stream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
 
             assert bytesArray != null;
@@ -296,16 +287,24 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
                 HashMap<String, Object> map = new HashMap<>();
                 map.put("identifier", uri.toString());
                 InputStream is = null;
-                Integer width = 0;
-                Integer height = 0;
+                int width = 0, height = 0;
+
                 try {
                     is = context.getContentResolver().openInputStream(uri);
                     BitmapFactory.Options dbo = new BitmapFactory.Options();
                     dbo.inJustDecodeBounds = true;
                     BitmapFactory.decodeStream(is, null, dbo);
                     is.close();
-                    width = dbo.outWidth;
-                    height = dbo.outHeight;
+
+                    int orientation = getOrientation(context, uri);
+
+                    if (orientation == 90 || orientation == 270) {
+                        width = dbo.outHeight;
+                        height = dbo.outWidth;
+                    } else {
+                        width = dbo.outWidth;
+                        height = dbo.outHeight;
+                    }
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -326,6 +325,48 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
             clearMethodCallAndResult();
         }
         return false;
+    }
+
+    private static int getOrientation(Context context, Uri photoUri) {
+        try {
+            Cursor cursor = context.getContentResolver().query(photoUri,
+                    new String[] { MediaStore.Images.ImageColumns.ORIENTATION }, null, null, null);
+
+            if (cursor.getCount() != 1) {
+                return -1;
+            }
+
+            cursor.moveToFirst();
+            return cursor.getInt(0);
+        } catch (CursorIndexOutOfBoundsException e) {
+
+        }
+        return -1;
+    }
+
+    private static Bitmap getCorrectlyOrientedImage(Context context, Uri photoUri) throws IOException {
+        InputStream is = context.getContentResolver().openInputStream(photoUri);
+        BitmapFactory.Options dbo = new BitmapFactory.Options();
+        dbo.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(is, null, dbo);
+        is.close();
+
+        int orientation = getOrientation(context, photoUri);
+
+        Bitmap srcBitmap;
+        is = context.getContentResolver().openInputStream(photoUri);
+        srcBitmap = BitmapFactory.decodeStream(is);
+        is.close();
+
+        if (orientation > 0) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(orientation);
+
+            srcBitmap = Bitmap.createBitmap(srcBitmap, 0, 0, srcBitmap.getWidth(),
+                    srcBitmap.getHeight(), matrix, true);
+        }
+
+        return srcBitmap;
     }
 
     private void finishWithSuccess(List imagePathList) {

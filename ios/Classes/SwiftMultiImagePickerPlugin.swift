@@ -98,6 +98,7 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
             let identifier = arguments["identifier"] as! String
             let width = arguments["width"] as! Int
             let height = arguments["height"] as! Int
+            let quality = arguments["quality"] as! Int
 
             let manager = PHImageManager.default()
             let options = PHImageRequestOptions()
@@ -119,7 +120,7 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
                     options: options,
                     resultHandler: {
                         (image: UIImage?, info) in
-                        self.messenger.send(onChannel: "multi_image_picker/image/" + identifier, message: image?.jpegData(compressionQuality: 1.0))
+                        self.messenger.send(onChannel: "multi_image_picker/image/" + identifier, message: image?.jpegData(compressionQuality: CGFloat(quality / 100)))
                         })
 
                 if(PHInvalidImageRequestID != ID) {
@@ -129,6 +130,7 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
         case "requestOriginal":
             let arguments = call.arguments as! Dictionary<String, AnyObject>
             let identifier = arguments["identifier"] as! String
+            let quality = arguments["quality"] as! Int
             let manager = PHImageManager.default()
             let options = PHImageRequestOptions()
 
@@ -148,7 +150,7 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
                     options: options,
                     resultHandler: {
                         (image: UIImage?, info) in
-                        self.messenger.send(onChannel: "multi_image_picker/image/" + identifier, message: image!.jpegData(compressionQuality: 1.0))
+                        self.messenger.send(onChannel: "multi_image_picker/image/" + identifier, message: image!.jpegData(compressionQuality: CGFloat(quality / 100)))
                 })
 
                 if(PHInvalidImageRequestID != ID) {

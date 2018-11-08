@@ -99,9 +99,14 @@ class Asset {
   /// as well as storing it in the _thumbData property which can be requested
   /// later again, without need to call this method again.
   ///
+  /// You can also pass the optional parameter [quality] to reduce the quality
+  /// and the size of the returned image if needed. The value should be between
+  /// 0 and 100. By default it set to 100 (max quality).
+  ///
   /// Once you don't need this thumb data it is a good practice to release it,
   /// by calling releaseThumb() method.
-  Future<dynamic> requestThumbnail(int width, int height) async {
+  Future<dynamic> requestThumbnail(int width, int height,
+      {int quality = 100}) async {
     assert(width != null);
     assert(height != null);
 
@@ -113,6 +118,11 @@ class Asset {
       throw new ArgumentError.value(height, 'height cannot be negative');
     }
 
+    if (quality < 0 || quality > 100) {
+      throw new ArgumentError.value(
+          quality, 'quality should be in range 0-100');
+    }
+
     Completer completer = new Completer();
     BinaryMessages.setMessageHandler(_channel, (ByteData message) {
       _thumbData = message;
@@ -120,11 +130,15 @@ class Asset {
       BinaryMessages.setMessageHandler(_channel, null);
     });
 
-    MultiImagePicker.requestThumbnail(_identifier, width, height);
+    MultiImagePicker.requestThumbnail(_identifier, width, height, quality);
     return completer.future;
   }
 
   /// Requests the original image for that asset.
+  ///
+  /// You can also pass the optional parameter [quality] to reduce the quality
+  /// and the size of the returned image if needed. The value should be between
+  /// 0 and 100. By default it set to 100 (max quality).
   ///
   /// The method returns a Future with the [ByteData] for the image,
   /// as well as storing it in the _imageData property which can be requested
@@ -132,7 +146,12 @@ class Asset {
   ///
   /// Once you don't need this data it is a good practice to release it,
   /// by calling releaseOriginal() method.
-  Future<dynamic> requestOriginal() {
+  Future<dynamic> requestOriginal({int quality = 100}) {
+    if (quality < 0 || quality > 100) {
+      throw new ArgumentError.value(
+          quality, 'quality should be in range 0-100');
+    }
+
     Completer completer = new Completer();
     BinaryMessages.setMessageHandler(_channel, (ByteData message) {
       _imageData = message;
@@ -140,7 +159,7 @@ class Asset {
       BinaryMessages.setMessageHandler(_channel, null);
     });
 
-    MultiImagePicker.requestOriginal(_identifier);
+    MultiImagePicker.requestOriginal(_identifier, quality);
     return completer.future;
   }
 }

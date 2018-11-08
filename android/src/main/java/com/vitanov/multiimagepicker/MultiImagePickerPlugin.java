@@ -125,13 +125,15 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
         String identifier;
         int width;
         int height;
+        int quality;
 
-        public GetThumbnailTask(BinaryMessenger messenger, String identifier, int width, int height) {
+        GetThumbnailTask(BinaryMessenger messenger, String identifier, int width, int height, int quality) {
             super();
             this.messenger = messenger;
             this.identifier = identifier;
             this.width = width;
             this.height = height;
+            this.quality = quality;
         }
 
         @Override
@@ -144,7 +146,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
                 Bitmap sourceBitmap = getCorrectlyOrientedImage(context, uri);
                 Bitmap bitmap = ThumbnailUtils.extractThumbnail(sourceBitmap, this.width, this.height, OPTIONS_RECYCLE_INPUT);
                 ByteArrayOutputStream bitmapStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 30, bitmapStream);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, this.quality, bitmapStream);
                 byteArray = bitmapStream.toByteArray();
                 bitmap.recycle();
 
@@ -162,11 +164,13 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
     private class GetImageTask extends AsyncTask<String, Void, Void> {
         BinaryMessenger messenger;
         String identifier;
+        int quality;
 
-        public GetImageTask(BinaryMessenger messenger, String identifier) {
+        GetImageTask(BinaryMessenger messenger, String identifier, int quality) {
             super();
             this.messenger = messenger;
             this.identifier = identifier;
+            this.quality = quality;
         }
 
         @Override
@@ -177,7 +181,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
             try {
                 Bitmap bitmap = getCorrectlyOrientedImage(context, uri);
                 ByteArrayOutputStream bitmapStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bitmapStream);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, this.quality, bitmapStream);
                 bytesArray = bitmapStream.toByteArray();
                 bitmap.recycle();
             } catch (IOException e) {
@@ -204,15 +208,17 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
             openImagePicker();
         } else if (REQUEST_ORIGINAL.equals(call.method)) {
             final String identifier = call.argument("identifier");
-            GetImageTask task = new GetImageTask(this.messenger, identifier);
+            final int quality = call.argument("quality");
+            GetImageTask task = new GetImageTask(this.messenger, identifier, quality);
             task.execute("");
             finishWithSuccess(true);
 
         } else if (REQUEST_THUMBNAIL.equals(call.method)) {
             final String identifier = call.argument("identifier");
-            final Integer width = call.argument("width");
-            final Integer height = call.argument("height");
-            GetThumbnailTask task = new GetThumbnailTask(this.messenger, identifier, width, height);
+            final int width = call.argument("width");
+            final int height = call.argument("height");
+            final int quality = call.argument("quality");
+            GetThumbnailTask task = new GetThumbnailTask(this.messenger, identifier, width, height, quality);
             task.execute("");
             finishWithSuccess(true);
 
@@ -294,7 +300,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
                     BitmapFactory.Options dbo = new BitmapFactory.Options();
                     dbo.inJustDecodeBounds = true;
                     dbo.inScaled = false;
-                    dbo.inSampleSize = 2;
+                    dbo.inSampleSize = 1;
                     BitmapFactory.decodeStream(is, null, dbo);
                     is.close();
 
@@ -350,7 +356,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
         InputStream is = context.getContentResolver().openInputStream(photoUri);
         BitmapFactory.Options dbo = new BitmapFactory.Options();
         dbo.inScaled = false;
-        dbo.inSampleSize = 2;
+        dbo.inSampleSize = 1;
         dbo.inJustDecodeBounds = true;
         BitmapFactory.decodeStream(is, null, dbo);
         is.close();

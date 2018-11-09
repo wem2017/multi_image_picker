@@ -92,7 +92,7 @@ Customization on [iOS](https://github.com/Sh1d0w/multi_image_picker/tree/master/
 
 ### How I can access the images the user has picked?
 
-When you invoke the image picker and the user picks some images, as response you will get List of Asset objects. The Asset class have two handy methods which allows you to access the picked image date - `requestThumbnail(width, height)`, which returns a resized image and `requestOriginal()` which returns the original hight quality image. Those methods are asynchronious and return the image date as `ByteData`, so you must be careful when to allocate and release this data if you don't need it in different views. For example implementation see the example folder.
+When you invoke the image picker and the user picks some images, as response you will get List of Asset objects. The Asset class have two handy methods which allows you to access the picked image data - `requestThumbnail(width, height)`, which returns a resized image and `requestOriginal()` which returns the original hight quality image. Those methods are asynchronious and return the image data as `ByteData`, so you must be careful when to allocate and release this data if you don't need it in different views. For example implementation see the example folder.
 
 ### Why the plugin don't return image paths directly?
 

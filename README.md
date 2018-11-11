@@ -96,7 +96,7 @@ When you invoke the image picker and the user picks some images, as response you
 
 ### Why the plugin don't return image paths directly?
 
-That's not easy task when we speak for cross platform compability. For example on Android the `ContentResolver` return content URI's, which not always have a file path. On iOS it get's even more complicated - since there is iCloud and not all of your photos are stored physically on the phone, there is no way to return the file path imediately without first downloading the original image from iCloud to the phone.
+That's not an easy task when we speak for cross platform compability. For example on Android the `ContentResolver` returns content URI's, which not always have a file path. On iOS it get's even more complicated - since there is iCloud and not all of your photos are stored physically on the phone, there is no way to return the file path imediately without first downloading the original image from iCloud to the phone.
 
 You can see how one of the core Flutter plugins - the sinle [image_picker](https://pub.dartlang.org/packages/image_picker), approaches and solves this problem in order to return file paths: it just copies the selected image content to the `tmp` folder and retuns the file path from there. Now that works ok when you pick a single image.
 
@@ -104,7 +104,7 @@ But since with the `multi_image_picker` you can pick literally thousands of imag
 
 Another issue on iOS is that starting form iOS 11 all images taken by the camera as stoed in [HEIC](https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format) format. Unfortunately Flutter still don't have codecs to display HEIC images out of the box in image widget.
 
-The aim of this plugin is to be fast and efficient, currently you can pick thousands of images in matter of miliseconds, and still have access to the selected images data whenever you need them. The plugin takes care of both Android and iOS platform specific cases and issue, and will reliebly return the scaled thumb when you invoke `requestThumbnail` or the original image data when you invoke `requestOriginal`. You are then free to use this data as you like - display it in image widget or submit the data to a remote API.
+The aim of this plugin is to be fast and efficient, currently you can pick thousands of images in matter of miliseconds, and still have access to the selected images data whenever you need them. The plugin takes care of both Android and iOS platform specific cases and issues, and will reliebly return the scaled thumb when you invoke `requestThumbnail` or the original image data when you invoke `requestOriginal`. You are then free to use this data as you like - display it in image widget or submit the data to a remote API.
 
 ## Related
 

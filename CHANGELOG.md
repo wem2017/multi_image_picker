@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v2.2.55)
+
+## 2018-11-19
+### Fixed
+- Define module_headers as per http://blog.cocoapods.org/CocoaPods-1.5.0/
+
 ### Changed (v2.2.54)
 
 ## 2018-11-19

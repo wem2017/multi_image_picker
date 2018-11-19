@@ -17,6 +17,8 @@ A new flutter plugin project.
   s.dependency 'Flutter'
   s.dependency 'BSImagePicker', '~> 2.9.0'
 
+  s.static_framework = true
+  s.swift_version = '4.2'
   s.ios.deployment_target = '8.0'
 end
 

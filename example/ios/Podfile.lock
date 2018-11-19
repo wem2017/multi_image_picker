@@ -30,7 +30,7 @@ SPEC CHECKSUMS:
   BSImagePicker: 553707de1adaad42eac252e0b84d20dbdba83fe9
   BSImageView: ab22ff8cae61f1ae17a3c9efeeb216af3cf84a09
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
-  multi_image_picker: 9340686a37c877c8258e66db427975c366465f63
+  multi_image_picker: 258733841b4bfc21c20f0cad27c2e39ee19156b9
 
 PODFILE CHECKSUM: ec81a62fe73c7b29f2764dd3fe8c221958ac6739
 

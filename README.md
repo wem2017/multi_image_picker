@@ -106,7 +106,7 @@ When you invoke the image picker and the user picks some images, as response you
 
 That's not an easy task when we speak for cross platform compability. For example on Android the `ContentResolver` returns content URI's, which not always have a file path. On iOS it get's even more complicated - since there is iCloud and not all of your photos are stored physically on the phone, there is no way to return the file path imediately without first downloading the original image from iCloud to the phone.
 
-You can see how one of the core Flutter plugins - the sinle [image_picker](https://pub.dartlang.org/packages/image_picker), approaches and solves this problem in order to return file paths: it just copies the selected image content to the `tmp` folder and retuns the file path from there. Now that works ok when you pick a single image.
+You can see how one of the core Flutter plugins - the single [image_picker](https://pub.dartlang.org/packages/image_picker), approaches and solves this problem in order to return file paths: it just copies the selected image content to the `tmp` folder and retuns the file path from there. Now that works ok when you pick a single image.
 
 But since with the `multi_image_picker` you can pick literally thousands of images on one go, this is not possible task.
 

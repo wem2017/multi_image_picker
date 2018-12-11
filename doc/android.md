@@ -87,7 +87,12 @@ The same way you can override any strings that gallery uses. Just create a new f
     <string name="button_ok">OK</string>
 
     <string name="error_over_count_default">You have reached max selectable</string>
-    <string name="error_over_count">You can only select up to %1$d media files</string>
+    <plurals name="error_over_count">
+        <item quantity="few">You can only select up to %1$d media file</item>
+        <item quantity="many">You can only select up to %1$d media file</item>
+        <item quantity="one">You can only select up to 1 media file</item>
+        <item quantity="other">You can only select up to %1$d media files</item>
+    </plurals>
     <string name="error_under_quality">Under quality</string>
     <string name="error_over_quality">Over quality</string>
     <string name="error_file_type">Unsupported file type</string>

@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v2.2.61)
+
+## 2018-12-13
+- Added custom file provider to avoid collisions with other plugins. See README for example implementation
+
 ### Changed (v2.2.55)
 
 ## 2018-11-19

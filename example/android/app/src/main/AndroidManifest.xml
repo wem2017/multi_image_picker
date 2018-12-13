@@ -39,7 +39,7 @@
             </intent-filter>
         </activity>
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="com.vitanov.multiimagepicker.MultiImagePickerFileProvider"
             android:authorities="com.vitanov.multiimagepickerexample.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">

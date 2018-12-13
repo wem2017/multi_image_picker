@@ -276,7 +276,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
                 .countable(true)
                 .capture(enableCamera)
                 .captureStrategy(
-                    new CaptureStrategy(true, packageName + ".fileprovider")
+                    new CaptureStrategy(true, packageName + ".multiimagepicker.fileprovider")
                 )
                 .maxSelectable(maxImages)
                 .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)

@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v2.3.00)
+
+## 2018-12-13
+### BREAKING CHANGE
+- Android - renamed authorities to `android:authorities="YOUR_PACKAGE_NAME_HERE.multiimagepicker.fileprovider"`. Please update your manifest file to avoid errors.
+
+
 ### Changed (v2.2.61)
 
 ## 2018-12-13

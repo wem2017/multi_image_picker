@@ -60,7 +60,7 @@ And then add file provider in your `android/app/src/main/AndroidManifest.xml`, b
 ```xml
   <provider
     android:name="com.vitanov.multiimagepicker.MultiImagePickerFileProvider"
-    android:authorities="YOUR_PACKAGE_NAME_HERE.fileprovider"
+    android:authorities="YOUR_PACKAGE_NAME_HERE.multiimagepicker.fileprovider"
     android:exported="false"
     android:grantUriPermissions="true">
       <meta-data

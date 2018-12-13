@@ -40,7 +40,7 @@
         </activity>
         <provider
             android:name="com.vitanov.multiimagepicker.MultiImagePickerFileProvider"
-            android:authorities="com.vitanov.multiimagepickerexample.fileprovider"
+            android:authorities="com.vitanov.multiimagepickerexample.multiimagepicker.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

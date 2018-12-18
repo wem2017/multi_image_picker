@@ -39,6 +39,12 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
                 vc.takePhotos = true
             }
 
+            if let takePhotoIcon = options["takePhotoIcon"] {
+                if (!takePhotoIcon.isEmpty) {
+                    vc.takePhotoIcon = UIImage(named: takePhotoIcon)
+                }
+            }
+
             if let backgroundColor = options["backgroundColor"] {
                 if (!backgroundColor.isEmpty) {
                     vc.backgroundColor = hexStringToUIColor(hex: backgroundColor)

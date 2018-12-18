@@ -5,6 +5,7 @@ class CupertinoOptions {
   final String selectionFillColor;
   final String selectionTextColor;
   final String selectionCharacter;
+  final String takePhotoIcon;
 
   const CupertinoOptions({
     this.backgroundColor,
@@ -13,6 +14,7 @@ class CupertinoOptions {
     this.selectionStrokeColor,
     this.selectionTextColor,
     this.selectionCharacter,
+    this.takePhotoIcon,
   });
 
   Map<String, String> toJson() {
@@ -23,6 +25,7 @@ class CupertinoOptions {
       "selectionStrokeColor": selectionStrokeColor ?? "",
       "selectionTextColor": selectionTextColor ?? "",
       "selectionCharacter": selectionCharacter ?? "",
+      "takePhotoIcon": takePhotoIcon ?? "",
     };
   }
 }

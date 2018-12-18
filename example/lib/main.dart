@@ -43,6 +43,7 @@ class _MyAppState extends State<MyApp> {
       resultList = await MultiImagePicker.pickImages(
         maxImages: 300,
         enableCamera: true,
+        options: CupertinoOptions(takePhotoIcon: "chat"),
       );
     } on PlatformException catch (e) {
       error = e.message;

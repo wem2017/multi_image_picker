@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v2.3.01)
+
+## 2018-12-18
+- Added `takePhotoIcon` option to ios customization settings
+
 ### Changed (v2.3.00)
 
 ## 2018-12-13

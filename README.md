@@ -1,111 +1,81 @@
-# multi_image_picker
 
-[![build](https://img.shields.io/travis/Sh1d0w/multi_image_picker.svg)](https://pub.dartlang.org/packages/multi_image_picker)
-[![pub package](https://img.shields.io/pub/v/multi_image_picker.svg)](https://pub.dartlang.org/packages/multi_image_picker)
+<h1 align="center">
+  <br>
+  <a href="http://www.amitmerchant.com/electron-markdownify"><img src="screenshots/multi_image_picker.png" alt="Markdownify" width="200"></a>
+  <br>
+  Flutter Multi Image Picker
+  <br>
+</h1>
 
+<h4 align="center"><a href="https://flutter.io" target="_blank">Flutter</a> plugin that allows you to display multi image picker on iOS and Android.</h4>
 
-![Screenshot iOS 1](screenshots/hero.png)
+<p align="center">
+  <a href="https://pub.dartlang.org/packages/multi_image_picker">
+    <img src="https://img.shields.io/travis/Sh1d0w/multi_image_picker.svg"
+         alt="Build">
+  </a>
+  <a href="https://pub.dartlang.org/packages/multi_image_picker"><img src="https://img.shields.io/pub/v/multi_image_picker.svg"></a>
+  <a href="https://paypal.me/Sh1d0w">
+    <img src="https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&amp;style=flat">
+  </a>
+</p>
 
-## Usage
+<p align="center">
+  <a href="#key-features">Key Features</a> •
+  <a href="#how-to-use">How To Use</a> •
+  <a href="#faq">FAQ</a> •
+  <a href="#credits">Credits</a> •
+  <a href="#related">Related</a> •
+  <a href="#license">License</a>
+</p>
 
-First you need to [add](https://pub.dartlang.org/packages/multi_image_picker#-installing-tab-) the plugin to your project.
+![screenshot](screenshots/hero.png)
 
-### iOS
+## Key Features
 
-You need to add those strings to your Info.plist file in order the plugin to work:
-```xml
-<key>NSPhotoLibraryUsageDescription</key>
-<string>Example usage description</string>
-<key>NSCameraUsageDescription</key>
-<string>Example usage description</string>
+* Pick multiple images
+  - Instantly pick thousands of images at once, without any delay or blocking the UI thread.
+* Native performance
+  - The plugin takes advantage of the two best image picking libraries for Android and iOS, bringing you the best native platform experience.
+* Photos sorted by albums
+* Take a picture option in the grid view
+* Restrict the maximum count of images the user can pick
+* Customizable UI and localizations
+* Thumbnail support
+* Specify the image quality of the original image or thumbnails
+* Read image meta data
+
+## How To Use
+   
+Add this to your package's pubspec.yaml file::
+
+```yaml
+dependencies:
+  multi_image_picker: ^2.3.22
 ```
 
->**Important** The plugin is written in Swift, so your project needs to have Swift support enabled. If you've created the project using `flutter create -i swift [projectName]` you are all set. If not, you can enable Swift support by opening the project with XCode, then choose `File -> New -> File -> Swift File`. XCode will ask you if you wish to create Bridging Header, click yes.
+Install it via command line:
 
-The plugin supports Swift Version 4.2. Make sure you have this version set in your `Build Settings -> SWIFT_VERSION`
-
-### Android
-
-You need to request those permissions in AndroidManifest.xml in order the plugin to work:
-
-```xml
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.CAMERA" />
+```bash
+flutter packages get
 ```
 
-For example code usage, please see [here](https://github.com/Sh1d0w/multi_image_picker/blob/master/example/lib/main.dart)
-
-## Enable Camera in the Gallery
-
-If you wish, you can enable the camera in the gallery, so the user can not only choose photos, but take them as well with the camera.
-
-### Enable camera on Android
-To do so you need to, create this file in `android/app/src/main/res/xml/file_paths_public.xml`:
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<paths>
-    <external-path
-        name="multiimagepicker_files"
-        path="Pictures"/>
-</paths>
-```
-
-And then add file provider in your `android/app/src/main/AndroidManifest.xml`, before the `</application>` closing tag:
-
-```xml
-  <provider
-    android:name="com.vitanov.multiimagepicker.MultiImagePickerFileProvider"
-    android:authorities="YOUR_PACKAGE_NAME_HERE.multiimagepicker.fileprovider"
-    android:exported="false"
-    android:grantUriPermissions="true">
-      <meta-data
-        android:name="android.support.FILE_PROVIDER_PATHS"
-        android:resource="@xml/file_paths_public"></meta-data>
-  </provider>
-```
-
-### Enable camera on iOS
-
-No additional steps needed
-
-That's it. When you invoke the image picker you can then have to set `enableCamera` to true, as it is disabled by default:
+Now in your Dart code, you can use:
 
 ```dart
-  resultList = await MultiImagePicker.pickImages(
-    maxImages: 300,
-    enableCamera: true,
-  );
+import 'package:multi_image_picker/multi_image_picker.dart';
 ```
 
-## Image Metadata
+Next steps:
+  - [Initial setup](https://github.com/Sh1d0w/multi_image_picker/tree/master/doc/initial-setup.md)
+  - [Enable Camera](https://github.com/Sh1d0w/multi_image_picker/tree/master/doc/enable-camera.md)
+  - [Access image meta data](https://github.com/Sh1d0w/multi_image_picker/tree/master/doc/metadata.md)
+  - Theming on [Android](https://github.com/Sh1d0w/multi_image_picker/tree/master/doc/theming-android.md)
+  - Theming on [iOS](https://github.com/Sh1d0w/multi_image_picker/tree/master/doc/theming-ios.md)
 
-To access the image meta data (ExIF, GPS, Device), you can invoke `requestMetadata()` method on the asset class:
+## Emailware
 
-```dart
-Metadata metadata = await asset.requestMetadata();
-
-print(metadata.gps.GPSDestLatitude);
-print(metadata.exif.Artist);
-print(metadata.device.Model);
-```
-
-For all available meta data properties, see the [Metadata](https://pub.dartlang.org/documentation/multi_image_picker/latest/metadata/Metadata-class.html) class.
-
-## Theming and localization
-
-You can customize different parts of the gallery picker. For reference see below the available options for the different platforms:
-
-Customization on [Android](https://github.com/Sh1d0w/multi_image_picker/tree/master/doc/android.md)
-
-Customization on [iOS](https://github.com/Sh1d0w/multi_image_picker/tree/master/doc/ios.md)
-
-## API
-
-[MultiImagePicker](https://pub.dartlang.org/documentation/multi_image_picker/latest/picker/MultiImagePicker-class.html)
-
-[Asset](https://pub.dartlang.org/documentation/multi_image_picker/latest/asset/Asset-class.html)
+Flutter Multi Image Picker is an [emailware](https://en.wiktionary.org/wiki/emailware). Meaning, if you liked using this plugin or has helped you in anyway, I'd like you send me an email on <radoslav.vitanov@gmail.com> about anything you'd want to say about this software. I'd really appreciate it!
 
 ## FAQ
 
@@ -125,15 +95,25 @@ Another issue on iOS is that starting from iOS 11 all images taken by the camera
 
 The aim of this plugin is to be fast and efficient, currently you can pick thousands of images in milliseconds, and still have access to the selected images data whenever you need them. The plugin takes care of both Android and iOS platform specific cases and issues, and will reliably return the scaled thumb when you invoke `requestThumbnail` or the original image data when you invoke `requestOriginal`. You are then free to use this data as you like - display it in image widget or submit the data to a remote API.
 
-## Related
+## Credits
 
-- [image_picker](https://pub.dartlang.org/packages/image_picker) - Official Flutter image picker plugin
-
-## Powered by
+This software uses the following open source packages:
 
 - [BSImagePicker](https://github.com/mikaoj/BSImagePicker) - iOS
 - [Matisse](https://github.com/zhihu/Matisse) - Android
 
+## Related
+
+[image_picker](https://pub.dartlang.org/packages/image_picker) - Official Flutter image picker plugin
+
+## Support
+
+<a href="https://www.buymeacoffee.com/Sh1d0w" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/purple_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+
 ## License
 
-MIT © [Radoslav Vitanov](https://github.com/Sh1d0w)
+MIT
+
+---
+> GitHub [@Sh1d0w](https://github.com/Sh1d0w) &nbsp;&middot;&nbsp;
+> Twitter [@RadoslavVitanov](http://twitter.com/RadoslavVitanov)

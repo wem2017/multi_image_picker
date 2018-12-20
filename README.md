@@ -2,9 +2,6 @@
 
 [![build](https://img.shields.io/travis/Sh1d0w/multi_image_picker.svg)](https://pub.dartlang.org/packages/multi_image_picker)
 [![pub package](https://img.shields.io/pub/v/multi_image_picker.svg)](https://pub.dartlang.org/packages/multi_image_picker)
-<a href="https://stackoverflow.com/questions/tagged/flutter?sort=votes">
-   <img alt="Awesome Flutter" src="https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square" />
-</a>
 
 
 ![Screenshot iOS 1](screenshots/hero.png)
@@ -94,7 +91,7 @@ print(metadata.exif.Artist);
 print(metadata.device.Model);
 ```
 
-For all available meta data properties, see the `Metadata` class.
+For all available meta data properties, see the [Metadata](https://pub.dartlang.org/documentation/multi_image_picker/latest/metadata/Metadata-class.html) class.
 
 ## Theming and localization
 

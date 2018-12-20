@@ -99,6 +99,7 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
                     }
                     result(results);
                 }, completion: nil)
+            break;
         case "requestThumbnail":
             let arguments = call.arguments as! Dictionary<String, AnyObject>
             let identifier = arguments["identifier"] as! String
@@ -133,6 +134,7 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
                     result(true);
                 }
             }
+            break;
         case "requestOriginal":
             let arguments = call.arguments as! Dictionary<String, AnyObject>
             let identifier = arguments["identifier"] as! String
@@ -163,13 +165,51 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
                     result(true);
                 }
             }
+            break;
         case "refreshImage":
             result(true) ;
             break ;
-
+        case "requestMetadata":
+            let arguments = call.arguments as! Dictionary<String, AnyObject>
+            let identifier = arguments["identifier"] as! String
+            let operationQueue = OperationQueue()
+            
+            let assets: PHFetchResult = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil)
+            operationQueue.addOperation {
+                self.readPhotosMetadata(result: assets, operationQueue: operationQueue, callback: result)
+            }
+            break;
         default:
             result(FlutterMethodNotImplemented)
         }
+    }
+    
+    func readPhotosMetadata(result: PHFetchResult<PHAsset>, operationQueue: OperationQueue, callback: @escaping FlutterResult) {
+        let imageManager = PHImageManager.default()
+        result.enumerateObjects({object , index, stop in
+            let options = PHImageRequestOptions()
+            options.isNetworkAccessAllowed = true
+            options.isSynchronous = false
+            imageManager.requestImageData(for: object, options: options, resultHandler: { (imageData, dataUTI, orientation, info) in
+                operationQueue.addOperation {
+                    guard let data = imageData,
+                        let metadata = type(of: self).fetchPhotoMetadata(data: data) else {
+                            print("metadata not found for \(object)")
+                            return
+                    }
+                    callback(metadata)
+                }
+            })
+        })
+    }
+    
+    static func fetchPhotoMetadata(data: Data) -> [String: Any]? {
+        guard let selectedImageSourceRef = CGImageSourceCreateWithData(data as CFData, nil),
+            let imagePropertiesDictionary = CGImageSourceCopyPropertiesAtIndex(selectedImageSourceRef, 0, nil) as? [String: Any] else {
+                return nil
+        }
+        return imagePropertiesDictionary
+        
     }
 
     func hexStringToUIColor (hex:String) -> UIColor {

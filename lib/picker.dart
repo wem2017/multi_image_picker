@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:multi_image_picker/asset.dart';
 import 'package:multi_image_picker/cupertino_options.dart';
+import 'package:multi_image_picker/metadata.dart';
 
 class MultiImagePicker {
   static const MethodChannel _channel =
@@ -107,6 +109,23 @@ class MultiImagePicker {
     return ret;
   }
 
+  // Requests image metadata for a given [identifier]
+  static Future<Metadata> requestMetadata(String identifier) async {
+    Map<dynamic, dynamic> map = await _channel.invokeMethod(
+      "requestMetadata",
+      <String, dynamic>{
+        "identifier": identifier,
+      },
+    );
+
+    Map<String, dynamic> metadata = Map<String, dynamic>.from(map);
+    if (Platform.isIOS) {
+      metadata = _normalizeMetadata(metadata);
+    }
+
+    return Metadata.fromMap(metadata);
+  }
+
   /// Refresh image gallery with specific path
   /// [path].
   ///
@@ -121,5 +140,31 @@ class MultiImagePicker {
         .invokeMethod("refreshImage", <String, dynamic>{"path": path});
 
     return result;
+  }
+
+  /// Normalizes the meta data returned by iOS.
+  static Map<String, dynamic> _normalizeMetadata(Map<String, dynamic> json) {
+    Map map = Map<String, dynamic>();
+
+    json.forEach((String metaKey, dynamic metaValue) {
+      if (metaKey == '{Exif}' || metaKey == '{TIFF}') {
+        map.addAll(Map<String, dynamic>.from(metaValue));
+      } else if (metaKey == '{GPS}') {
+        Map gpsMap = Map<String, dynamic>();
+        Map<String, dynamic> metaMap = Map<String, dynamic>.from(metaValue);
+        metaMap.forEach((String key, dynamic value) {
+          if (key == 'GPSVersion') {
+            gpsMap['GPSVersionID'] = value;
+          } else {
+            gpsMap['GPS$key'] = value;
+          }
+        });
+        map.addAll(gpsMap);
+      } else {
+        map[metaKey] = metaValue;
+      }
+    });
+
+    return map;
   }
 }

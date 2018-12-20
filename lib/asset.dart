@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:multi_image_picker/metadata.dart';
 import 'package:multi_image_picker/picker.dart';
 
 class Asset {
@@ -161,5 +162,10 @@ class Asset {
 
     MultiImagePicker.requestOriginal(_identifier, quality);
     return completer.future;
+  }
+
+  /// Requests the original image meta data
+  Future<Metadata> requestMetadata() {
+    return MultiImagePicker.requestMetadata(_identifier);
   }
 }

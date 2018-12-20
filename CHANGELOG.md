@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v2.3.22)
+
+## 2018-12-20
+- Added `requestMetadata()` method to the Asset class
+
 ### Changed (v2.3.01)
 
 ## 2018-12-18

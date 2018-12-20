@@ -82,6 +82,20 @@ That's it. When you invoke the image picker you can then have to set `enableCame
   );
 ```
 
+## Image Metadata
+
+To access the image meta data (ExIF, GPS, Device), you can invoke `requestMetadata()` method on the asset class:
+
+```dart
+Metadata metadata = await asset.requestMetadata();
+
+print(metadata.gps.GPSDestLatitude);
+print(metadata.exif.Artist);
+print(metadata.device.Model);
+```
+
+For all available meta data properties, see the `Metadata` class.
+
 ## Theming and localization
 
 You can customize different parts of the gallery picker. For reference see below the available options for the different platforms:

@@ -1,6 +1,5 @@
 package com.vitanov.multiimagepicker;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -26,19 +25,24 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import android.Manifest;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.media.ExifInterface;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.DisplayMetrics;
+import android.text.TextUtils;
 
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
@@ -62,6 +66,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
     private static final String CHANNEL_NAME = "multi_image_picker";
     private static final String REQUEST_THUMBNAIL = "requestThumbnail";
     private static final String REQUEST_ORIGINAL = "requestOriginal";
+    private static final String REQUEST_METADATA = "requestMetadata";
     private static final String PICK_IMAGES = "pickImages";
     private static final String REFRESH_IMAGE = "refreshImage" ;
     private static final String MAX_IMAGES = "maxImages";
@@ -223,12 +228,235 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
             finishWithSuccess(true);
 
 
+        } else if (REQUEST_METADATA.equals(call.method)) {
+            final String identifier = call.argument("identifier");
+
+            final Uri uri = Uri.parse(identifier);
+            InputStream in = null;
+            try {
+                in = context.getContentResolver().openInputStream(uri);
+                assert in != null;
+                ExifInterface exifInterface = new ExifInterface(in);
+                finishWithSuccess(getPictureExif(exifInterface));
+
+            } catch (IOException e) {
+                finishWithError("Exif error", e.toString());
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException ignored) {}
+                }
+            }
+
         } else if (REFRESH_IMAGE.equals(call.method)) {
             String path = call.argument("path") ;
             refreshGallery(path);
         } else {
             pendingResult.notImplemented();
         }
+    }
+
+    private HashMap<String, Object> getPictureExif(ExifInterface exifInterface) {
+        HashMap<String, Object> result = new HashMap<>();
+
+        // API LEVEL 24
+        String[] tags_str = {
+                ExifInterface.TAG_GPS_LATITUDE_REF,
+                ExifInterface.TAG_GPS_LONGITUDE_REF,
+                ExifInterface.TAG_GPS_PROCESSING_METHOD,
+                ExifInterface.TAG_IMAGE_WIDTH,
+                ExifInterface.TAG_IMAGE_LENGTH,
+                ExifInterface.TAG_MAKE,
+                ExifInterface.TAG_MODEL
+        };
+        String[] tags_double = {
+                ExifInterface.TAG_APERTURE_VALUE,
+                ExifInterface.TAG_FLASH,
+                ExifInterface.TAG_FOCAL_LENGTH,
+                ExifInterface.TAG_GPS_ALTITUDE,
+                ExifInterface.TAG_GPS_ALTITUDE_REF,
+                ExifInterface.TAG_GPS_LONGITUDE,
+                ExifInterface.TAG_GPS_LATITUDE,
+                ExifInterface.TAG_IMAGE_LENGTH,
+                ExifInterface.TAG_IMAGE_WIDTH,
+                ExifInterface.TAG_ISO_SPEED,
+                ExifInterface.TAG_ORIENTATION,
+                ExifInterface.TAG_WHITE_BALANCE,
+                ExifInterface.TAG_EXPOSURE_TIME
+        };
+        HashMap<String, Object> exif_str = getExif_str(exifInterface, tags_str);
+        result.putAll(exif_str);
+        HashMap<String, Object> exif_double = getExif_double(exifInterface, tags_double);
+        result.putAll(exif_double);
+
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
+            String[] tags_23 = {
+                    ExifInterface.TAG_DATETIME_DIGITIZED,
+                    ExifInterface.TAG_SUBSEC_TIME,
+                    ExifInterface.TAG_SUBSEC_TIME_DIGITIZED,
+                    ExifInterface.TAG_SUBSEC_TIME_ORIGINAL
+            };
+            HashMap<String, Object> exif23 = getExif_str(exifInterface, tags_23);
+            result.putAll(exif23);
+        }
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            String[] tags_24_str = {
+                    ExifInterface.TAG_ARTIST,
+                    ExifInterface.TAG_CFA_PATTERN,
+                    ExifInterface.TAG_COMPONENTS_CONFIGURATION,
+                    ExifInterface.TAG_COPYRIGHT,
+                    ExifInterface.TAG_DATETIME_ORIGINAL,
+                    ExifInterface.TAG_DEVICE_SETTING_DESCRIPTION,
+                    ExifInterface.TAG_EXIF_VERSION,
+                    ExifInterface.TAG_FILE_SOURCE,
+                    ExifInterface.TAG_FLASHPIX_VERSION,
+                    ExifInterface.TAG_GPS_AREA_INFORMATION,
+                    ExifInterface.TAG_GPS_DEST_BEARING_REF,
+                    ExifInterface.TAG_GPS_DEST_DISTANCE_REF,
+                    ExifInterface.TAG_GPS_DEST_LATITUDE_REF,
+                    ExifInterface.TAG_GPS_DEST_LONGITUDE_REF,
+                    ExifInterface.TAG_GPS_DOP,
+                    ExifInterface.TAG_GPS_IMG_DIRECTION,
+                    ExifInterface.TAG_GPS_IMG_DIRECTION_REF,
+                    ExifInterface.TAG_GPS_MAP_DATUM,
+                    ExifInterface.TAG_GPS_MEASURE_MODE,
+                    ExifInterface.TAG_GPS_SATELLITES,
+                    ExifInterface.TAG_GPS_SPEED_REF,
+                    ExifInterface.TAG_GPS_STATUS,
+                    ExifInterface.TAG_GPS_TRACK_REF,
+                    ExifInterface.TAG_GPS_VERSION_ID,
+                    ExifInterface.TAG_IMAGE_DESCRIPTION,
+                    ExifInterface.TAG_IMAGE_UNIQUE_ID,
+                    ExifInterface.TAG_INTEROPERABILITY_INDEX,
+                    ExifInterface.TAG_MAKER_NOTE,
+                    ExifInterface.TAG_OECF,
+                    ExifInterface.TAG_RELATED_SOUND_FILE,
+                    ExifInterface.TAG_SCENE_TYPE,
+                    ExifInterface.TAG_SOFTWARE,
+                    ExifInterface.TAG_SPATIAL_FREQUENCY_RESPONSE,
+                    ExifInterface.TAG_SPECTRAL_SENSITIVITY,
+                    ExifInterface.TAG_SUBSEC_TIME_DIGITIZED,
+                    ExifInterface.TAG_SUBSEC_TIME_ORIGINAL,
+                    ExifInterface.TAG_USER_COMMENT
+            };
+
+            String[] tags24_double = {
+                    ExifInterface.TAG_APERTURE_VALUE,
+                    ExifInterface.TAG_BITS_PER_SAMPLE,
+                    ExifInterface.TAG_BRIGHTNESS_VALUE,
+                    ExifInterface.TAG_COLOR_SPACE,
+                    ExifInterface.TAG_COMPRESSED_BITS_PER_PIXEL,
+                    ExifInterface.TAG_COMPRESSION,
+                    ExifInterface.TAG_CONTRAST,
+                    ExifInterface.TAG_CUSTOM_RENDERED,
+                    ExifInterface.TAG_DIGITAL_ZOOM_RATIO,
+                    ExifInterface.TAG_EXPOSURE_BIAS_VALUE,
+                    ExifInterface.TAG_EXPOSURE_INDEX,
+                    ExifInterface.TAG_EXPOSURE_MODE,
+                    ExifInterface.TAG_EXPOSURE_PROGRAM,
+                    ExifInterface.TAG_FLASH_ENERGY,
+                    ExifInterface.TAG_FOCAL_LENGTH_IN_35MM_FILM,
+                    ExifInterface.TAG_FOCAL_PLANE_RESOLUTION_UNIT,
+                    ExifInterface.TAG_FOCAL_PLANE_X_RESOLUTION,
+                    ExifInterface.TAG_FOCAL_PLANE_Y_RESOLUTION,
+                    ExifInterface.TAG_F_NUMBER,
+                    ExifInterface.TAG_GAIN_CONTROL,
+                    ExifInterface.TAG_GPS_DEST_BEARING,
+                    ExifInterface.TAG_GPS_DEST_DISTANCE,
+                    ExifInterface.TAG_GPS_DEST_LATITUDE,
+                    ExifInterface.TAG_GPS_DEST_LONGITUDE,
+                    ExifInterface.TAG_GPS_DIFFERENTIAL,
+                    ExifInterface.TAG_GPS_SPEED,
+                    ExifInterface.TAG_GPS_TRACK,
+                    ExifInterface.TAG_ISO_SPEED_RATINGS,
+                    ExifInterface.TAG_JPEG_INTERCHANGE_FORMAT,
+                    ExifInterface.TAG_JPEG_INTERCHANGE_FORMAT_LENGTH,
+                    ExifInterface.TAG_LIGHT_SOURCE,
+                    ExifInterface.TAG_MAX_APERTURE_VALUE,
+                    ExifInterface.TAG_METERING_MODE,
+                    ExifInterface.TAG_PHOTOMETRIC_INTERPRETATION,
+                    ExifInterface.TAG_PIXEL_X_DIMENSION,
+                    ExifInterface.TAG_PIXEL_Y_DIMENSION,
+                    ExifInterface.TAG_PLANAR_CONFIGURATION,
+                    ExifInterface.TAG_PRIMARY_CHROMATICITIES,
+                    ExifInterface.TAG_REFERENCE_BLACK_WHITE,
+                    ExifInterface.TAG_RESOLUTION_UNIT,
+                    ExifInterface.TAG_ROWS_PER_STRIP,
+                    ExifInterface.TAG_SAMPLES_PER_PIXEL,
+                    ExifInterface.TAG_SATURATION,
+                    ExifInterface.TAG_SCENE_CAPTURE_TYPE,
+                    ExifInterface.TAG_SENSING_METHOD,
+                    ExifInterface.TAG_SHARPNESS,
+                    ExifInterface.TAG_SHUTTER_SPEED_VALUE,
+                    ExifInterface.TAG_STRIP_BYTE_COUNTS,
+                    ExifInterface.TAG_STRIP_OFFSETS,
+                    ExifInterface.TAG_SUBJECT_AREA,
+                    ExifInterface.TAG_SUBJECT_DISTANCE,
+                    ExifInterface.TAG_SUBJECT_DISTANCE_RANGE,
+                    ExifInterface.TAG_SUBJECT_LOCATION,
+                    ExifInterface.TAG_THUMBNAIL_IMAGE_LENGTH,
+                    ExifInterface.TAG_THUMBNAIL_IMAGE_WIDTH,
+                    ExifInterface.TAG_TRANSFER_FUNCTION,
+                    ExifInterface.TAG_WHITE_POINT,
+                    ExifInterface.TAG_X_RESOLUTION,
+                    ExifInterface.TAG_Y_CB_CR_COEFFICIENTS,
+                    ExifInterface.TAG_Y_CB_CR_POSITIONING,
+                    ExifInterface.TAG_Y_CB_CR_SUB_SAMPLING,
+                    ExifInterface.TAG_Y_RESOLUTION,
+            };
+            HashMap<String, Object> exif24_str = getExif_str(exifInterface, tags_24_str);
+            result.putAll(exif24_str);
+            HashMap<String, Object> exif24_double = getExif_double(exifInterface, tags24_double);
+            result.putAll(exif24_double);
+        }
+
+
+        String TAG_DATETIME = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
+        String TAG_GPS_TIMESTAMP = exifInterface.getAttribute(ExifInterface.TAG_GPS_TIMESTAMP);
+        long dateTime = formatTime(TAG_DATETIME, "yy:mm:dd hh:mm:ss");
+        long gpsDateTime = formatTime(TAG_GPS_TIMESTAMP, "hh:mm:ss");
+        if (dateTime != 0) result.put(ExifInterface.TAG_DATETIME, dateTime);
+        if (gpsDateTime != 0) result.put(ExifInterface.TAG_GPS_TIMESTAMP, TAG_GPS_TIMESTAMP);
+
+        return result;
+    }
+
+    private HashMap<String, Object> getExif_str(ExifInterface exifInterface, String[] tags){
+        HashMap<String, Object> result = new HashMap<>();
+        for (String tag : tags) {
+            String attribute = exifInterface.getAttribute(tag);
+            if (!TextUtils.isEmpty(attribute)) {
+                result.put(tag, attribute);
+            }
+        }
+        return result;
+    }
+
+    private HashMap<String, Object> getExif_double(ExifInterface exifInterface, String[] tags){
+        HashMap<String, Object> result = new HashMap<>();
+        for (String tag : tags) {
+            double attribute = exifInterface.getAttributeDouble(tag, 0.0);
+            if (attribute != 0.0) {
+                result.put(tag, attribute);
+            }
+        }
+        return result;
+    }
+
+    private long formatTime(String date_str, String format_str) {
+
+        if (date_str == null) return 0;
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format_str, Locale.US);
+            Date parse = null;
+            parse = simpleDateFormat.parse(date_str);
+            return parse.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     private void openImagePicker() {
@@ -382,6 +610,12 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
     private void finishWithSuccess(List imagePathList) {
         if (pendingResult != null)
             pendingResult.success(imagePathList);
+        clearMethodCallAndResult();
+    }
+
+    private void finishWithSuccess(HashMap<String, Object> hashMap) {
+        if (pendingResult != null)
+            pendingResult.success(hashMap);
         clearMethodCallAndResult();
     }
 

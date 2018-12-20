@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
       images = List<Asset>();
     });
 
-    List resultList;
+    List<Asset> resultList;
     String error;
 
     try {

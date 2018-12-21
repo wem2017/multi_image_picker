@@ -370,7 +370,6 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
                     ExifInterface.TAG_GPS_DIFFERENTIAL,
                     ExifInterface.TAG_GPS_SPEED,
                     ExifInterface.TAG_GPS_TRACK,
-                    ExifInterface.TAG_ISO_SPEED_RATINGS,
                     ExifInterface.TAG_JPEG_INTERCHANGE_FORMAT,
                     ExifInterface.TAG_JPEG_INTERCHANGE_FORMAT_LENGTH,
                     ExifInterface.TAG_LIGHT_SOURCE,

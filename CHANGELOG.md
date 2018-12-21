@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v2.3.26)
+
+## 2018-12-21
+- Bump Android and iOS versions
+
 ### Changed (v2.3.25)
 
 ## 2018-12-21

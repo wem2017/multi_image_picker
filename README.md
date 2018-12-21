@@ -51,7 +51,7 @@ Add this to your package's pubspec.yaml file::
 
 ```yaml
 dependencies:
-  multi_image_picker: ^2.3.22
+  multi_image_picker: ^2.3.25
 ```
 
 Install it via command line:

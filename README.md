@@ -7,7 +7,9 @@
   <br>
 </h1>
 
-<h4 align="center"><a href="https://flutter.io" target="_blank">Flutter</a> plugin that allows you to display multi image picker on iOS and Android.</h4>
+<h4 align="center">
+  <a href="https://flutter.io" target="_blank">Flutter</a> plugin that allows you to display multi image picker on iOS and Android.
+</h4>
 
 <p align="center">
   <a href="https://pub.dartlang.org/packages/multi_image_picker">

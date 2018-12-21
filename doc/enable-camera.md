@@ -1,8 +1,8 @@
-## Enable Camera in the Gallery
+# Enable Camera in the Gallery
 
 If you wish, you can enable the camera in the gallery, so the user can not only choose photos, but take them as well with the camera.
 
-### Enable camera on Android
+## Enable camera on Android
 To do so you need to, create this file in `android/app/src/main/res/xml/file_paths_public.xml`:
 
 ```xml
@@ -28,7 +28,7 @@ And then add file provider in your `android/app/src/main/AndroidManifest.xml`, b
   </provider>
 ```
 
-### Enable camera on iOS
+## Enable camera on iOS
 
 No additional steps needed
 

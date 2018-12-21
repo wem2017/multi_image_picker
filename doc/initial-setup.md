@@ -1,6 +1,6 @@
-## Initial setup
+# Initial setup
 
-### iOS 
+## iOS 
 You need to add those strings to your Info.plist file in order the plugin to work:
 ```xml
 <key>NSPhotoLibraryUsageDescription</key>
@@ -13,7 +13,7 @@ You need to add those strings to your Info.plist file in order the plugin to wor
 
 The plugin supports Swift Version 4.2. Make sure you have this version set in your `Build Settings -> SWIFT_VERSION`
 
-### Android
+## Android
 
 You need to request those permissions in AndroidManifest.xml in order the plugin to work:
 

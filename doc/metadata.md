@@ -1,4 +1,4 @@
-## Image Metadata
+# Image Metadata
 
 To access the image meta data (ExIF, GPS, Device), you can invoke `requestMetadata()` method on the asset class:
 

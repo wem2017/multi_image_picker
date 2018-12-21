@@ -1,7 +1,7 @@
 
 <h1 align="center">
   <br>
-  <a href="http://www.amitmerchant.com/electron-markdownify"><img src="screenshots/multi_image_picker.png" alt="Markdownify" width="200"></a>
+  <a href="https://github.com/Sh1d0w/multi_image_picker"><img src="screenshots/multi_image_picker.png" alt="Flutter Multi Image Picker" width="200"></a>
   <br>
   Flutter Multi Image Picker
   <br>

@@ -15,10 +15,12 @@ Uri uri = Uri.parse('$_apiEndpoint/some/path');
 // create multipart request
 MultipartRequest request = http.MultipartRequest("POST", uri);
 
-List<int> byteData = await asset.requestOriginal();
+ByteData byteData = await asset.requestOriginal();
+List<int> imageData = byteData.buffer.asUint8List();
+
 MultipartFile multipartFile = MultipartFile.fromBytes(
   'photo',
-  byteData,
+  imageData,
   filename: 'some-file-name.jpg',
   contentType: MediaType("image", "jpg"),
 );
@@ -27,6 +29,11 @@ MultipartFile multipartFile = MultipartFile.fromBytes(
 request.files.add(multipartFile);
 // send
 var response = await request.send();
+
+...
+
+// Don't forget to release the image data after you no longer need it
+asset.requestOriginal();
 ```
 
 ## Why the plugin don't return image paths directly?

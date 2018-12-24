@@ -24,14 +24,14 @@
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
-  <a href="https://Sh1d0w.github.io/multi_image_picker/#/">Documentation</a> •
+  <a href="https://sh1d0w.github.io/multi_image_picker/#/">Documentation</a> •
   <a href="https://github.com/Sh1d0w/multi_image_picker/tree/master/doc/faq.md">FAQ</a> •
   <a href="#credits">Credits</a> •
   <a href="#related">Related</a> •
   <a href="#license">License</a>
 </p>
 
-![screenshot](screenshots/hero.png)
+<img src="https://github.com/Sh1d0w/multi_image_picker/raw/master/screenshots/hero.png" alt="Multi Image Picker" />
 
 ## Key Features
 

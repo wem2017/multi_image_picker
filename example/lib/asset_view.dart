@@ -24,7 +24,10 @@ class AssetState extends State<AssetView> {
 
   void _loadImage() async {
     await this._asset.requestThumbnail(300, 300, quality: 50);
-    setState(() {});
+
+    if (this.mounted) {
+      setState(() {});
+    }
   }
 
   @override

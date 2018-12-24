@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v2.3.27)
+
+## 2018-12-24
+- Fix memory leak on Android
+  
 ### Changed (v2.3.26)
 
 ## 2018-12-21

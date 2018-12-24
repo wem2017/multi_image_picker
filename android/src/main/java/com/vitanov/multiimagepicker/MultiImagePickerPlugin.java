@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -89,7 +90,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
         createPermissionsResultListener();
     }
 
-    public PluginRegistry.RequestPermissionsResultListener getPermissionsResultListener() {
+    private PluginRegistry.RequestPermissionsResultListener getPermissionsResultListener() {
         return mPermissionsResultListener;
     }
 
@@ -125,20 +126,22 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
 
     }
 
-    private class GetThumbnailTask extends AsyncTask<String, Void, Void> {
+    private static class GetThumbnailTask extends AsyncTask<String, Void, Void> {
+        private WeakReference<Activity> activityReference;
         BinaryMessenger messenger;
         String identifier;
         int width;
         int height;
         int quality;
 
-        GetThumbnailTask(BinaryMessenger messenger, String identifier, int width, int height, int quality) {
+        GetThumbnailTask(Activity context, BinaryMessenger messenger, String identifier, int width, int height, int quality) {
             super();
             this.messenger = messenger;
             this.identifier = identifier;
             this.width = width;
             this.height = height;
             this.quality = quality;
+            this.activityReference = new WeakReference<>(context);
         }
 
         @Override
@@ -148,34 +151,49 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
             byte[] byteArray = null;
 
             try {
-                Bitmap sourceBitmap = getCorrectlyOrientedImage(context, uri);
+                // get a reference to the activity if it is still there
+                Activity activity = activityReference.get();
+                if (activity == null || activity.isFinishing()) return null;
+
+                Bitmap sourceBitmap = getCorrectlyOrientedImage(activity, uri);
                 Bitmap bitmap = ThumbnailUtils.extractThumbnail(sourceBitmap, this.width, this.height, OPTIONS_RECYCLE_INPUT);
+
+                if (bitmap == null) return null;
+
                 ByteArrayOutputStream bitmapStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, this.quality, bitmapStream);
                 byteArray = bitmapStream.toByteArray();
                 bitmap.recycle();
-
+                bitmapStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            final ByteBuffer buffer = ByteBuffer.allocateDirect(byteArray.length);
-            buffer.put(byteArray);
-            this.messenger.send("multi_image_picker/image/" + this.identifier, buffer);
+
+            final ByteBuffer buffer;
+            if (byteArray != null) {
+                buffer = ByteBuffer.allocateDirect(byteArray.length);
+                buffer.put(byteArray);
+                this.messenger.send("multi_image_picker/image/" + this.identifier, buffer);
+                buffer.clear();
+            }
             return null;
         }
     }
 
-    private class GetImageTask extends AsyncTask<String, Void, Void> {
+    private static class GetImageTask extends AsyncTask<String, Void, Void> {
+        private WeakReference<Activity> activityReference;
+
         BinaryMessenger messenger;
         String identifier;
         int quality;
 
-        GetImageTask(BinaryMessenger messenger, String identifier, int quality) {
+        GetImageTask(Activity context, BinaryMessenger messenger, String identifier, int quality) {
             super();
             this.messenger = messenger;
             this.identifier = identifier;
             this.quality = quality;
+            this.activityReference = new WeakReference<>(context);
         }
 
         @Override
@@ -184,11 +202,19 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
             byte[] bytesArray = null;
 
             try {
-                Bitmap bitmap = getCorrectlyOrientedImage(context, uri);
+                // get a reference to the activity if it is still there
+                Activity activity = activityReference.get();
+                if (activity == null || activity.isFinishing()) return null;
+
+                Bitmap bitmap = getCorrectlyOrientedImage(activity, uri);
+
+                if (bitmap == null) return null;
+                
                 ByteArrayOutputStream bitmapStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, this.quality, bitmapStream);
                 bytesArray = bitmapStream.toByteArray();
                 bitmap.recycle();
+                bitmapStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -197,6 +223,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
             final ByteBuffer buffer = ByteBuffer.allocateDirect(bytesArray.length);
             buffer.put(bytesArray);
             this.messenger.send("multi_image_picker/image/" + this.identifier, buffer);
+            buffer.clear();
             return null;
         }
     }
@@ -214,7 +241,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
         } else if (REQUEST_ORIGINAL.equals(call.method)) {
             final String identifier = call.argument("identifier");
             final int quality = call.argument("quality");
-            GetImageTask task = new GetImageTask(this.messenger, identifier, quality);
+            GetImageTask task = new GetImageTask(this.activity, this.messenger, identifier, quality);
             task.execute("");
             finishWithSuccess(true);
 
@@ -223,7 +250,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
             final int width = call.argument("width");
             final int height = call.argument("height");
             final int quality = call.argument("quality");
-            GetThumbnailTask task = new GetThumbnailTask(this.messenger, identifier, width, height, quality);
+            GetThumbnailTask task = new GetThumbnailTask(this.activity, this.messenger, identifier, width, height, quality);
             task.execute("");
             finishWithSuccess(true);
 
@@ -540,8 +567,6 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
                         width = dbo.outWidth;
                         height = dbo.outHeight;
                     }
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -563,8 +588,9 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
     }
 
     private static int getOrientation(Context context, Uri photoUri) {
+        Cursor cursor = null;
         try {
-            Cursor cursor = context.getContentResolver().query(photoUri,
+            cursor = context.getContentResolver().query(photoUri,
                     new String[] { MediaStore.Images.ImageColumns.ORIENTATION }, null, null, null);
 
             if (cursor.getCount() != 1) {
@@ -573,8 +599,12 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
 
             cursor.moveToFirst();
             return cursor.getInt(0);
-        } catch (CursorIndexOutOfBoundsException e) {
+        } catch (CursorIndexOutOfBoundsException ignored) {
 
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
         return -1;
     }

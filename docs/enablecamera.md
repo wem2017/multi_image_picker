@@ -1,6 +1,9 @@
-# Enable Camera in the Gallery
+# Enable Camera
 
-If you wish, you can enable the camera in the gallery, so the user can not only choose photos, but take them as well with the camera.
+By default the image picker will display all images in your gallery. If you wish
+you can also allow the user to take a picture as well, right from within the gallery.
+
+To enable this functionality follow those steps:
 
 ## Enable camera on Android
 To do so you need to, create this file in `android/app/src/main/res/xml/file_paths_public.xml`:
@@ -31,6 +34,8 @@ And then add file provider in your `android/app/src/main/AndroidManifest.xml`, b
 ## Enable camera on iOS
 
 No additional steps needed
+
+<hr />
 
 That's it. When you invoke the image picker you can then have to set `enableCamera` to true, as it is disabled by default:
 

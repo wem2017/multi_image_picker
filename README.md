@@ -24,7 +24,7 @@
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
-  <a href="#how-to-use">How To Use</a> •
+  <a href="https://Sh1d0w.github.io/multi_image_picker/#/">Documentation</a> •
   <a href="https://github.com/Sh1d0w/multi_image_picker/tree/master/doc/faq.md">FAQ</a> •
   <a href="#credits">Credits</a> •
   <a href="#related">Related</a> •
@@ -46,34 +46,6 @@
 * Thumbnail support
 * Specify the image quality of the original image or thumbnails
 * Read image meta data
-
-## How To Use
-   
-Add this to your package's pubspec.yaml file::
-
-```yaml
-dependencies:
-  multi_image_picker: ^2.3.26
-```
-
-Install it via command line:
-
-```bash
-flutter packages get
-```
-
-Now in your Dart code, you can use:
-
-```dart
-import 'package:multi_image_picker/multi_image_picker.dart';
-```
-
-Next steps:
-  - [Initial setup](https://github.com/Sh1d0w/multi_image_picker/tree/master/doc/initial-setup.md)
-  - [Enable Camera](https://github.com/Sh1d0w/multi_image_picker/tree/master/doc/enable-camera.md)
-  - [Access image meta data](https://github.com/Sh1d0w/multi_image_picker/tree/master/doc/metadata.md)
-  - Theming on [Android](https://github.com/Sh1d0w/multi_image_picker/tree/master/doc/theming-android.md)
-  - Theming on [iOS](https://github.com/Sh1d0w/multi_image_picker/tree/master/doc/theming-ios.md)
 
 ## Emailware
 

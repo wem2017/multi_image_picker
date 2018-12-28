@@ -36,6 +36,20 @@ var response = await request.send();
 asset.requestOriginal();
 ```
 
+## How to upload images to Firebase?
+
+You can pass the image data directly, like this:
+
+```dart
+Future saveImage(Asset asset) async {
+  ByteData byteData = await asset.requestOriginal();
+  List<int> imageData = byteData.buffer.asUint8List();
+  StorageReference ref = FirebaseStorage.instance.ref().child("some_image_bame.jpg");
+  StorageUploadTask uploadTask = ref.putData(imageData);
+  return await (await uploadTask.onComplete).ref.getDownloadURL();
+}
+```
+
 ## Why the plugin don't return image paths directly?
 
 That's not an easy task when we speak for cross platform compatibility. For example on Android the `ContentResolver` returns content URIs, which not always have a file path. On iOS it gets even more complicated since with iCloud not all of your photos are stored physically on the phone, and there is no way to return the file path immediately without first downloading the original image from iCloud to the phone.

@@ -6,6 +6,8 @@
 - Usage
 
   - [Basic Usage](basicusage.md)
+  - [Accessing Image Data](imagedata.md)
+  - [Uploading Images](upload.md)
   - [Enable Camera](enablecamera.md)
   - [Metadata](metadata.md)
   - [Customization](theming.md)

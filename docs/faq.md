@@ -4,56 +4,6 @@
 
 When you invoke the image picker and the user picks some images, as response you will get List of Asset objects. The Asset class have two handy methods which allows you to access the picked image data - `requestThumbnail(width, height)`, which returns a resized image and `requestOriginal()` which returns the original hight quality image. Those methods are asynchronous and return the image data as `ByteData`, so you must be careful when to allocate and release this data if you don't need it in different views. For example implementation see the example folder.
 
-## How to upload the selected images to a server?
-
-You can get the original image ByteData and pass it to the http request like this:
-
-```dart
-// string to uri
-Uri uri = Uri.parse('$_apiEndpoint/some/path');
-
-// create multipart request
-MultipartRequest request = http.MultipartRequest("POST", uri);
-
-ByteData byteData = await asset.requestOriginal();
-List<int> imageData = byteData.buffer.asUint8List();
-
-MultipartFile multipartFile = MultipartFile.fromBytes(
-  'photo',
-  imageData,
-  filename: 'some-file-name.jpg',
-  contentType: MediaType("image", "jpg"),
-);
-
-// add file to multipart
-request.files.add(multipartFile);
-// send
-var response = await request.send();
-
-...
-
-// Don't forget to release the image data after you no longer need it
-asset.requestOriginal();
-```
-
-## How to upload images to Firebase?
-
-You can pass the image data directly, like this:
-
-```dart
-Future saveImage(Asset asset) async {
-  ByteData byteData = await asset.requestOriginal();
-  List<int> imageData = byteData.buffer.asUint8List();
-  StorageReference ref = FirebaseStorage.instance.ref().child("some_image_bame.jpg");
-  StorageUploadTask uploadTask = ref.putData(imageData);
-
-  // Release the image data
-  asset.releaseOriginal();
-
-  return await (await uploadTask.onComplete).ref.getDownloadURL();
-}
-```
-
 ## Why the plugin don't return image paths directly?
 
 That's not an easy task when we speak for cross platform compatibility. For example on Android the `ContentResolver` returns content URIs, which not always have a file path. On iOS it gets even more complicated since with iCloud not all of your photos are stored physically on the phone, and there is no way to return the file path immediately without first downloading the original image from iCloud to the phone.

@@ -4,11 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v2.3.28)
+
+## 2018-12-29
+- Remove static_library definition on iOS
+
 ### Changed (v2.3.27)
 
 ## 2018-12-24
 - Fix memory leak on Android
-  
+
 ### Changed (v2.3.26)
 
 ## 2018-12-21
@@ -23,7 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 2018-12-21
 - Removed deprecated meta data tag on Android
-  
+
 ### Changed (v2.3.22)
 
 ## 2018-12-20

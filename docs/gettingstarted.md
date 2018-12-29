@@ -8,7 +8,7 @@ The first thing we need to do is add the multi_image_picker package to our `pubs
 
 ```yaml
 dependencies:
-  multi_image_picker: ^2.3.27
+  multi_image_picker: ^2.3.28
 ```
 
 Next we need to install the plugin.

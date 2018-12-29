@@ -18,7 +18,6 @@ A new flutter plugin project.
   s.dependency 'BSImagePicker', '~> 2.9.0'
 
   s.pod_target_xcconfig = { "DEFINES_MODULE" => "YES" }
-  s.static_framework = true
   s.swift_version = '4.2'
   s.ios.deployment_target = '8.0'
 end

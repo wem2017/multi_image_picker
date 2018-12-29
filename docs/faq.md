@@ -46,6 +46,10 @@ Future saveImage(Asset asset) async {
   List<int> imageData = byteData.buffer.asUint8List();
   StorageReference ref = FirebaseStorage.instance.ref().child("some_image_bame.jpg");
   StorageUploadTask uploadTask = ref.putData(imageData);
+
+  // Release the image data
+  asset.releaseOriginal();
+
   return await (await uploadTask.onComplete).ref.getDownloadURL();
 }
 ```

@@ -104,7 +104,15 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
                             && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
                         presentPicker();
                     } else {
-                        pendingResult.error("READ_PERMISSION_NOT_GRANTED", "Read, write or camera permission was not granted", null);
+                        if (
+                                ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_EXTERNAL_STORAGE) ||
+                                ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+                                ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.CAMERA)) {
+                            finishWithError("PERMISSION_DENIED", "Read, write or camera permission was not granted");
+                        } else{
+                            finishWithError("PERMISSION_PERMANENTLY_DENIED", "Please enable access to the storage and the camera.");
+                        }
+                        return false;
                     }
 
                     return true;
@@ -232,7 +240,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
     public void onMethodCall(final MethodCall call, final Result result) {
 
         if (!setPendingMethodCallAndResult(call, result)) {
-            finishWithAlreadyActiveError();
+            finishWithAlreadyActiveError(result);
             return;
         }
 
@@ -281,6 +289,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
             refreshGallery(path);
         } else {
             pendingResult.notImplemented();
+            clearMethodCallAndResult();
         }
     }
 
@@ -494,10 +503,14 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
                 != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this.activity,
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
-
             ActivityCompat.requestPermissions(this.activity,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA},
+                    new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.CAMERA
+                    },
                     REQUEST_CODE_GRANT_PERMISSIONS);
+
         } else {
             presentPicker();
         }
@@ -654,8 +667,9 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
         clearMethodCallAndResult();
     }
 
-    private void finishWithAlreadyActiveError() {
-        finishWithError("already_active", "Image picker is already active");
+    private void finishWithAlreadyActiveError(MethodChannel.Result result) {
+        if (result != null)
+            result.error("already_active", "Image picker is already active", null);
     }
 
     private void finishWithError(String errorCode, String errorMessage) {

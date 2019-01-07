@@ -14,7 +14,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   List<Asset> images = List<Asset>();
-  String _error;
+  String _error = 'No Error Dectected';
 
   @override
   void initState() {
@@ -35,8 +35,8 @@ class _MyAppState extends State<MyApp> {
       images = List<Asset>();
     });
 
-    List<Asset> resultList;
-    String error;
+    List<Asset> resultList = List<Asset>();
+    String error = 'No Error Dectected';
 
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -55,7 +55,7 @@ class _MyAppState extends State<MyApp> {
 
     setState(() {
       images = resultList;
-      if (error == null) _error = 'No Error Dectected';
+      _error = error;
     });
   }
 

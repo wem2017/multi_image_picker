@@ -59,7 +59,10 @@ import static android.media.ThumbnailUtils.OPTIONS_RECYCLE_INPUT;
 /**
  * MultiImagePickerPlugin
  */
-public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry.ActivityResultListener {
+public class MultiImagePickerPlugin implements
+        MethodCallHandler,
+        PluginRegistry.ActivityResultListener,
+        PluginRegistry.RequestPermissionsResultListener {
     public interface Refresh {
         void after() ;
     }
@@ -87,39 +90,30 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
         this.context = context;
         this.channel = channel;
         this.messenger = messenger;
-        createPermissionsResultListener();
     }
 
-    private PluginRegistry.RequestPermissionsResultListener getPermissionsResultListener() {
-        return mPermissionsResultListener;
-    }
-
-    private void createPermissionsResultListener() {
-        mPermissionsResultListener = new PluginRegistry.RequestPermissionsResultListener() {
-            @Override
-            public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-                if (requestCode == REQUEST_CODE_GRANT_PERMISSIONS && permissions.length == 3) {
-                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED
-                            && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                            && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
-                        presentPicker();
-                    } else {
-                        if (
-                                ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_EXTERNAL_STORAGE) ||
+    @Override
+    public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == REQUEST_CODE_GRANT_PERMISSIONS && permissions.length == 3) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                presentPicker();
+            } else {
+                if (
+                        ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_EXTERNAL_STORAGE) ||
                                 ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
                                 ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.CAMERA)) {
-                            finishWithError("PERMISSION_DENIED", "Read, write or camera permission was not granted");
-                        } else{
-                            finishWithError("PERMISSION_PERMANENTLY_DENIED", "Please enable access to the storage and the camera.");
-                        }
-                        return false;
-                    }
-
-                    return true;
+                    finishWithError("PERMISSION_DENIED", "Read, write or camera permission was not granted");
+                } else{
+                    finishWithError("PERMISSION_PERMANENTLY_DENIED", "Please enable access to the storage and the camera.");
                 }
                 return false;
             }
-        };
+
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -129,7 +123,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
         final MethodChannel channel = new MethodChannel(registrar.messenger(), CHANNEL_NAME);
         MultiImagePickerPlugin instance = new MultiImagePickerPlugin(registrar.activity(), registrar.context(), channel, registrar.messenger());
         registrar.addActivityResultListener(instance);
-        registrar.addRequestPermissionsResultListener(instance.getPermissionsResultListener());
+        registrar.addRequestPermissionsResultListener(instance);
         channel.setMethodCallHandler(instance);
 
     }
@@ -217,7 +211,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
                 Bitmap bitmap = getCorrectlyOrientedImage(activity, uri);
 
                 if (bitmap == null) return null;
-                
+
                 ByteArrayOutputStream bitmapStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, this.quality, bitmapStream);
                 bytesArray = bitmapStream.toByteArray();
@@ -543,7 +537,7 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
                 .countable(true)
                 .capture(enableCamera)
                 .captureStrategy(
-                    new CaptureStrategy(true, packageName + ".multiimagepicker.fileprovider")
+                        new CaptureStrategy(true, packageName + ".multiimagepicker.fileprovider")
                 )
                 .maxSelectable(maxImages)
                 .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
@@ -569,7 +563,9 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
                     dbo.inScaled = false;
                     dbo.inSampleSize = 1;
                     BitmapFactory.decodeStream(is, null, dbo);
-                    is.close();
+                    if (is != null) {
+                        is.close();
+                    }
 
                     int orientation = getOrientation(context, uri);
 
@@ -629,14 +625,18 @@ public class MultiImagePickerPlugin implements MethodCallHandler, PluginRegistry
         dbo.inSampleSize = 1;
         dbo.inJustDecodeBounds = true;
         BitmapFactory.decodeStream(is, null, dbo);
-        is.close();
+        if (is != null) {
+            is.close();
+        }
 
         int orientation = getOrientation(context, photoUri);
 
         Bitmap srcBitmap;
         is = context.getContentResolver().openInputStream(photoUri);
         srcBitmap = BitmapFactory.decodeStream(is);
-        is.close();
+        if (is != null) {
+            is.close();
+        }
 
         if (orientation > 0) {
             Matrix matrix = new Matrix();

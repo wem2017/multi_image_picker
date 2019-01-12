@@ -3,6 +3,28 @@ import UIKit
 import Photos
 import BSImagePicker
 
+extension PHAsset {
+    
+    var originalFilename: String? {
+        
+        var fname:String?
+        
+        if #available(iOS 9.0, *) {
+            let resources = PHAssetResource.assetResources(for: self)
+            if let resource = resources.first {
+                fname = resource.originalFilename
+            }
+        }
+        
+        if fname == nil {
+            // this is an undocumented workaround that works as of iOS 9.1
+            fname = self.value(forKey: "filename") as? String
+        }
+        
+        return fname
+    }
+}
+
 public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
     var controller: FlutterViewController!
     var imagesResult: FlutterResult?
@@ -94,7 +116,8 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
                         results.append([
                             "identifier": asset.localIdentifier,
                             "width": asset.pixelWidth,
-                            "height": asset.pixelHeight
+                            "height": asset.pixelHeight,
+                            "name": asset.originalFilename!
                         ]);
                     }
                     result(results);

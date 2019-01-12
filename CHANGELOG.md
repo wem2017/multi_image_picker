@@ -4,9 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v2.3.31)
+
+## 2019-01-12
+- Add original image name to the Asset class
+
 ### Changed (v2.3.29)
 
-## 2010-01-07
+## 2019-01-07
 - Fix bug with permissions on Android
   
 ### Changed (v2.3.28)

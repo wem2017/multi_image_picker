@@ -582,6 +582,7 @@ public class MultiImagePickerPlugin implements
 
                 map.put("width", width);
                 map.put("height", height);
+                map.put("name", getFileName(uri));
                 result.add(map);
             }
             finishWithSuccess(result);
@@ -594,6 +595,23 @@ public class MultiImagePickerPlugin implements
             clearMethodCallAndResult();
         }
         return false;
+    }
+
+    private String getFileName(Uri uri) {
+        String fileName = "";
+        String[] projection = {MediaStore.MediaColumns.DISPLAY_NAME};
+        Cursor metaCursor = context.getContentResolver().query(uri, projection, null, null, null);
+        if (metaCursor != null) {
+            try {
+                if (metaCursor.moveToFirst()) {
+                    fileName = metaCursor.getString(0);
+                }
+            } finally {
+                metaCursor.close();
+            }
+        }
+
+        return fileName;
     }
 
     private static int getOrientation(Context context, Uri photoUri) {

@@ -19,15 +19,24 @@ void main() {
 
     test('constructor set the identifier correctly', () {
       const String id = 'SOME_ID';
-      Asset asset = Asset(id, 100, 100);
+      Asset asset = Asset(id, 'some name', 100, 100);
       expect(
         asset.identifier,
         equals(id),
       );
     });
 
+    test('constructor set the name correctly', () {
+      const String name = 'Some Name';
+      Asset asset = Asset('1', name, 100, 100);
+      expect(
+        asset.name,
+        equals(name),
+      );
+    });
+
     test('thumbData can not have negative dimensions', () async {
-      Asset asset = Asset('_identifier', 50, 50);
+      Asset asset = Asset('_identifier', 'some name', 50, 50);
 
       expect(
         asset.requestThumbnail(-100, 10),
@@ -41,7 +50,7 @@ void main() {
     });
 
     test('asset has correct dimensions', () async {
-      Asset asset = Asset('_identifier', 50, 40);
+      Asset asset = Asset('_identifier', 'some name', 50, 40);
 
       expect(
         asset.originalWidth,
@@ -55,8 +64,8 @@ void main() {
     });
 
     test('asset isLandscape and isPortrait work', () async {
-      Asset asset1 = Asset('_identifier', 50, 40);
-      Asset asset2 = Asset('_identifier', 40, 50);
+      Asset asset1 = Asset('_identifier', 'some name', 50, 40);
+      Asset asset2 = Asset('_identifier', 'some name', 40, 50);
 
       expect(
         asset1.isLandscape,

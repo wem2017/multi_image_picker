@@ -14,6 +14,7 @@
 
 - Troubleshooting
 
+  - [General](generaltroubleshooting.md)
   - [Android](androudtroubleshooting.md)
   - [iOS](iostroubleshooting.md)
 

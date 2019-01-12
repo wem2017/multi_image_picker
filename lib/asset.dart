@@ -8,6 +8,9 @@ class Asset {
   /// The resource identifier
   String _identifier;
 
+  /// The resource file name
+  String _name;
+
   /// Original image width
   int _originalWidth;
 
@@ -22,6 +25,7 @@ class Asset {
 
   Asset(
     this._identifier,
+    this._name,
     this._originalWidth,
     this._originalHeight,
   );
@@ -64,6 +68,11 @@ class Asset {
   /// Returns the image identifier
   String get identifier {
     return _identifier;
+  }
+
+  /// Returns the image name
+  String get name {
+    return _name;
   }
 
   /// Releases the thumb data.

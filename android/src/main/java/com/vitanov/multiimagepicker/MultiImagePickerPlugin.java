@@ -113,6 +113,7 @@ public class MultiImagePickerPlugin implements
 
             return true;
         }
+        finishWithError("PERMISSION_DENIED", "Read, write or camera permission was not granted");
         return false;
     }
 

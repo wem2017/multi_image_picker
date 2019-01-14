@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v2.3.32)
+
+## 2019-01-14
+- Fix possible bug with permissions on Android
+
 ### Changed (v2.3.31)
 
 ## 2019-01-12

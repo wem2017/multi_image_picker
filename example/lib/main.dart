@@ -25,7 +25,12 @@ class _MyAppState extends State<MyApp> {
     return GridView.count(
       crossAxisCount: 3,
       children: List.generate(images.length, (index) {
-        return AssetView(index, images[index]);
+        Asset asset = images[index];
+        return AssetView(
+          index,
+          asset,
+          key: UniqueKey(),
+        );
       }),
     );
   }

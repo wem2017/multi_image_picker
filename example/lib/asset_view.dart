@@ -5,7 +5,11 @@ class AssetView extends StatefulWidget {
   final int _index;
   final Asset _asset;
 
-  AssetView(this._index, this._asset);
+  AssetView(
+    this._index,
+    this._asset, {
+    Key key,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => AssetState(this._index, this._asset);

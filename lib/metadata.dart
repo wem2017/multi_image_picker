@@ -342,7 +342,7 @@ class ExifMetadata {
   final int Flash;
 
   /// This tag indicates the location and area of the main subject in the overall scene.
-  final int SubjectArea;
+  final List<int> SubjectArea;
 
   /// The actual focal length of the lens, in mm. Conversion is not made to the focal length
   /// of a 35mm film camera.
@@ -620,7 +620,7 @@ class ExifMetadata {
         MeteringMode = _castAsInt(json['MeteringMode'] ?? null),
         LightSource = _castAsInt(json['LightSource'] ?? null),
         Flash = _castAsInt(json['Flash'] ?? null),
-        SubjectArea = _castAsInt(json['SubjectArea'] ?? null),
+        SubjectArea = _castAsIntMap(json['SubjectArea'] ?? null),
         FocalLength = _castAsDouble(json['FocalLength'] ?? null),
         FlashEnergy = _castAsDouble(json['FlashEnergy'] ?? null),
         SpatialFrequencyResponse =
@@ -900,7 +900,7 @@ class DeviceMetadata {
   /// minimum focal length, and minimum F number in the maximum focal length, which are
   /// specification information for the lens that was used in photography. When the minimum
   /// F number is unknown, the notation is 0/0.
-  final double LensSpecification;
+  final List<double> LensSpecification;
 
   /// This tag records the lens manufacturer as an ASCII string.
   final String LensMake;
@@ -932,7 +932,7 @@ class DeviceMetadata {
         MakerNote = _castAsString(json['MakerNote'] ?? null),
         CameraOwnerName = _castAsString(json['CameraOwnerName'] ?? null),
         BodySerialNumber = _castAsString(json['BodySerialNumber'] ?? null),
-        LensSpecification = _castAsDouble(json['LensSpecification'] ?? null),
+        LensSpecification = _castAsDoubleMap(json['LensSpecification'] ?? null),
         LensMake = _castAsString(json['LensMake'] ?? null),
         LensModel = _castAsString(json['LensModel'] ?? null),
         LensSerialNumber = _castAsString(json['LensSerialNumber'] ?? null);
@@ -971,4 +971,20 @@ String _castAsString(dynamic variable) {
   }
 
   return (!(variable is String)) ? variable.toString() : variable;
+}
+
+List<int> _castAsIntMap(List<dynamic> list) {
+  if (list == null) {
+    return null;
+  }
+
+  return list.map<int>((n) => _castAsInt(n)).toList();
+}
+
+List<double> _castAsDoubleMap(List<dynamic> list) {
+  if (list == null) {
+    return null;
+  }
+
+  return list.map<double>((n) => _castAsDouble(n)).toList();
 }

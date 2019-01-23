@@ -1,5 +1,5 @@
 group 'com.vitanov.multiimagepicker'
-version '2.3.32'
+version '2.3.33'
 
 buildscript {
     repositories {

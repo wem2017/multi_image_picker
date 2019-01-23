@@ -5,9 +5,9 @@ To access the image meta data (ExIF, GPS, Device), you can invoke `requestMetada
 ```dart
 Metadata metadata = await asset.requestMetadata();
 
-print(metadata.gps.GPSDestLatitude);
-print(metadata.exif.Artist);
-print(metadata.device.Model);
+print(metadata.gps.gpsDestLatitude);
+print(metadata.exif.artist);
+print(metadata.device.model);
 ```
 
 For all available meta data properties, see the [Metadata](https://pub.dartlang.org/documentation/multi_image_picker/latest/metadata/Metadata-class.html) class.

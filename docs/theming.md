@@ -112,6 +112,8 @@ You can the replace any texts you want.
 
 You can customize different parts of the gallery picker. To do so, you can simply pass `options` param in the `pickImages` call.
 
+?> The iOS plugin uses System Localizations, meaning it will automatically detect the device language and provide appropriate translations. You don't have to handle that manually like on Android.
+
 ```dart
 List resultList = await MultiImagePicker.pickImages(
     maxImages: 3,

@@ -4,15 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v2.4.11)
+
 ## 2019-01-23
 ### BREAKING CHANGE
-- Renamed Metadata properties to lowerCamelCase in order to resolve https://github.com/dart-lang/sdk/issues/35732 
+- Renamed Metadata properties to lowerCamelCase in order to resolve https://github.com/dart-lang/sdk/issues/35732
 
 ### Changed (v2.3.33)
 
 ## 2019-01-23
 - Correctly handle LensSpecification and SubjectArea metadata
-  
+
 ### Changed (v2.3.32)
 
 ## 2019-01-14
@@ -27,7 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 2019-01-07
 - Fix bug with permissions on Android
-  
+
 ### Changed (v2.3.28)
 
 ## 2018-12-29

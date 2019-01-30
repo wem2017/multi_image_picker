@@ -1,11 +1,17 @@
+## Crash when selecting more than maxImages
+
+This is a known bug with Matisse library, until it is fixed there you can fix it for you by adding the strings tranlastions as described [here](https://sh1d0w.github.io/multi_image_picker/#/theming?id=android-customization) .
+
 ## Android Support Version Mismatch
+
+?> This error should no longer be present in version 3 of the plugin, as I've migrated it from the deprecated Android Support Library to AndroidX. If you are using multi_image_picker 3.*.* do not do this.
 
 If you get errors like this:
 
 !> Android dependency 'com.android.support:support-v4' has different version for the compile (X.X.X) and runtime (X.X.X) classpath.
 
 This just means that your project uses several plugins that depend on different version of the support library. The suggested approach here is
-to make all of them resolve to the same version, usually the highest one. To do so, in your `android/app/build.grade` go to `dependencies` and 
+to make all of them resolve to the same version, usually the highest one. To do so, in your `android/app/build.grade` go to `dependencies` and
 add this:
 
 ```gradle

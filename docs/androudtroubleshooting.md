@@ -4,7 +4,7 @@ This is a known bug with Matisse library, until it is fixed there you can fix it
 
 ## Android Support Version Mismatch
 
-?> This error should no longer be present in version 3 of the plugin, as I've migrated it from the deprecated Android Support Library to AndroidX. If you are using multi_image_picker 3.*.* do not do this.
+?> This error should no longer be present in version 3 of the plugin, as I've migrated it from the deprecated Android Support Library to AndroidX. If you are using multi_image_picker 3.* do not do this.
 
 If you get errors like this:
 

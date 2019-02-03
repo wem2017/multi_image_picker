@@ -1,6 +1,6 @@
 # Upgrading
 
-This page will list any changes that you have to make when there is breaking or major version change.
+This page will list any changes that you have to make when there is a breaking or major version change.
 
 ## From version 2.4.11 to version 3.0.11
 

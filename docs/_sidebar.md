@@ -20,6 +20,8 @@
 
 - [FAQ](faq.md)
 
+- [Upgrading](upgrading.md)
+
 - API Reference
   - [Asset](https://pub.dartlang.org/documentation/multi_image_picker/latest/asset/Asset-class.html)
   - [Metadata](https://pub.dartlang.org/documentation/multi_image_picker/latest/metadata/Metadata-class.html)

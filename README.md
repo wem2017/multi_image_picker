@@ -51,6 +51,10 @@
 
 You can see the official documentation [here](https://sh1d0w.github.io/multi_image_picker/#/).
 
+## Upgrading
+
+For more information regarding breaking changes and migrating through different versions of the plugin please read the [upgrading guide](https://sh1d0w.github.io/multi_image_picker/#/upgrading).
+
 ## Emailware
 
 Flutter Multi Image Picker is an [emailware](https://en.wiktionary.org/wiki/emailware). Meaning, if you liked using this plugin or has helped you in anyway, I'd like you send me an email on <radoslav.vitanov@gmail.com> about anything you'd want to say about this software. I'd really appreciate it!

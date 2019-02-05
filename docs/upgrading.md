@@ -2,7 +2,7 @@
 
 This page will list any changes that you have to make when there is a breaking or major version change.
 
-## From version 2.4.11 to version 3.0.11
+## From version 2.4.11 to version 3.0.12
 
 The project has migrated from using the old Android Support Library to [AndroidX](https://developer.android.com/jetpack/androidx/). If you haven't migrated you project to AndroidX yet, please use version 2.4.11 of the plugin.
 

@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed (v3.0.12)
 
 ## 2019-02-05
-- Use custom for for Matisse until it implements AndroidX
+- Use custom fork of Matisse until it adds AndroidX support.
 
 
 ### Changed (v3.0.11)

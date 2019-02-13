@@ -534,6 +534,7 @@ public class MultiImagePickerPlugin implements
         String packageName = context.getApplicationInfo().packageName;
         Matisse.from(MultiImagePickerPlugin.this.activity)
                 .choose(MimeType.ofImage())
+                .showSingleMediaType(true)
                 .countable(true)
                 .capture(enableCamera)
                 .captureStrategy(

@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v3.0.13)
+
+## 2019-02-13
+- Display only images in the picker on Android [#73](https://github.com/Sh1d0w/multi_image_picker/pull/73)
+
 ### Changed (v3.0.12)
 
 ## 2019-02-05

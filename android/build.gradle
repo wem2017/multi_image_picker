@@ -1,5 +1,5 @@
 group 'com.vitanov.multiimagepicker'
-version '3.0.13'
+version '3.0.14'
 
 buildscript {
     repositories {
@@ -23,7 +23,7 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 19

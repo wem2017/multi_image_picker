@@ -197,14 +197,15 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
             let identifiers = arguments["identifiers"] as! Array<String>
             let assets: PHFetchResult = PHAsset.fetchAssets(withLocalIdentifiers: identifiers, options: nil)
             PHPhotoLibrary.shared().performChanges( {
-                PHAssetChangeRequest.deleteAssets(assets)},
-                                                    completionHandler: {                                                                 success, error in
-                                                        if(success) {
-                                                            result(true)
-                                                        }
-                                                        else {
-                                                            result(false)
-                                                        }
+                PHAssetChangeRequest.deleteAssets(assets)
+            },
+            completionHandler: { success, error in
+                if(success) {
+                    result(true)
+                }
+                else {
+                    result(false)
+                }
             })
             break ;
         case "requestMetadata":

@@ -191,18 +191,18 @@ public class MultiImagePickerPlugin implements
         }
     }
 
-    static void deleteMedia(Context context, ArrayList<File> files) {
+    private static void deleteMedia(Context context, ArrayList<File> files) {
         // Query for the ID of the media matching the file path
         Uri queryUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         ContentResolver contentResolver = context.getContentResolver();
 
-        ArrayList<ContentProviderOperation> operationList = new ArrayList();
+        ArrayList<ContentProviderOperation> operationList = new ArrayList<>();
         ContentProviderOperation contentProviderOperation;
 
-        for (int i = 0; i < files.size(); i++) {
+        for (File file: files) {
             // Match on the file path
             contentProviderOperation = ContentProviderOperation.newDelete(queryUri)
-                    .withSelection(MediaStore.Images.Media.DATA + " =? ", new String[]{files.get(i).getAbsolutePath()}).build();
+                    .withSelection(MediaStore.Images.Media.DATA + " =? ", new String[]{file.getAbsolutePath()}).build();
             operationList.add(contentProviderOperation);
         }
 
@@ -227,14 +227,14 @@ public class MultiImagePickerPlugin implements
 
         @Override
         protected Void doInBackground(String... strings) {
-            ArrayList<File> files = new ArrayList();
+            ArrayList<File> files = new ArrayList<>();
 
             try {
                 // get a reference to the activity if it is still there
                 Activity activity = activityReference.get();
                 if (activity == null || activity.isFinishing()) return null;
-                for (int i = 0; i < identifiers.size(); i++) {
-                    final Uri uri = Uri.parse(this.identifiers.get(i));
+                for (String identifier: this.identifiers) {
+                    final Uri uri = Uri.parse(identifier);
                     String path = getPath(activity, uri);
                     File file = new File(path);
                     if (file.exists()) {
@@ -312,13 +312,13 @@ public class MultiImagePickerPlugin implements
         else if (DELETE_IMAGES.equals(call.method)) {
             final ArrayList<String> identifiers = call.argument("identifiers");
             DeleteImageTask task = new DeleteImageTask(this.activity, identifiers);
-            task.execute("");
+            task.execute();
             finishWithSuccess(true);
         } else if (REQUEST_ORIGINAL.equals(call.method)) {
             final String identifier = call.argument("identifier");
             final int quality = call.argument("quality");
             GetImageTask task = new GetImageTask(this.activity, this.messenger, identifier, quality);
-            task.execute("");
+            task.execute();
             finishWithSuccess(true);
 
         } else if (REQUEST_THUMBNAIL.equals(call.method)) {
@@ -327,7 +327,7 @@ public class MultiImagePickerPlugin implements
             final int height = call.argument("height");
             final int quality = call.argument("quality");
             GetThumbnailTask task = new GetThumbnailTask(this.activity, this.messenger, identifier, width, height, quality);
-            task.execute("");
+            task.execute();
             finishWithSuccess(true);
 
 
@@ -335,21 +335,13 @@ public class MultiImagePickerPlugin implements
             final String identifier = call.argument("identifier");
 
             final Uri uri = Uri.parse(identifier);
-            InputStream in = null;
-            try {
-                in = context.getContentResolver().openInputStream(uri);
+            try (InputStream in = context.getContentResolver().openInputStream(uri)) {
                 assert in != null;
                 ExifInterface exifInterface = new ExifInterface(in);
                 finishWithSuccess(getPictureExif(exifInterface));
 
             } catch (IOException e) {
                 finishWithError("Exif error", e.toString());
-            } finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException ignored) {}
-                }
             }
 
         } else if (REFRESH_IMAGE.equals(call.method)) {

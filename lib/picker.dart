@@ -176,7 +176,7 @@ class MultiImagePicker {
   /// Delete images from the gallery
   /// [List<Asset>].
   ///
-  /// This method are used to delete assets from the gallery
+  /// Allows you to delete array of Asset objects from the filesystem.
   static Future<bool> deleteImages({@required List<Asset> assets}) async {
     assert(assets != null);
     List<String> identifiers = assets.map((a) => a.identifier).toList();

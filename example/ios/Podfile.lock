@@ -5,12 +5,12 @@ PODS:
     - BSImageView (= 1.0.2)
   - BSImageView (1.0.2)
   - Flutter (1.0.0)
-  - multi_image_picker (3.0.14):
+  - multi_image_picker (3.0.21):
     - BSImagePicker (~> 2.9.0)
     - Flutter
 
 DEPENDENCIES:
-  - Flutter (from `.symlinks/flutter/ios`)
+  - Flutter (from `.symlinks/flutter/ios-release`)
   - multi_image_picker (from `.symlinks/plugins/multi_image_picker/ios`)
 
 SPEC REPOS:
@@ -21,7 +21,7 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   Flutter:
-    :path: ".symlinks/flutter/ios"
+    :path: ".symlinks/flutter/ios-release"
   multi_image_picker:
     :path: ".symlinks/plugins/multi_image_picker/ios"
 
@@ -30,7 +30,7 @@ SPEC CHECKSUMS:
   BSImagePicker: 553707de1adaad42eac252e0b84d20dbdba83fe9
   BSImageView: ab22ff8cae61f1ae17a3c9efeeb216af3cf84a09
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
-  multi_image_picker: 80947139b787fcf1947757465aea4957c9e691ea
+  multi_image_picker: 2eb1000026a1acadeb58d37e87b81c62abda73e7
 
 PODFILE CHECKSUM: 9d1304459c9b2a5e72e756c28173c2289a3b25f9
 

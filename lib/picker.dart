@@ -172,4 +172,17 @@ class MultiImagePicker {
 
     return map;
   }
+
+  /// Delete images from the gallery
+  /// [List<Asset>].
+  ///
+  /// This method are used to delete assets from the gallery
+  static Future<bool> deleteImages({@required List<Asset> assets}) async {
+    assert(assets != null);
+    List<String> identifiers = assets.map((a) => a.identifier).toList();
+    bool result = await _channel.invokeMethod(
+        "deleteImages", <String, dynamic>{"identifiers": identifiers});
+
+    return result;
+  }
 }

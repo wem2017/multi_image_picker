@@ -1,6 +1,9 @@
 package com.vitanov.multiimagepicker;
 
 import android.app.Activity;
+import android.content.ContentProviderOperation;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,9 +24,11 @@ import com.zhihu.matisse.engine.impl.GlideEngine;
 import android.content.pm.ActivityInfo;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,6 +43,7 @@ import android.Manifest;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import androidx.exifinterface.media.ExifInterface;
 import androidx.core.app.ActivityCompat;
@@ -53,6 +59,7 @@ import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 import static android.media.ThumbnailUtils.OPTIONS_RECYCLE_INPUT;
+import static com.vitanov.multiimagepicker.FileDirectory.getPath;
 
 
 /**
@@ -71,6 +78,7 @@ public class MultiImagePickerPlugin implements
     private static final String REQUEST_ORIGINAL = "requestOriginal";
     private static final String REQUEST_METADATA = "requestMetadata";
     private static final String PICK_IMAGES = "pickImages";
+    private static final String DELETE_IMAGES = "deleteImages";
     private static final String REFRESH_IMAGE = "refreshImage" ;
     private static final String MAX_IMAGES = "maxImages";
     private static final String ENABLE_CAMERA = "enableCamera";
@@ -183,6 +191,66 @@ public class MultiImagePickerPlugin implements
         }
     }
 
+    static void deleteMedia(Context context, ArrayList<File> files) {
+        // Query for the ID of the media matching the file path
+        Uri queryUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        ContentResolver contentResolver = context.getContentResolver();
+
+        ArrayList<ContentProviderOperation> operationList = new ArrayList();
+        ContentProviderOperation contentProviderOperation;
+
+        for (int i = 0; i < files.size(); i++) {
+            // Match on the file path
+            contentProviderOperation = ContentProviderOperation.newDelete(queryUri)
+                    .withSelection(MediaStore.Images.Media.DATA + " =? ", new String[]{files.get(i).getAbsolutePath()}).build();
+            operationList.add(contentProviderOperation);
+        }
+
+        try {
+            contentResolver.applyBatch(MediaStore.AUTHORITY, operationList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private static class DeleteImageTask extends AsyncTask<String, Void, Void> {
+        private WeakReference<Activity> activityReference;
+
+        ArrayList<String> identifiers;
+
+        DeleteImageTask(Activity context, ArrayList<String> identifiers) {
+            super();
+            this.identifiers = identifiers;
+            this.activityReference = new WeakReference<>(context);
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            ArrayList<File> files = new ArrayList();
+
+            try {
+                // get a reference to the activity if it is still there
+                Activity activity = activityReference.get();
+                if (activity == null || activity.isFinishing()) return null;
+                for (int i = 0; i < identifiers.size(); i++) {
+                    final Uri uri = Uri.parse(this.identifiers.get(i));
+                    String path = getPath(activity, uri);
+                    File file = new File(path);
+                    if (file.exists()) {
+                        files.add(file);
+                    }
+                }
+
+                deleteMedia(activity, files);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
+
     private static class GetImageTask extends AsyncTask<String, Void, Void> {
         private WeakReference<Activity> activityReference;
 
@@ -240,6 +308,12 @@ public class MultiImagePickerPlugin implements
 
         if (PICK_IMAGES.equals(call.method)) {
             openImagePicker();
+        }
+        else if (DELETE_IMAGES.equals(call.method)) {
+            final ArrayList<String> identifiers = call.argument("identifiers");
+            DeleteImageTask task = new DeleteImageTask(this.activity, identifiers);
+            task.execute("");
+            finishWithSuccess(true);
         } else if (REQUEST_ORIGINAL.equals(call.method)) {
             final String identifier = call.argument("identifier");
             final int quality = call.argument("quality");

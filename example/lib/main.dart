@@ -35,6 +35,13 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
+  Future<void> deleteAssets() async {
+    await MultiImagePicker.deleteImages(assets: images);
+    setState(() {
+      images = List<Asset>();
+    });
+  }
+
   Future<void> loadAssets() async {
     setState(() {
       images = List<Asset>();
@@ -78,6 +85,12 @@ class _MyAppState extends State<MyApp> {
               child: Text("Pick images"),
               onPressed: loadAssets,
             ),
+            images.length > 0
+                ? RaisedButton(
+                    child: Text("Delete images"),
+                    onPressed: deleteAssets,
+                  )
+                : Container(),
             Expanded(
               child: buildGridView(),
             )

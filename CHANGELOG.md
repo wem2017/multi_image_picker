@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v3.0.22)
+
+## 2019-01-02
+- Send Thumb and Original image data via separate channels [#80](https://github.com/Sh1d0w/multi_image_picker/pull/80)
+
 ### Changed (v3.0.21)
 
 ## 2019-02-27

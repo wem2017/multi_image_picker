@@ -184,7 +184,7 @@ public class MultiImagePickerPlugin implements
             if (byteArray != null) {
                 buffer = ByteBuffer.allocateDirect(byteArray.length);
                 buffer.put(byteArray);
-                this.messenger.send("multi_image_picker/image/" + this.identifier, buffer);
+                this.messenger.send("multi_image_picker/image/" + this.identifier + ".thumb", buffer);
                 buffer.clear();
             }
             return null;
@@ -292,7 +292,7 @@ public class MultiImagePickerPlugin implements
             assert bytesArray != null;
             final ByteBuffer buffer = ByteBuffer.allocateDirect(bytesArray.length);
             buffer.put(bytesArray);
-            this.messenger.send("multi_image_picker/image/" + this.identifier, buffer);
+            this.messenger.send("multi_image_picker/image/" + this.identifier + ".original", buffer);
             buffer.clear();
             return null;
         }

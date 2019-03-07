@@ -29,7 +29,7 @@ var response = await request.send();
 ...
 
 // Don't forget to release the image data after you no longer need it
-asset.requestOriginal();
+asset.releaseOriginal();
 ```
 
 ## Firebase

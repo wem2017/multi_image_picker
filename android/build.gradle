@@ -1,5 +1,5 @@
 group 'com.vitanov.multiimagepicker'
-version '3.0.22'
+version '3.0.23'
 
 buildscript {
     repositories {
@@ -36,6 +36,6 @@ android {
 
 dependencies {
     implementation 'androidx.exifinterface:exifinterface:1.0.0'
-    implementation 'com.github.Sh1d0w:Matisse:040393d'
+    implementation 'com.github.Sh1d0w:Matisse:1.0.0'
     implementation 'com.github.bumptech.glide:glide:3.8.0'
 }

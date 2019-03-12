@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v3.0.23)
+
+## 2019-03-12
+- Fix Matisse version
+
 ### Changed (v3.0.22)
 
 ## 2019-03-02

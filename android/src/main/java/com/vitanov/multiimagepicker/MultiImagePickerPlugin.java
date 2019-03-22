@@ -11,15 +11,16 @@ import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.media.MediaScannerConnection;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 
-import com.zhihu.matisse.Matisse;
-import com.zhihu.matisse.MimeType;
-import com.zhihu.matisse.internal.entity.CaptureStrategy;
-import com.zhihu.matisse.engine.impl.GlideEngine;
+import com.sangcomz.fishbun.FishBun;
+import com.sangcomz.fishbun.FishBunCreator;
+import com.sangcomz.fishbun.adapter.image.impl.GlideAdapter;
+import com.sangcomz.fishbun.define.Define;
 
 import android.content.pm.ActivityInfo;
 
@@ -82,6 +83,7 @@ public class MultiImagePickerPlugin implements
     private static final String REFRESH_IMAGE = "refreshImage" ;
     private static final String MAX_IMAGES = "maxImages";
     private static final String ENABLE_CAMERA = "enableCamera";
+    private static final String ANDROID_OPTIONS = "androidOptions";
     private static final int REQUEST_CODE_CHOOSE = 1001;
     private static final int REQUEST_CODE_GRANT_PERMISSIONS = 2001;
     private final MethodChannel channel;
@@ -105,7 +107,7 @@ public class MultiImagePickerPlugin implements
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED
                     && grantResults[1] == PackageManager.PERMISSION_GRANTED
                     && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
-                presentPicker();
+                presentPicker((HashMap<String, String>) this.methodCall.argument(ANDROID_OPTIONS));
             } else {
                 if (
                         ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_EXTERNAL_STORAGE) ||
@@ -307,7 +309,8 @@ public class MultiImagePickerPlugin implements
         }
 
         if (PICK_IMAGES.equals(call.method)) {
-            openImagePicker();
+            final HashMap options = call.argument("androidOptions");
+            openImagePicker(options);
         }
         else if (DELETE_IMAGES.equals(call.method)) {
             final ArrayList<String> identifiers = call.argument("identifiers");
@@ -554,7 +557,7 @@ public class MultiImagePickerPlugin implements
         return 0;
     }
 
-    private void openImagePicker() {
+    private void openImagePicker(HashMap options) {
 
         if (ContextCompat.checkSelfPermission(this.activity,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -572,7 +575,7 @@ public class MultiImagePickerPlugin implements
                     REQUEST_CODE_GRANT_PERMISSIONS);
 
         } else {
-            presentPicker();
+            presentPicker(options);
         }
 
     }
@@ -594,28 +597,59 @@ public class MultiImagePickerPlugin implements
         }
     }
 
-    private void presentPicker() {
+    private void presentPicker(HashMap<String, String> options) {
         int maxImages = MultiImagePickerPlugin.this.methodCall.argument(MAX_IMAGES);
         boolean enableCamera = MultiImagePickerPlugin.this.methodCall.argument(ENABLE_CAMERA);
-        String packageName = context.getApplicationInfo().packageName;
-        Matisse.from(MultiImagePickerPlugin.this.activity)
-                .choose(MimeType.ofImage())
-                .showSingleMediaType(true)
-                .countable(true)
-                .capture(enableCamera)
-                .captureStrategy(
-                        new CaptureStrategy(true, packageName + ".multiimagepicker.fileprovider")
-                )
-                .maxSelectable(maxImages)
-                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                .imageEngine(new GlideEngine())
-                .forResult(REQUEST_CODE_CHOOSE);
+
+        String actionBarColor = options.get("actionBarColor");
+        String statusBarColor = options.get("statusBarColor");
+        String lightStatusBar = options.get("lightStatusBar");
+        String actionBarTitle = options.get("actionBarTitle");
+        String actionBarTitleColor = options.get("actionBarTitleColor");
+        String allViewTitle =  options.get("allViewTitle");
+
+        FishBunCreator fishBun = FishBun.with(MultiImagePickerPlugin.this.activity)
+                .setImageAdapter(new GlideAdapter())
+                .setMaxCount(maxImages)
+                .setCamera(enableCamera)
+                .setRequestCode(REQUEST_CODE_CHOOSE);
+
+        if (!actionBarColor.isEmpty()) {
+            int color = Color.parseColor(actionBarColor);
+            if (!statusBarColor.isEmpty()) {
+                int statusBarColorInt = Color.parseColor(statusBarColor);
+                if (!lightStatusBar.isEmpty()) {
+                    boolean lightStatusBarValue = lightStatusBar.equals("true");
+                    fishBun.setActionBarColor(color, statusBarColorInt, lightStatusBarValue);
+                } else {
+                    fishBun.setActionBarColor(color, statusBarColorInt);
+                }
+            } else {
+                fishBun.setActionBarColor(color);
+            }
+        }
+
+        if (!actionBarTitle.isEmpty()) {
+            fishBun.setActionBarTitle(actionBarTitle);
+        }
+
+        if (!actionBarTitleColor.isEmpty()) {
+            int color = Color.parseColor(actionBarTitleColor);
+            fishBun.setActionBarTitleColor(color);
+        }
+
+        if (!allViewTitle.isEmpty()) {
+            fishBun.setAllViewTitle(allViewTitle);
+        }
+
+        fishBun.startAlbum();
+
     }
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == Activity.RESULT_OK) {
-            List<Uri> photos = Matisse.obtainResult(data);
+            List<Uri> photos = data.getParcelableArrayListExtra(Define.INTENT_PATH);
             List<HashMap<String, Object>> result = new ArrayList<>(photos.size());
             for (Uri uri : photos) {
                 HashMap<String, Object> map = new HashMap<>();
@@ -655,7 +689,7 @@ public class MultiImagePickerPlugin implements
             finishWithSuccess(result);
             return true;
         } else if (requestCode == REQUEST_CODE_GRANT_PERMISSIONS && resultCode == Activity.RESULT_OK) {
-            presentPicker();
+            presentPicker((HashMap<String, String>) this.methodCall.argument(ANDROID_OPTIONS));
             return true;
         } else {
             finishWithSuccess(Collections.emptyList());

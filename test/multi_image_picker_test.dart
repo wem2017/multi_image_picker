@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:multi_image_picker/material_options.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 void main() {
@@ -49,7 +50,7 @@ void main() {
           selectionStrokeColor: '#0f5e4D',
           selectionTextColor: '#ffffff',
         );
-        await MultiImagePicker.pickImages(maxImages: 5, options: options);
+        await MultiImagePicker.pickImages(maxImages: 5, cupertinoOptions: options);
 
         expect(
           log,
@@ -58,6 +59,29 @@ void main() {
               'maxImages': 5,
               'enableCamera': false,
               'iosOptions': options.toJson(),
+            }),
+          ],
+        );
+      });
+
+      test('passes meterial options argument correctly', () async {
+        MaterialOptions options = MaterialOptions(
+          actionBarTitle: "Aciton bar",
+          allViewTitle: "All view title",
+          actionBarColor: "#aaaaaa",
+          actionBarTitleColor: "#bbbbbb",
+          lightStatusBar: false,
+          statusBarColor: '#abcdef'
+        );
+        await MultiImagePicker.pickImages(maxImages: 5, materialOptions: options);
+
+        expect(
+          log,
+          <Matcher>[
+            isMethodCall('pickImages', arguments: <String, dynamic>{
+              'maxImages': 5,
+              'enableCamera': false,
+              'androidOptions': options.toJson(),
             }),
           ],
         );

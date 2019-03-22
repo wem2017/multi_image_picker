@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:multi_image_picker/material_options.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'asset_view.dart';
 
@@ -54,7 +55,12 @@ class _MyAppState extends State<MyApp> {
       resultList = await MultiImagePicker.pickImages(
         maxImages: 300,
         enableCamera: true,
-        options: CupertinoOptions(takePhotoIcon: "chat"),
+        cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
+        materialOptions: MaterialOptions(
+          actionBarColor: "#abcdef",
+          actionBarTitle: "Lalalal",
+          allViewTitle: "Asasaas"
+        )
       );
     } on PlatformException catch (e) {
       error = e.message;

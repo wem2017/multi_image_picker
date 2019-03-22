@@ -721,7 +721,7 @@ public class MultiImagePickerPlugin implements
             cursor = context.getContentResolver().query(photoUri,
                     new String[] { MediaStore.Images.ImageColumns.ORIENTATION }, null, null, null);
 
-            if (cursor.getCount() != 1) {
+            if (cursor == null || cursor.getCount() != 1) {
                 return -1;
             }
 

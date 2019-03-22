@@ -58,8 +58,8 @@ class _MyAppState extends State<MyApp> {
         cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
         materialOptions: MaterialOptions(
           actionBarColor: "#abcdef",
-          actionBarTitle: "Lalalal",
-          allViewTitle: "Asasaas"
+          actionBarTitle: "Example App",
+          allViewTitle: "All Photos"
         )
       );
     } on PlatformException catch (e) {

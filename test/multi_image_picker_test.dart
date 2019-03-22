@@ -36,13 +36,14 @@ void main() {
               'maxImages': 5,
               'enableCamera': false,
               'iosOptions': CupertinoOptions().toJson(),
+              'androidOptions': MaterialOptions().toJson(),
             }),
           ],
         );
       });
 
       test('passes cuppertino options argument correctly', () async {
-        CupertinoOptions options = CupertinoOptions(
+        CupertinoOptions cupertinoOptions = CupertinoOptions(
           backgroundColor: '#ffde05',
           selectionCharacter: 'A',
           selectionFillColor: '#004ed5',
@@ -50,7 +51,8 @@ void main() {
           selectionStrokeColor: '#0f5e4D',
           selectionTextColor: '#ffffff',
         );
-        await MultiImagePicker.pickImages(maxImages: 5, cupertinoOptions: options);
+
+        await MultiImagePicker.pickImages(maxImages: 5, cupertinoOptions: cupertinoOptions);
 
         expect(
           log,
@@ -58,14 +60,15 @@ void main() {
             isMethodCall('pickImages', arguments: <String, dynamic>{
               'maxImages': 5,
               'enableCamera': false,
-              'iosOptions': options.toJson(),
+              'iosOptions': cupertinoOptions.toJson(),
+              'androidOptions': MaterialOptions().toJson(),
             }),
           ],
         );
       });
 
       test('passes meterial options argument correctly', () async {
-        MaterialOptions options = MaterialOptions(
+        MaterialOptions materialOptions = MaterialOptions(
           actionBarTitle: "Aciton bar",
           allViewTitle: "All view title",
           actionBarColor: "#aaaaaa",
@@ -73,7 +76,7 @@ void main() {
           lightStatusBar: false,
           statusBarColor: '#abcdef'
         );
-        await MultiImagePicker.pickImages(maxImages: 5, materialOptions: options);
+        await MultiImagePicker.pickImages(maxImages: 5, materialOptions: materialOptions);
 
         expect(
           log,
@@ -81,7 +84,8 @@ void main() {
             isMethodCall('pickImages', arguments: <String, dynamic>{
               'maxImages': 5,
               'enableCamera': false,
-              'androidOptions': options.toJson(),
+              'androidOptions': materialOptions.toJson(),
+              'iosOptions': CupertinoOptions().toJson(),
             }),
           ],
         );

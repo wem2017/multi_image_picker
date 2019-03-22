@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v4.0.0)
+
+## 2019-03-23
+### Breaking change
+- Replaced Mattise image picker with FishBun on Android. For migration guide see [here](https://sh1d0w.github.io/multi_image_picker/#/upgrading). [#95](https://github.com/Sh1d0w/multi_image_picker/pull/95)
+
 ### Changed (v3.0.23)
 
 ## 2019-03-12

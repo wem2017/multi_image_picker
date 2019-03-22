@@ -64,7 +64,7 @@ Flutter Multi Image Picker is an [emailware](https://en.wiktionary.org/wiki/emai
 This software uses the following open source packages:
 
 - [BSImagePicker](https://github.com/mikaoj/BSImagePicker) - iOS
-- [Matisse](https://github.com/zhihu/Matisse) - Android
+- [FishBun](https://github.com/sangcomz/FishBun) - Android
 
 ## Related
 

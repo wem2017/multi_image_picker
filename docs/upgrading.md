@@ -15,7 +15,7 @@ The breaking changes are:
 - Removed the `options` parameter from `pickImages` method. There are now two separate parameters that can be passed- `cupertinoOptions` and `materialOptions`. If you previously passed the `options` parameter to customize the iOS look and feel, you have to change that param name to `cupertinoOptions`.
 - If you was overriding Mattise styles and localizations via XML, you can safely remove those now. Instead you can pass different customization options directly with `materialOptions` when invoking the image picker.
 - No additional comfiguration needed anymore if you want to enable the camera in the gallery. Just pass the `enableCamera` parameter.
-- Previously on Android when you take iamge with the camera in the gallery, the image picker was immediately closed, which is exactly the opposite on how it worked on iOS. With this new version both flows are consistent, meaning when you take a picture on Android you will go back to gallery and can select more images, including the one you've just taken.
+- Previously on Android when you take a photo with the camera in the gallery, the image picker was immediately closed, which is exactly the opposite on how it worked on iOS. With this new version both flows are consistent, meaning when you take a picture on Android you will go back to gallery and can select more images, including the one you've just taken.
 - You no longer need file provider in your AndroidManifest.xml . You can remove it. Images taken with the camera will appear properly in the gallery now.
 
 ## From version 2.4.11 to version 3.0.X

@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v4.0.1)
+
+## 2019-03-28
+
+- Fixed some deprecation warnings on Android
+
 ### Changed (v4.0.0)
 
 ## 2019-03-23

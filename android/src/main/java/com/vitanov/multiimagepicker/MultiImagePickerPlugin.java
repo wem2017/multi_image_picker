@@ -3,7 +3,6 @@ package com.vitanov.multiimagepicker;
 import android.app.Activity;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,14 +21,11 @@ import com.sangcomz.fishbun.FishBunCreator;
 import com.sangcomz.fishbun.adapter.image.impl.GlideAdapter;
 import com.sangcomz.fishbun.define.Define;
 
-import android.content.pm.ActivityInfo;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,7 +40,6 @@ import android.Manifest;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import androidx.exifinterface.media.ExifInterface;
 import androidx.core.app.ActivityCompat;
@@ -70,9 +65,6 @@ public class MultiImagePickerPlugin implements
         MethodCallHandler,
         PluginRegistry.ActivityResultListener,
         PluginRegistry.RequestPermissionsResultListener {
-    public interface Refresh {
-        void after() ;
-    }
 
     private static final String CHANNEL_NAME = "multi_image_picker";
     private static final String REQUEST_THUMBNAIL = "requestThumbnail";
@@ -87,12 +79,11 @@ public class MultiImagePickerPlugin implements
     private static final int REQUEST_CODE_CHOOSE = 1001;
     private static final int REQUEST_CODE_GRANT_PERMISSIONS = 2001;
     private final MethodChannel channel;
-    private Activity activity;
-    private Context context;
-    private BinaryMessenger messenger;
+    private final Activity activity;
+    private final Context context;
+    private final BinaryMessenger messenger;
     private Result pendingResult;
     private MethodCall methodCall;
-    private PluginRegistry.RequestPermissionsResultListener mPermissionsResultListener;
 
     private MultiImagePickerPlugin(Activity activity, Context context, MethodChannel channel, BinaryMessenger messenger) {
         this.activity = activity;
@@ -107,7 +98,11 @@ public class MultiImagePickerPlugin implements
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED
                     && grantResults[1] == PackageManager.PERMISSION_GRANTED
                     && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
-                presentPicker((HashMap<String, String>) this.methodCall.argument(ANDROID_OPTIONS));
+                int maxImages = (int) this.methodCall.argument(MAX_IMAGES);
+                boolean enableCamera = (boolean) this.methodCall.argument(ENABLE_CAMERA);
+                HashMap<String, String> options = this.methodCall.argument(ANDROID_OPTIONS);
+                assert options != null;
+                presentPicker(maxImages, enableCamera, options);
             } else {
                 if (
                         ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_EXTERNAL_STORAGE) ||
@@ -141,10 +136,10 @@ public class MultiImagePickerPlugin implements
     private static class GetThumbnailTask extends AsyncTask<String, Void, Void> {
         private WeakReference<Activity> activityReference;
         BinaryMessenger messenger;
-        String identifier;
-        int width;
-        int height;
-        int quality;
+        final String identifier;
+        final int width;
+        final int height;
+        final int quality;
 
         GetThumbnailTask(Activity context, BinaryMessenger messenger, String identifier, int width, int height, int quality) {
             super();
@@ -159,7 +154,6 @@ public class MultiImagePickerPlugin implements
         @Override
         protected Void doInBackground(String... strings) {
             final Uri uri = Uri.parse(this.identifier);
-            InputStream stream = null;
             byte[] byteArray = null;
 
             try {
@@ -217,9 +211,9 @@ public class MultiImagePickerPlugin implements
 
 
     private static class DeleteImageTask extends AsyncTask<String, Void, Void> {
-        private WeakReference<Activity> activityReference;
+        private final WeakReference<Activity> activityReference;
 
-        ArrayList<String> identifiers;
+        final ArrayList<String> identifiers;
 
         DeleteImageTask(Activity context, ArrayList<String> identifiers) {
             super();
@@ -254,11 +248,11 @@ public class MultiImagePickerPlugin implements
     }
 
     private static class GetImageTask extends AsyncTask<String, Void, Void> {
-        private WeakReference<Activity> activityReference;
+        private final WeakReference<Activity> activityReference;
 
-        BinaryMessenger messenger;
-        String identifier;
-        int quality;
+        final BinaryMessenger messenger;
+        final String identifier;
+        final int quality;
 
         GetImageTask(Activity context, BinaryMessenger messenger, String identifier, int quality) {
             super();
@@ -309,29 +303,29 @@ public class MultiImagePickerPlugin implements
         }
 
         if (PICK_IMAGES.equals(call.method)) {
-            final HashMap options = call.argument("androidOptions");
+            final HashMap<String, String> options = call.argument(ANDROID_OPTIONS);
             openImagePicker(options);
         }
         else if (DELETE_IMAGES.equals(call.method)) {
             final ArrayList<String> identifiers = call.argument("identifiers");
             DeleteImageTask task = new DeleteImageTask(this.activity, identifiers);
             task.execute();
-            finishWithSuccess(true);
+            finishWithSuccess();
         } else if (REQUEST_ORIGINAL.equals(call.method)) {
             final String identifier = call.argument("identifier");
-            final int quality = call.argument("quality");
+            final int quality = (int) call.argument("quality");
             GetImageTask task = new GetImageTask(this.activity, this.messenger, identifier, quality);
             task.execute();
-            finishWithSuccess(true);
+            finishWithSuccess();
 
         } else if (REQUEST_THUMBNAIL.equals(call.method)) {
             final String identifier = call.argument("identifier");
-            final int width = call.argument("width");
-            final int height = call.argument("height");
-            final int quality = call.argument("quality");
+            final int width = (int) call.argument("width");
+            final int height = (int) call.argument("height");
+            final int quality = (int) call.argument("quality");
             GetThumbnailTask task = new GetThumbnailTask(this.activity, this.messenger, identifier, width, height, quality);
             task.execute();
-            finishWithSuccess(true);
+            finishWithSuccess();
 
 
         } else if (REQUEST_METADATA.equals(call.method)) {
@@ -557,7 +551,7 @@ public class MultiImagePickerPlugin implements
         return 0;
     }
 
-    private void openImagePicker(HashMap options) {
+    private void openImagePicker(HashMap<String, String> options) {
 
         if (ContextCompat.checkSelfPermission(this.activity,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -575,7 +569,9 @@ public class MultiImagePickerPlugin implements
                     REQUEST_CODE_GRANT_PERMISSIONS);
 
         } else {
-            presentPicker(options);
+            int maxImages = (int) this.methodCall.argument(MAX_IMAGES);
+            boolean enableCamera = (boolean) this.methodCall.argument(ENABLE_CAMERA);
+            presentPicker(maxImages, enableCamera, options);
         }
 
     }
@@ -585,22 +581,19 @@ public class MultiImagePickerPlugin implements
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 MediaScannerConnection.scanFile(context, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
                     public void onScanCompleted(String path, Uri uri) {
-                        finishWithSuccess(true);
+                        finishWithSuccess();
                     }
                 });
             } else {
                 context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
-                finishWithSuccess(true);
+                finishWithSuccess();
             }
         } catch (Exception e) {
             finishWithError("unknown error", e.toString());
         }
     }
 
-    private void presentPicker(HashMap<String, String> options) {
-        int maxImages = MultiImagePickerPlugin.this.methodCall.argument(MAX_IMAGES);
-        boolean enableCamera = MultiImagePickerPlugin.this.methodCall.argument(ENABLE_CAMERA);
-
+    private void presentPicker(int maxImages, boolean enableCamera, HashMap<String, String> options) {
         String actionBarColor = options.get("actionBarColor");
         String statusBarColor = options.get("statusBarColor");
         String lightStatusBar = options.get("lightStatusBar");
@@ -614,11 +607,11 @@ public class MultiImagePickerPlugin implements
                 .setCamera(enableCamera)
                 .setRequestCode(REQUEST_CODE_CHOOSE);
 
-        if (!actionBarColor.isEmpty()) {
+        if (actionBarColor != null && !actionBarColor.isEmpty()) {
             int color = Color.parseColor(actionBarColor);
-            if (!statusBarColor.isEmpty()) {
+            if (statusBarColor != null && !statusBarColor.isEmpty()) {
                 int statusBarColorInt = Color.parseColor(statusBarColor);
-                if (!lightStatusBar.isEmpty()) {
+                if (lightStatusBar != null && !lightStatusBar.isEmpty()) {
                     boolean lightStatusBarValue = lightStatusBar.equals("true");
                     fishBun.setActionBarColor(color, statusBarColorInt, lightStatusBarValue);
                 } else {
@@ -629,16 +622,16 @@ public class MultiImagePickerPlugin implements
             }
         }
 
-        if (!actionBarTitle.isEmpty()) {
+        if (actionBarTitle != null && !actionBarTitle.isEmpty()) {
             fishBun.setActionBarTitle(actionBarTitle);
         }
 
-        if (!actionBarTitleColor.isEmpty()) {
+        if (actionBarTitleColor != null && !actionBarTitleColor.isEmpty()) {
             int color = Color.parseColor(actionBarTitleColor);
             fishBun.setActionBarTitleColor(color);
         }
 
-        if (!allViewTitle.isEmpty()) {
+        if (allViewTitle != null && !allViewTitle.isEmpty()) {
             fishBun.setAllViewTitle(allViewTitle);
         }
 
@@ -689,7 +682,11 @@ public class MultiImagePickerPlugin implements
             finishWithSuccess(result);
             return true;
         } else if (requestCode == REQUEST_CODE_GRANT_PERMISSIONS && resultCode == Activity.RESULT_OK) {
-            presentPicker((HashMap<String, String>) this.methodCall.argument(ANDROID_OPTIONS));
+            int maxImages = (int) this.methodCall.argument(MAX_IMAGES);
+            boolean enableCamera = (boolean) this.methodCall.argument(ENABLE_CAMERA);
+            HashMap<String, String> options = this.methodCall.argument(ANDROID_OPTIONS);
+            assert options != null;
+            presentPicker(maxImages, enableCamera, options);
             return true;
         } else {
             finishWithSuccess(Collections.emptyList());
@@ -716,10 +713,8 @@ public class MultiImagePickerPlugin implements
     }
 
     private static int getOrientation(Context context, Uri photoUri) {
-        Cursor cursor = null;
-        try {
-            cursor = context.getContentResolver().query(photoUri,
-                    new String[] { MediaStore.Images.ImageColumns.ORIENTATION }, null, null, null);
+        try (Cursor cursor = context.getContentResolver().query(photoUri,
+                new String[]{MediaStore.Images.ImageColumns.ORIENTATION}, null, null, null)) {
 
             if (cursor == null || cursor.getCount() != 1) {
                 return -1;
@@ -729,10 +724,6 @@ public class MultiImagePickerPlugin implements
             return cursor.getInt(0);
         } catch (CursorIndexOutOfBoundsException ignored) {
 
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
         }
         return -1;
     }
@@ -780,9 +771,9 @@ public class MultiImagePickerPlugin implements
         clearMethodCallAndResult();
     }
 
-    private void finishWithSuccess(Boolean result) {
+    private void finishWithSuccess() {
         if (pendingResult != null)
-            pendingResult.success(result);
+            pendingResult.success(true);
         clearMethodCallAndResult();
     }
 

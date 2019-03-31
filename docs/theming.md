@@ -51,10 +51,10 @@ Available options are:
  - selectionCharacter - Unicode character
  - takePhotoIcon - Name of the icon, as defined in your Assets
 
-> **Note**: To add an icon to you XCode Assets, follow these steps:
+> **Note**: To add an icon to your XCode Assets, follow these steps:
 > >
 > Step 1: Select the asset catalog
->In your project root in Xcode click Runner -> Assets.xcassets in the project navigator to bring up the Asset Catalog for the project.
+>In your project root in XCode click Runner -> Assets.xcassets in the project navigator to bring up the Asset Catalog for the project.
 >
 >Step 2: Add Image Set
 >

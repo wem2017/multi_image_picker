@@ -1,12 +1,12 @@
 ## Android customization
 
-You can customize different parts of the gallery picker. To do so, you can simply pass `androidOptions` param in the `pickImages` call.
+You can customize different parts of the gallery picker. To do so, you can simply pass `materialOptions` param in the `pickImages` call.
 
 ```dart
 List resultList = await MultiImagePicker.pickImages(
     maxImages: 3,
-    androidOptions: MaterialOptions(
-        actionBarTitle: "Aciton bar",
+    materialOptions: MaterialOptions(
+        actionBarTitle: "Action bar",
         allViewTitle: "All view title",
         actionBarColor: "#aaaaaa",
         actionBarTitleColor: "#bbbbbb",

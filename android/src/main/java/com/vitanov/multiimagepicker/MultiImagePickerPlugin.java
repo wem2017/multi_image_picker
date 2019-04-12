@@ -39,6 +39,7 @@ import java.util.Locale;
 import android.Manifest;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.provider.OpenableColumns;
 import android.os.Environment;
 import android.provider.MediaStore;
 import androidx.exifinterface.media.ExifInterface;
@@ -696,20 +697,25 @@ public class MultiImagePickerPlugin implements
     }
 
     private String getFileName(Uri uri) {
-        String fileName = "";
-        String[] projection = {MediaStore.MediaColumns.DISPLAY_NAME};
-        Cursor metaCursor = context.getContentResolver().query(uri, projection, null, null, null);
-        if (metaCursor != null) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
             try {
-                if (metaCursor.moveToFirst()) {
-                    fileName = metaCursor.getString(0);
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                 }
             } finally {
-                metaCursor.close();
+                cursor.close();
             }
         }
-
-        return fileName;
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
     }
 
     private static int getOrientation(Context context, Uri photoUri) {

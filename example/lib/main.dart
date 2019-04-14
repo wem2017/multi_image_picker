@@ -55,9 +55,11 @@ class _MyAppState extends State<MyApp> {
           enableCamera: true,
           cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
           materialOptions: MaterialOptions(
-              actionBarColor: "#abcdef",
-              actionBarTitle: "Example App",
-              allViewTitle: "All Photos"));
+            actionBarColor: "#abcdef",
+            actionBarTitle: "Example App",
+            allViewTitle: "All Photos",
+            selectCircleStrokeColor: "#000000",
+          ));
     } on PlatformException catch (e) {
       error = e.message;
     }

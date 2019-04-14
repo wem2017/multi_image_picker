@@ -69,12 +69,15 @@ void main() {
 
       test('passes meterial options argument correctly', () async {
         MaterialOptions materialOptions = MaterialOptions(
-            actionBarTitle: "Aciton bar",
-            allViewTitle: "All view title",
-            actionBarColor: "#aaaaaa",
-            actionBarTitleColor: "#bbbbbb",
-            lightStatusBar: false,
-            statusBarColor: '#abcdef');
+          actionBarTitle: "Aciton bar",
+          allViewTitle: "All view title",
+          actionBarColor: "#aaaaaa",
+          actionBarTitleColor: "#bbbbbb",
+          lightStatusBar: false,
+          statusBarColor: '#abcdef',
+          startInAllView: true,
+          selectCircleStrokeColor: "#ffffff",
+        );
         await MultiImagePicker.pickImages(
             maxImages: 5, materialOptions: materialOptions);
 

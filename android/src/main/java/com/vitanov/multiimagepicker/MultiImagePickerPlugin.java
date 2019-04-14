@@ -601,12 +601,15 @@ public class MultiImagePickerPlugin implements
         String actionBarTitle = options.get("actionBarTitle");
         String actionBarTitleColor = options.get("actionBarTitleColor");
         String allViewTitle =  options.get("allViewTitle");
+        String startInAllView = options.get("startInAllView");
+        String selectCircleStrokeColor = options.get("selectCircleStrokeColor");
 
         FishBunCreator fishBun = FishBun.with(MultiImagePickerPlugin.this.activity)
                 .setImageAdapter(new GlideAdapter())
                 .setMaxCount(maxImages)
                 .setCamera(enableCamera)
-                .setRequestCode(REQUEST_CODE_CHOOSE);
+                .setRequestCode(REQUEST_CODE_CHOOSE)
+                .isStartInAllView(startInAllView.equals("true"));
 
         if (actionBarColor != null && !actionBarColor.isEmpty()) {
             int color = Color.parseColor(actionBarColor);
@@ -625,6 +628,10 @@ public class MultiImagePickerPlugin implements
 
         if (actionBarTitle != null && !actionBarTitle.isEmpty()) {
             fishBun.setActionBarTitle(actionBarTitle);
+        }
+
+        if (selectCircleStrokeColor != null && !selectCircleStrokeColor.isEmpty()) {
+            fishBun.setSelectCircleStrokeColor(Color.parseColor(selectCircleStrokeColor));
         }
 
         if (actionBarTitleColor != null && !actionBarTitleColor.isEmpty()) {

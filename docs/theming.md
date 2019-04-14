@@ -11,7 +11,9 @@ List resultList = await MultiImagePicker.pickImages(
         actionBarColor: "#aaaaaa",
         actionBarTitleColor: "#bbbbbb",
         lightStatusBar: false,
-        statusBarColor: '#abcdef'
+        statusBarColor: '#abcdef',
+        startInAllView: true,
+        selectCircleStrokeColor: "#000000",
     ),
   );
 ```
@@ -24,6 +26,8 @@ Available options are:
  - actionBarTitleColor - HEX string
  - lightStatusBar - boolean
  - statusBarColor - HEX string
+ - startInAllView - boolean
+ - selectCircleStrokeColor - HEX string
 
 ## iOS customization
 

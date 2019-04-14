@@ -1,8 +1,5 @@
 
 <h1 align="center">
-  <br>
-  <a href="https://github.com/Sh1d0w/multi_image_picker"><img src="https://github.com/Sh1d0w/multi_image_picker/raw/master/screenshots/multi_image_picker.png" alt="Flutter Multi Image Picker" width="200"></a>
-  <br>
   Flutter Multi Image Picker
   <br>
 </h1>
@@ -31,7 +28,9 @@
   <a href="#license">License</a>
 </p>
 
-<img src="https://github.com/Sh1d0w/multi_image_picker/raw/master/screenshots/hero.png" alt="Multi Image Picker" />
+<p align="center">
+  <img src="https://github.com/Sh1d0w/multi_image_picker/raw/master/screenshots/hero.png" alt="Multi Image Picker" />
+</p>
 
 ## Key Features
 

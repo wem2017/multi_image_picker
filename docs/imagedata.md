@@ -16,6 +16,7 @@ ByteData byteData = await asset.requestOriginal();
 // or
 
 ByteData byteData = await asset.requestOriginal(quality: 80);
+```
 
 ## Thumbnail Data
 
@@ -30,3 +31,4 @@ ByteData byteData = await asset.requestThumbnail(300, 300);
 // or
 
 ByteData byteData = await asset.requestThumbnail(300, 300, quality: 60);
+```

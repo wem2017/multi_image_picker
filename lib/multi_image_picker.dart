@@ -1,5 +1,7 @@
-export 'asset.dart';
-export 'cupertino_options.dart';
-export 'material_options.dart';
-export 'picker.dart';
-export 'metadata.dart';
+export 'src/asset.dart';
+export 'src/cupertino_options.dart';
+export 'src/material_options.dart';
+export 'src/picker.dart';
+export 'src/metadata.dart';
+export 'src/asset_thumb.dart';
+export 'src/asset_thumb_provider.dart';

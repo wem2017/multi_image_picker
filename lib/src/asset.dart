@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:multi_image_picker/metadata.dart';
-import 'package:multi_image_picker/picker.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 
 class Asset {
   /// The resource identifier
@@ -16,12 +15,6 @@ class Asset {
 
   /// Original image height
   int _originalHeight;
-
-  /// Holds the thumb binary data after it is requested
-  ByteData _thumbData;
-
-  /// Holds the original image data after it is requested
-  ByteData _imageData;
 
   Asset(
     this._identifier,
@@ -38,11 +31,6 @@ class Asset {
   String get _thumbChannel => '$_channel.thumb';
 
   String get _originalChannel => '$_channel.original';
-
-  /// Returns the thumb data if it was loaded
-  ByteData get thumbData {
-    return _thumbData;
-  }
 
   /// Returns the original image width
   int get originalWidth {
@@ -64,11 +52,6 @@ class Asset {
     return _originalWidth < _originalHeight;
   }
 
-  /// Returns the original image data
-  ByteData get imageData {
-    return _imageData;
-  }
-
   /// Returns the image identifier
   String get identifier {
     return _identifier;
@@ -77,34 +60,6 @@ class Asset {
   /// Returns the image name
   String get name {
     return _name;
-  }
-
-  /// Releases the thumb data.
-  ///
-  /// You should consider cleaning up the thumb data
-  /// once you don't need it in order to free some
-  /// memory.
-  void releaseThumb() {
-    _thumbData = null;
-  }
-
-  /// Releases the original image data.
-  ///
-  /// You should consider cleaning up the original data
-  /// once you don't need it in order to free some
-  /// memory.
-  void releaseOriginal() {
-    _imageData = null;
-  }
-
-  /// Releases both the thumb and original image data.
-  ///
-  /// You should consider cleaning up the data
-  /// once you don't need it in order to free some
-  /// memory.
-  void release() {
-    releaseThumb();
-    releaseOriginal();
   }
 
   /// Requests a thumbnail for the [Asset] with give [width] and [hegiht].
@@ -119,7 +74,7 @@ class Asset {
   ///
   /// Once you don't need this thumb data it is a good practice to release it,
   /// by calling releaseThumb() method.
-  Future<dynamic> requestThumbnail(int width, int height,
+  Future<ByteData> requestThumbnail(int width, int height,
       {int quality = 100}) async {
     assert(width != null);
     assert(height != null);
@@ -137,9 +92,8 @@ class Asset {
           quality, 'quality should be in range 0-100');
     }
 
-    Completer completer = new Completer();
+    Completer completer = new Completer<ByteData>();
     BinaryMessages.setMessageHandler(_thumbChannel, (ByteData message) {
-      _thumbData = message;
       completer.complete(message);
       BinaryMessages.setMessageHandler(_thumbChannel, null);
     });
@@ -160,15 +114,14 @@ class Asset {
   ///
   /// Once you don't need this data it is a good practice to release it,
   /// by calling releaseOriginal() method.
-  Future<dynamic> requestOriginal({int quality = 100}) {
+  Future<ByteData> requestOriginal({int quality = 100}) {
     if (quality < 0 || quality > 100) {
       throw new ArgumentError.value(
           quality, 'quality should be in range 0-100');
     }
 
-    Completer completer = new Completer();
+    Completer completer = new Completer<ByteData>();
     BinaryMessages.setMessageHandler(_originalChannel, (ByteData message) {
-      _imageData = message;
       completer.complete(message);
       BinaryMessages.setMessageHandler(_originalChannel, null);
     });

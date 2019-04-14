@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:multi_image_picker/material_options.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 void main() {
@@ -52,7 +51,8 @@ void main() {
           selectionTextColor: '#ffffff',
         );
 
-        await MultiImagePicker.pickImages(maxImages: 5, cupertinoOptions: cupertinoOptions);
+        await MultiImagePicker.pickImages(
+            maxImages: 5, cupertinoOptions: cupertinoOptions);
 
         expect(
           log,
@@ -69,14 +69,14 @@ void main() {
 
       test('passes meterial options argument correctly', () async {
         MaterialOptions materialOptions = MaterialOptions(
-          actionBarTitle: "Aciton bar",
-          allViewTitle: "All view title",
-          actionBarColor: "#aaaaaa",
-          actionBarTitleColor: "#bbbbbb",
-          lightStatusBar: false,
-          statusBarColor: '#abcdef'
-        );
-        await MultiImagePicker.pickImages(maxImages: 5, materialOptions: materialOptions);
+            actionBarTitle: "Aciton bar",
+            allViewTitle: "All view title",
+            actionBarColor: "#aaaaaa",
+            actionBarTitleColor: "#bbbbbb",
+            lightStatusBar: false,
+            statusBarColor: '#abcdef');
+        await MultiImagePicker.pickImages(
+            maxImages: 5, materialOptions: materialOptions);
 
         expect(
           log,

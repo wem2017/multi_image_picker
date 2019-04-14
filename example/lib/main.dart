@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:multi_image_picker/material_options.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
-import 'asset_view.dart';
 
 void main() => runApp(new MyApp());
 
@@ -27,10 +25,10 @@ class _MyAppState extends State<MyApp> {
       crossAxisCount: 3,
       children: List.generate(images.length, (index) {
         Asset asset = images[index];
-        return AssetView(
-          index,
-          asset,
-          key: UniqueKey(),
+        return AssetThumb(
+          asset: asset,
+          width: 300,
+          height: 300,
         );
       }),
     );
@@ -53,15 +51,13 @@ class _MyAppState extends State<MyApp> {
 
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 300,
-        enableCamera: true,
-        cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
-        materialOptions: MaterialOptions(
-          actionBarColor: "#abcdef",
-          actionBarTitle: "Example App",
-          allViewTitle: "All Photos"
-        )
-      );
+          maxImages: 300,
+          enableCamera: true,
+          cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
+          materialOptions: MaterialOptions(
+              actionBarColor: "#abcdef",
+              actionBarTitle: "Example App",
+              allViewTitle: "All Photos"));
     } on PlatformException catch (e) {
       error = e.message;
     }

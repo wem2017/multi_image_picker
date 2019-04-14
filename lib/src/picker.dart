@@ -3,10 +3,7 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
-import 'package:multi_image_picker/asset.dart';
-import 'package:multi_image_picker/cupertino_options.dart';
-import 'package:multi_image_picker/material_options.dart';
-import 'package:multi_image_picker/metadata.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 
 class MultiImagePicker {
   static const MethodChannel _channel =
@@ -31,13 +28,11 @@ class MultiImagePicker {
   /// pick thousands of images at a time, with no performance
   /// penalty. How to request the original image or a thumb
   /// you can refer to the docs for the Asset class.
-  static Future<List<Asset>> pickImages({
-    @required int maxImages,
-    bool enableCamera = false,
-    CupertinoOptions cupertinoOptions = const CupertinoOptions(),
-    MaterialOptions materialOptions = const MaterialOptions()
-    
-  }) async {
+  static Future<List<Asset>> pickImages(
+      {@required int maxImages,
+      bool enableCamera = false,
+      CupertinoOptions cupertinoOptions = const CupertinoOptions(),
+      MaterialOptions materialOptions = const MaterialOptions()}) async {
     assert(maxImages != null);
 
     if (maxImages != null && maxImages < 0) {

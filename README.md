@@ -14,7 +14,7 @@
          alt="Build">
   </a>
   <a href="https://pub.dartlang.org/packages/multi_image_picker"><img src="https://img.shields.io/pub/v/multi_image_picker.svg"></a>
-  <a href="https://paypal.me/Sh1d0w">
+  <a href="https://www.buymeacoffee.com/Sh1d0w">
     <img src="https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&amp;style=flat">
   </a>
 </p>
@@ -35,9 +35,7 @@
 ## Key Features
 
 * Pick multiple images
-  - Instantly pick thousands of images at once, without any delay or blocking the UI thread.
 * Native performance
-  - The plugin takes advantage of the two best image picking libraries for Android and iOS, bringing you the best native platform experience.
 * Photos sorted by albums
 * Take a picture option in the grid view
 * Restrict the maximum count of images the user can pick
@@ -70,6 +68,8 @@ This software uses the following open source packages:
 [image_picker](https://pub.dartlang.org/packages/image_picker) - Official Flutter image picker plugin
 
 ## Support
+
+If this plugin was useful to you, helped you to deliver your app, saved you a lot of time, or you just want to support the project, I would be very grateful if you buy me a cup of coffee.
 
 <a href="https://www.buymeacoffee.com/Sh1d0w" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/purple_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 

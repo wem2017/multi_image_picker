@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v4.2.0)
+
+## 2019-04-19
+
+### iOS
+
+- Updated BSImagePicker version to 2.10.0 and Switct version to 5.0
+
 ### Changed (v4.1.2)
 
 ## 2019-04-14
@@ -12,7 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Added an option to start Android picker in "All Photos" closes [#111](https://github.com/Sh1d0w/multi_image_picker/issues/111)
 - Added selectCircleStrokeColor closes [#113](https://github.com/Sh1d0w/multi_image_picker/issues/113)
-  
+
 ### Changed (v4.1.1)
 
 ## 2019-04-14
@@ -24,7 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Removed `Asset.thumbData` and `Asset.imageData` getters. They were obsolete as this data was returned from resolved future anyways, there is no point to keep them in the `Asset` object.
 - Removed `Asset.releaseThumb`, `Asset.releaseOriginal` and `Asset.release` methods, as they are no longer needed.
 - `Asset.requestThumbnail` and `Asset.requestOriginal` now return `Future<ByteData>` as previously returned `Future<dynamic>`
-  
+
 ### Changed (v4.0.3)
 
 ## 2019-04-12

@@ -1,6 +1,6 @@
 # Initial setup
 
-## iOS 
+## iOS
 You need to add those strings to your Info.plist file in order the plugin to work:
 ```xml
 <key>NSPhotoLibraryUsageDescription</key>
@@ -11,7 +11,7 @@ You need to add those strings to your Info.plist file in order the plugin to wor
 
 >**Important** The plugin is written in Swift, so your project needs to have Swift support enabled. If you've created the project using `flutter create -i swift [projectName]` you are all set. If not, you can enable Swift support by opening the project with XCode, then choose `File -> New -> File -> Swift File`. XCode will ask you if you wish to create Bridging Header, click yes.
 
-The plugin supports Swift Version 4.2. Make sure you have this version set in your `Build Settings -> SWIFT_VERSION`
+The plugin supports Swift Version 5.0. Make sure you have this version set in your `Build Settings -> SWIFT_VERSION`
 
 ## Android
 

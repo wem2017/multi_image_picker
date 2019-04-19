@@ -2,6 +2,20 @@
 
 This page will list any changes that you have to make when there is a breaking or major version change.
 
+## From version 4.1.1 to version 4.2.0
+
+Updated BSImagePicker version, it now requires your project SWIFT_VERSION to be set to 5.0.
+
+Open XCode -> Build Settings -> SWIFT_VERSION -> Set to 5.0.
+
+## From version 4.0.0 to version 4.1.1
+
+### BREAKING CHANGE
+- Removed `Asset.thumbData` and `Asset.imageData` getters. They were obsolete as this data was returned from resolved future anyways, there is no point to keep them in the `Asset` object.
+- Removed `Asset.releaseThumb`, `Asset.releaseOriginal` and `Asset.release` methods, as they are no longer needed.
+- `Asset.requestThumbnail` and `Asset.requestOriginal` now return `Future<ByteData>` as previously returned `Future<dynamic>`
+
+
 ## From version 3.0.X to version 4.0.0
 
 There is a breaking change on Android. The android image picker was changed from Matisse to FishBun.

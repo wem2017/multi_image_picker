@@ -13,6 +13,8 @@ You need to add those strings to your Info.plist file in order the plugin to wor
 
 The plugin supports Swift Version 5.0. Make sure you have this version set in your `Build Settings -> SWIFT_VERSION`
 
+Also you need to add `platform :ios, '9.0'` on top of your `ios/Podfile` .
+
 ## Android
 
 You need to request those permissions in AndroidManifest.xml in order the plugin to work:

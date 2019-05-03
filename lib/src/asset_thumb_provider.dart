@@ -30,12 +30,9 @@ class AssetThumbImageProvider extends ImageProvider<AssetThumbImageProvider> {
   @override
   ImageStreamCompleter load(AssetThumbImageProvider key) {
     return new MultiFrameImageStreamCompleter(
-        codec: _loadAsync(key),
-        scale: key.scale,
-        informationCollector: (StringBuffer information) {
-          information.writeln('Image provider: $this');
-          information.write('Image key: $key');
-        });
+      codec: _loadAsync(key),
+      scale: key.scale,
+    );
   }
 
   Future<ui.Codec> _loadAsync(AssetThumbImageProvider key) async {

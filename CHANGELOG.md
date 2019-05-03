@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v4.2.1)
+
+## 2019-05-03
+
+- Remove informationCollector from AssetThumbImageProvider to make the plugin work with latest master version of Flutter [info](https://github.com/flutter/flutter/issues/31962)
+  
 ### Changed (v4.2.0)
 
 ## 2019-04-19

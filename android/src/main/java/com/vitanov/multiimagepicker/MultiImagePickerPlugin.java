@@ -603,6 +603,7 @@ public class MultiImagePickerPlugin implements
         String allViewTitle =  options.get("allViewTitle");
         String startInAllView = options.get("startInAllView");
         String selectCircleStrokeColor = options.get("selectCircleStrokeColor");
+        String selectionLimitReachedText = options.get("selectionLimitReachedText");
 
         FishBunCreator fishBun = FishBun.with(MultiImagePickerPlugin.this.activity)
                 .setImageAdapter(new GlideAdapter())
@@ -628,6 +629,10 @@ public class MultiImagePickerPlugin implements
 
         if (actionBarTitle != null && !actionBarTitle.isEmpty()) {
             fishBun.setActionBarTitle(actionBarTitle);
+        }
+
+        if (selectionLimitReachedText != null && !selectionLimitReachedText.isEmpty()) {
+            fishBun.textOnImagesSelectionLimitReached(selectionLimitReachedText);
         }
 
         if (selectCircleStrokeColor != null && !selectCircleStrokeColor.isEmpty()) {

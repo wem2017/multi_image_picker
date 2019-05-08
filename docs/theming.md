@@ -14,6 +14,7 @@ List resultList = await MultiImagePicker.pickImages(
         statusBarColor: '#abcdef',
         startInAllView: true,
         selectCircleStrokeColor: "#000000",
+        selectionLimitReachedText: "You can't select any more.",
     ),
   );
 ```
@@ -28,6 +29,7 @@ Available options are:
  - statusBarColor - HEX string
  - startInAllView - boolean
  - selectCircleStrokeColor - HEX string
+ - selectionLimitReachedText - string
 
 ## iOS customization
 

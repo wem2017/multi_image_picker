@@ -7,6 +7,7 @@ class MaterialOptions {
   final String actionBarTitle;
   final bool startInAllView;
   final String selectCircleStrokeColor;
+  final String selectionLimitReachedText;
 
   const MaterialOptions({
     this.actionBarColor,
@@ -17,6 +18,7 @@ class MaterialOptions {
     this.allViewTitle,
     this.startInAllView,
     this.selectCircleStrokeColor,
+    this.selectionLimitReachedText,
   });
 
   Map<String, String> toJson() {
@@ -28,7 +30,8 @@ class MaterialOptions {
       "lightStatusBar": lightStatusBar == true ? "true" : "false",
       "statusBarColor": statusBarColor ?? "",
       "startInAllView": startInAllView == true ? "true" : "false",
-      "selectCircleStrokeColor": selectCircleStrokeColor ?? ""
+      "selectCircleStrokeColor": selectCircleStrokeColor ?? "",
+      "selectionLimitReachedText": selectionLimitReachedText ?? "",
     };
   }
 }

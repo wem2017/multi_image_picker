@@ -55,10 +55,16 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
             let maxImages = arguments["maxImages"] as! Int
             let enableCamera = arguments["enableCamera"] as! Bool
             let options = arguments["iosOptions"] as! Dictionary<String, String>
+            let selectedAssets = arguments["selectedAssets"] as! Array<String>
             vc.maxNumberOfSelections = maxImages
 
             if (enableCamera) {
                 vc.takePhotos = true
+            }
+            
+            if selectedAssets.count > 0 {
+                let assets: PHFetchResult = PHAsset.fetchAssets(withLocalIdentifiers: selectedAssets, options: nil)
+                vc.defaultSelections = assets
             }
 
             if let takePhotoIcon = options["takePhotoIcon"] {

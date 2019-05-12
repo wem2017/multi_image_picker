@@ -22,17 +22,23 @@ class MultiImagePicker {
   /// was added, which allows the user to take a picture
   /// directly from the gallery.
   ///
+  /// If you would like to present the picker with pre selected
+  /// photos, you can pass [selectedAssets] with List of Asset
+  /// objects picked previously from the picker.
+  ///
   /// This method returns list of [Asset] objects. Because
   /// they are just placeholders containing the actual
   /// identifier to the image, not the image itself you can
   /// pick thousands of images at a time, with no performance
   /// penalty. How to request the original image or a thumb
   /// you can refer to the docs for the Asset class.
-  static Future<List<Asset>> pickImages(
-      {@required int maxImages,
-      bool enableCamera = false,
-      CupertinoOptions cupertinoOptions = const CupertinoOptions(),
-      MaterialOptions materialOptions = const MaterialOptions()}) async {
+  static Future<List<Asset>> pickImages({
+    @required int maxImages,
+    bool enableCamera = false,
+    List<Asset> selectedAssets = const [],
+    CupertinoOptions cupertinoOptions = const CupertinoOptions(),
+    MaterialOptions materialOptions = const MaterialOptions(),
+  }) async {
     assert(maxImages != null);
 
     if (maxImages != null && maxImages < 0) {
@@ -44,7 +50,9 @@ class MultiImagePicker {
       'maxImages': maxImages,
       'enableCamera': enableCamera,
       'iosOptions': cupertinoOptions.toJson(),
-      'androidOptions': materialOptions.toJson()
+      'androidOptions': materialOptions.toJson(),
+      'selectedAssets':
+          selectedAssets.map((Asset asset) => asset.identifier).toList(),
     });
 
     var assets = List<Asset>();

@@ -42,6 +42,7 @@ import android.os.Build;
 import android.provider.OpenableColumns;
 import android.os.Environment;
 import android.provider.MediaStore;
+
 import androidx.exifinterface.media.ExifInterface;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -75,6 +76,7 @@ public class MultiImagePickerPlugin implements
     private static final String DELETE_IMAGES = "deleteImages";
     private static final String REFRESH_IMAGE = "refreshImage" ;
     private static final String MAX_IMAGES = "maxImages";
+    private static final String SELECTED_ASSETS = "selectedAssets";
     private static final String ENABLE_CAMERA = "enableCamera";
     private static final String ANDROID_OPTIONS = "androidOptions";
     private static final int REQUEST_CODE_CHOOSE = 1001;
@@ -102,8 +104,9 @@ public class MultiImagePickerPlugin implements
                 int maxImages = (int) this.methodCall.argument(MAX_IMAGES);
                 boolean enableCamera = (boolean) this.methodCall.argument(ENABLE_CAMERA);
                 HashMap<String, String> options = this.methodCall.argument(ANDROID_OPTIONS);
+                ArrayList<String> selectedAssets = this.methodCall.argument(SELECTED_ASSETS);
                 assert options != null;
-                presentPicker(maxImages, enableCamera, options);
+                presentPicker(maxImages, enableCamera, selectedAssets, options);
             } else {
                 if (
                         ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_EXTERNAL_STORAGE) ||
@@ -572,7 +575,8 @@ public class MultiImagePickerPlugin implements
         } else {
             int maxImages = (int) this.methodCall.argument(MAX_IMAGES);
             boolean enableCamera = (boolean) this.methodCall.argument(ENABLE_CAMERA);
-            presentPicker(maxImages, enableCamera, options);
+            ArrayList<String> selectedAssets = this.methodCall.argument(SELECTED_ASSETS);
+            presentPicker(maxImages, enableCamera, selectedAssets, options);
         }
 
     }
@@ -594,7 +598,7 @@ public class MultiImagePickerPlugin implements
         }
     }
 
-    private void presentPicker(int maxImages, boolean enableCamera, HashMap<String, String> options) {
+    private void presentPicker(int maxImages, boolean enableCamera, ArrayList<String> selectedAssets, HashMap<String, String> options) {
         String actionBarColor = options.get("actionBarColor");
         String statusBarColor = options.get("statusBarColor");
         String lightStatusBar = options.get("lightStatusBar");
@@ -604,12 +608,18 @@ public class MultiImagePickerPlugin implements
         String startInAllView = options.get("startInAllView");
         String selectCircleStrokeColor = options.get("selectCircleStrokeColor");
         String selectionLimitReachedText = options.get("selectionLimitReachedText");
+        ArrayList<Uri> selectedUris = new ArrayList<Uri>();
+
+        for (String path : selectedAssets) {
+            selectedUris.add(Uri.parse(path));
+        }
 
         FishBunCreator fishBun = FishBun.with(MultiImagePickerPlugin.this.activity)
                 .setImageAdapter(new GlideAdapter())
                 .setMaxCount(maxImages)
                 .setCamera(enableCamera)
                 .setRequestCode(REQUEST_CODE_CHOOSE)
+                .setSelectedImages(selectedUris)
                 .isStartInAllView(startInAllView.equals("true"));
 
         if (actionBarColor != null && !actionBarColor.isEmpty()) {
@@ -698,8 +708,9 @@ public class MultiImagePickerPlugin implements
             int maxImages = (int) this.methodCall.argument(MAX_IMAGES);
             boolean enableCamera = (boolean) this.methodCall.argument(ENABLE_CAMERA);
             HashMap<String, String> options = this.methodCall.argument(ANDROID_OPTIONS);
+            ArrayList<String> selectedAssets = this.methodCall.argument(SELECTED_ASSETS);
             assert options != null;
-            presentPicker(maxImages, enableCamera, options);
+            presentPicker(maxImages, enableCamera, selectedAssets, options);
             return true;
         } else {
             finishWithSuccess(Collections.emptyList());

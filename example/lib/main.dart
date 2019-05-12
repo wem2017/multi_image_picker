@@ -42,10 +42,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> loadAssets() async {
-    setState(() {
-      images = List<Asset>();
-    });
-
     List<Asset> resultList = List<Asset>();
     String error = 'No Error Dectected';
 
@@ -53,6 +49,7 @@ class _MyAppState extends State<MyApp> {
       resultList = await MultiImagePicker.pickImages(
           maxImages: 300,
           enableCamera: true,
+          selectedAssets: images,
           cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
           materialOptions: MaterialOptions(
             actionBarColor: "#abcdef",

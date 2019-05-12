@@ -36,6 +36,28 @@ void main() {
               'enableCamera': false,
               'iosOptions': CupertinoOptions().toJson(),
               'androidOptions': MaterialOptions().toJson(),
+              'selectedAssets': [],
+            }),
+          ],
+        );
+      });
+
+      test('passes selected assets correctly', () async {
+        Asset asset = Asset("test", "test.jpg", 100, 100);
+        await MultiImagePicker.pickImages(
+          maxImages: 5,
+          selectedAssets: [asset],
+        );
+
+        expect(
+          log,
+          <Matcher>[
+            isMethodCall('pickImages', arguments: <String, dynamic>{
+              'maxImages': 5,
+              'enableCamera': false,
+              'iosOptions': CupertinoOptions().toJson(),
+              'androidOptions': MaterialOptions().toJson(),
+              'selectedAssets': [asset.identifier],
             }),
           ],
         );
@@ -62,6 +84,7 @@ void main() {
               'enableCamera': false,
               'iosOptions': cupertinoOptions.toJson(),
               'androidOptions': MaterialOptions().toJson(),
+              'selectedAssets': [],
             }),
           ],
         );
@@ -89,6 +112,7 @@ void main() {
               'enableCamera': false,
               'androidOptions': materialOptions.toJson(),
               'iosOptions': CupertinoOptions().toJson(),
+              'selectedAssets': [],
             }),
           ],
         );

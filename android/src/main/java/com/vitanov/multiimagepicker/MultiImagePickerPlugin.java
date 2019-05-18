@@ -25,11 +25,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.Math;
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -43,6 +45,7 @@ import android.provider.OpenableColumns;
 import android.os.Environment;
 import android.provider.MediaStore;
 
+import androidx.annotation.NonNull;
 import androidx.exifinterface.media.ExifInterface;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -58,7 +61,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 import static android.media.ThumbnailUtils.OPTIONS_RECYCLE_INPUT;
 import static com.vitanov.multiimagepicker.FileDirectory.getPath;
-
+import static java.util.Arrays.asList;
 
 /**
  * MultiImagePickerPlugin
@@ -330,8 +333,6 @@ public class MultiImagePickerPlugin implements
             GetThumbnailTask task = new GetThumbnailTask(this.activity, this.messenger, identifier, width, height, quality);
             task.execute();
             finishWithSuccess();
-
-
         } else if (REQUEST_METADATA.equals(call.method)) {
             final String identifier = call.argument("identifier");
 
@@ -339,7 +340,7 @@ public class MultiImagePickerPlugin implements
             try (InputStream in = context.getContentResolver().openInputStream(uri)) {
                 assert in != null;
                 ExifInterface exifInterface = new ExifInterface(in);
-                finishWithSuccess(getPictureExif(exifInterface));
+                finishWithSuccess(getPictureExif(exifInterface, uri));
 
             } catch (IOException e) {
                 finishWithError("Exif error", e.toString());
@@ -354,7 +355,7 @@ public class MultiImagePickerPlugin implements
         }
     }
 
-    private HashMap<String, Object> getPictureExif(ExifInterface exifInterface) {
+    private HashMap<String, Object> getPictureExif(ExifInterface exifInterface, Uri uri) {
         HashMap<String, Object> result = new HashMap<>();
 
         // API LEVEL 24
@@ -386,6 +387,18 @@ public class MultiImagePickerPlugin implements
         result.putAll(exif_str);
         HashMap<String, Object> exif_double = getExif_double(exifInterface, tags_double);
         result.putAll(exif_double);
+
+        // A Temp fix while location data is not returned from the exifInterface due to the errors:
+        //
+        if (exif_double.isEmpty()
+                || !exif_double.containsKey(ExifInterface.TAG_GPS_LATITUDE)
+                || !exif_double.containsKey(ExifInterface.TAG_GPS_LONGITUDE)) {
+
+            if (uri != null) {
+                HashMap<String, Object> hotfix_map = getLatLng(uri);
+                result.putAll(hotfix_map);
+            }
+        }
 
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
             String[] tags_23 = {
@@ -717,6 +730,58 @@ public class MultiImagePickerPlugin implements
             clearMethodCallAndResult();
         }
         return false;
+    }
+
+    private HashMap<String, Object> getLatLng(@NonNull Uri uri) {
+        HashMap<String, Object> result = new HashMap<>();
+        String latitudeStr = "latitude";
+        String longitudeStr = "longitude";
+        List<String> latlngList = Arrays.asList(latitudeStr, longitudeStr);
+
+        int indexNotPresent = -1;
+
+        String uriScheme = uri.getScheme();
+
+        if (uriScheme == null) {
+            return result;
+        }
+
+        if (uriScheme.equals("content")) {
+            Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+
+            if (cursor == null) {
+                return result;
+            }
+
+            try {
+                String[] columnNames = cursor.getColumnNames();
+                List<String> columnNamesList = Arrays.asList(columnNames);
+
+                for (String latorlngStr : latlngList) {
+                    cursor.moveToFirst();
+                    int index = columnNamesList.indexOf(latorlngStr);
+                    if (index > indexNotPresent) {
+                        Double val = cursor.getDouble(index);
+                        // Inserting it as abs as it is the ref the define if the value should be negative or positive
+                        if (latorlngStr.equals(latitudeStr)) {
+                            result.put(ExifInterface.TAG_GPS_LATITUDE, Math.abs(val));
+                        } else {
+                            result.put(ExifInterface.TAG_GPS_LONGITUDE, Math.abs(val));
+                        }
+                    }
+                }
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    cursor.close();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return result;
     }
 
     private String getFileName(Uri uri) {

@@ -140,7 +140,7 @@ public class MultiImagePickerPlugin implements
 
     }
 
-    private static class GetThumbnailTask extends AsyncTask<String, Void, Void> {
+    private static class GetThumbnailTask extends AsyncTask<String, Void, ByteBuffer> {
         private WeakReference<Activity> activityReference;
         BinaryMessenger messenger;
         final String identifier;
@@ -159,7 +159,7 @@ public class MultiImagePickerPlugin implements
         }
 
         @Override
-        protected Void doInBackground(String... strings) {
+        protected ByteBuffer doInBackground(String... strings) {
             final Uri uri = Uri.parse(this.identifier);
             byte[] byteArray = null;
 
@@ -187,10 +187,18 @@ public class MultiImagePickerPlugin implements
             if (byteArray != null) {
                 buffer = ByteBuffer.allocateDirect(byteArray.length);
                 buffer.put(byteArray);
+                return buffer;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(ByteBuffer buffer) {
+            super.onPostExecute(buffer);
+            if (buffer != null) {
                 this.messenger.send("multi_image_picker/image/" + this.identifier + ".thumb", buffer);
                 buffer.clear();
             }
-            return null;
         }
     }
 
@@ -254,7 +262,7 @@ public class MultiImagePickerPlugin implements
         }
     }
 
-    private static class GetImageTask extends AsyncTask<String, Void, Void> {
+    private static class GetImageTask extends AsyncTask<String, Void, ByteBuffer> {
         private final WeakReference<Activity> activityReference;
 
         final BinaryMessenger messenger;
@@ -270,7 +278,7 @@ public class MultiImagePickerPlugin implements
         }
 
         @Override
-        protected Void doInBackground(String... strings) {
+        protected ByteBuffer doInBackground(String... strings) {
             final Uri uri = Uri.parse(this.identifier);
             byte[] bytesArray = null;
 
@@ -295,9 +303,14 @@ public class MultiImagePickerPlugin implements
             assert bytesArray != null;
             final ByteBuffer buffer = ByteBuffer.allocateDirect(bytesArray.length);
             buffer.put(bytesArray);
+            return buffer;
+        }
+
+        @Override
+        protected void onPostExecute(ByteBuffer buffer) {
+            super.onPostExecute(buffer);
             this.messenger.send("multi_image_picker/image/" + this.identifier + ".original", buffer);
             buffer.clear();
-            return null;
         }
     }
 

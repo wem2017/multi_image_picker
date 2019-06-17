@@ -646,6 +646,7 @@ public class MultiImagePickerPlugin implements
                 .setCamera(enableCamera)
                 .setRequestCode(REQUEST_CODE_CHOOSE)
                 .setSelectedImages(selectedUris)
+                .exceptGif(true)
                 .isStartInAllView(startInAllView.equals("true"));
 
         if (actionBarColor != null && !actionBarColor.isEmpty()) {

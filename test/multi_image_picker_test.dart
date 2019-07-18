@@ -99,6 +99,7 @@ void main() {
           lightStatusBar: false,
           statusBarColor: '#abcdef',
           startInAllView: true,
+          useDetailsView: true,
           selectCircleStrokeColor: "#ffffff",
         );
         await MultiImagePicker.pickImages(

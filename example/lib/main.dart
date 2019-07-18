@@ -55,6 +55,7 @@ class _MyAppState extends State<MyApp> {
             actionBarColor: "#abcdef",
             actionBarTitle: "Example App",
             allViewTitle: "All Photos",
+            useDetailsView: false,
             selectCircleStrokeColor: "#000000",
           ));
     } on PlatformException catch (e) {

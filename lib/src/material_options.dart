@@ -6,6 +6,7 @@ class MaterialOptions {
   final String allViewTitle;
   final String actionBarTitle;
   final bool startInAllView;
+  final bool useDetailsView;
   final String selectCircleStrokeColor;
   final String selectionLimitReachedText;
 
@@ -17,6 +18,7 @@ class MaterialOptions {
     this.actionBarTitleColor,
     this.allViewTitle,
     this.startInAllView,
+    this.useDetailsView,
     this.selectCircleStrokeColor,
     this.selectionLimitReachedText,
   });
@@ -30,6 +32,7 @@ class MaterialOptions {
       "lightStatusBar": lightStatusBar == true ? "true" : "false",
       "statusBarColor": statusBarColor ?? "",
       "startInAllView": startInAllView == true ? "true" : "false",
+      "useDetailsView": useDetailsView == true ? "true" : "false",
       "selectCircleStrokeColor": selectCircleStrokeColor ?? "",
       "selectionLimitReachedText": selectionLimitReachedText ?? "",
     };

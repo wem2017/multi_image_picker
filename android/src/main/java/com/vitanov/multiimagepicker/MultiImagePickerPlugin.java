@@ -632,6 +632,7 @@ public class MultiImagePickerPlugin implements
         String actionBarTitleColor = options.get("actionBarTitleColor");
         String allViewTitle =  options.get("allViewTitle");
         String startInAllView = options.get("startInAllView");
+        String useDetailsView = options.get("useDetailsView");
         String selectCircleStrokeColor = options.get("selectCircleStrokeColor");
         String selectionLimitReachedText = options.get("selectionLimitReachedText");
         ArrayList<Uri> selectedUris = new ArrayList<Uri>();
@@ -647,6 +648,7 @@ public class MultiImagePickerPlugin implements
                 .setRequestCode(REQUEST_CODE_CHOOSE)
                 .setSelectedImages(selectedUris)
                 .exceptGif(true)
+                .setIsUseDetailView(useDetailsView.equals("true"))
                 .isStartInAllView(startInAllView.equals("true"));
 
         if (actionBarColor != null && !actionBarColor.isEmpty()) {

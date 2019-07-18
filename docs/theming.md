@@ -28,6 +28,7 @@ Available options are:
  - lightStatusBar - boolean
  - statusBarColor - HEX string
  - startInAllView - boolean
+ - useDetailsView - boolean
  - selectCircleStrokeColor - HEX string
  - selectionLimitReachedText - string
 

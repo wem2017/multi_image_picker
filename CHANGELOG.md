@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v4.3.6)
+
+## 2019-07-18
+
+- Added new Android option useDetailsView to disable details view when clicking on the image and directly select it
+
 ### Changed (v4.3.5)
 
 ## 2019-07-07

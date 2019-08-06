@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 void main() => runApp(new MyApp());
@@ -47,19 +46,21 @@ class _MyAppState extends State<MyApp> {
 
     try {
       resultList = await MultiImagePicker.pickImages(
-          maxImages: 300,
-          enableCamera: true,
-          selectedAssets: images,
-          cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
-          materialOptions: MaterialOptions(
-            actionBarColor: "#abcdef",
-            actionBarTitle: "Example App",
-            allViewTitle: "All Photos",
-            useDetailsView: false,
-            selectCircleStrokeColor: "#000000",
-          ));
-    } on PlatformException catch (e) {
-      error = e.message;
+        maxImages: 300,
+        enableCamera: true,
+        selectedAssets: images,
+        cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
+        materialOptions: MaterialOptions(
+          actionBarColor: "#abcdef",
+          actionBarTitle: "Example App",
+          allViewTitle: "All Photos",
+          useDetailsView: false,
+          selectCircleStrokeColor: "#000000",
+          backButtonDrawable: "ic_back_arrow",
+        ),
+      );
+    } on Exception catch (e) {
+      error = e.toString();
     }
 
     // If the widget was removed from the tree while the asynchronous platform

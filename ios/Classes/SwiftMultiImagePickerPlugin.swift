@@ -115,7 +115,7 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
                 }, deselect: { (asset: PHAsset) -> Void in
 
                 }, cancel: { (assets: [PHAsset]) -> Void in
-                    result([])
+                    result(FlutterError(code: "CANCELLED", message: "The user has cancelled the selection", details: nil))
                 }, finish: { (assets: [PHAsset]) -> Void in
                     var results = [NSDictionary]();
                     for asset in assets {

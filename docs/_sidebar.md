@@ -11,6 +11,7 @@
   - [Enable Camera](enablecamera.md)
   - [Metadata](metadata.md)
   - [Customization](theming.md)
+  - [Error Handling](errorhandling.md)
 
 - Troubleshooting
 

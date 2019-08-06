@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v4.4.0)
+
+## 2019-08-06
+
+- Added Material option `textOnNothingSelected` [#201](https://github.com/Sh1d0w/multi_image_picker/issues/201)
+- Updated the code to use defaultBinaryMessenger instead of the deprecated BinaryMessenger
+- `pickImages` now throws NoImagesSelectedException, PermissionDeniedException and PermissionPermanentlyDeniedExeption in addition to PlatformException. You can implement different logic for handling each case separately now.
+- dateTime, dateTimeOriginal and dateTimeDigitized in the Metadata.exif object will now properly be returned as strings.  The format is "YYYY:MM:DD HH:MM:SS" with time shown in 24-hour format as per Exif spec.
+- Added the ability to change the icons for back and done buttons on Android. For more information see the [documentation](https://sh1d0w.github.io/multi_image_picker/#/theming) and the example app in this repository.
+
 ### Changed (v4.3.6)
 
 ## 2019-07-18

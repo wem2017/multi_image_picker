@@ -31,6 +31,11 @@ Available options are:
  - useDetailsView - boolean
  - selectCircleStrokeColor - HEX string
  - selectionLimitReachedText - string
+ - textOnNothingSelected - string
+ - backButtonDrawable - string
+ - okButtonDrawable - string
+
+!> backButtonDrawable and okButtonDrawable must exists as drawable resources under your `android/app/src/res/drawable` folder.
 
 ## iOS customization
 

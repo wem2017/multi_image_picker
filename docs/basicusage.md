@@ -8,7 +8,6 @@ main.dart
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 void main() => runApp(new MyApp());
@@ -53,7 +52,7 @@ class _MyAppState extends State<MyApp> {
       resultList = await MultiImagePicker.pickImages(
         maxImages: 300,
       );
-    } on PlatformException catch (e) {
+    } on Exception catch (e) {
       error = e.message;
     }
 

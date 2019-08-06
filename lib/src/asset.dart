@@ -93,9 +93,11 @@ class Asset {
     }
 
     Completer completer = new Completer<ByteData>();
-    BinaryMessages.setMessageHandler(_thumbChannel, (ByteData message) {
+    defaultBinaryMessenger.setMessageHandler(_thumbChannel,
+        (ByteData message) async {
       completer.complete(message);
-      BinaryMessages.setMessageHandler(_thumbChannel, null);
+      defaultBinaryMessenger.setMessageHandler(_thumbChannel, null);
+      return message;
     });
 
     MultiImagePicker.requestThumbnail(_identifier, width, height, quality);
@@ -121,9 +123,11 @@ class Asset {
     }
 
     Completer completer = new Completer<ByteData>();
-    BinaryMessages.setMessageHandler(_originalChannel, (ByteData message) {
+    defaultBinaryMessenger.setMessageHandler(_originalChannel,
+        (ByteData message) async {
       completer.complete(message);
-      BinaryMessages.setMessageHandler(_originalChannel, null);
+      defaultBinaryMessenger.setMessageHandler(_originalChannel, null);
+      return message;
     });
 
     MultiImagePicker.requestOriginal(_identifier, quality);

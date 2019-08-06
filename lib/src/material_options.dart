@@ -9,6 +9,9 @@ class MaterialOptions {
   final bool useDetailsView;
   final String selectCircleStrokeColor;
   final String selectionLimitReachedText;
+  final String textOnNothingSelected;
+  final String backButtonDrawable;
+  final String okButtonDrawable;
 
   const MaterialOptions({
     this.actionBarColor,
@@ -21,6 +24,9 @@ class MaterialOptions {
     this.useDetailsView,
     this.selectCircleStrokeColor,
     this.selectionLimitReachedText,
+    this.textOnNothingSelected,
+    this.backButtonDrawable,
+    this.okButtonDrawable,
   });
 
   Map<String, String> toJson() {
@@ -35,6 +41,9 @@ class MaterialOptions {
       "useDetailsView": useDetailsView == true ? "true" : "false",
       "selectCircleStrokeColor": selectCircleStrokeColor ?? "",
       "selectionLimitReachedText": selectionLimitReachedText ?? "",
+      "textOnNothingSelected": textOnNothingSelected ?? "",
+      "backButtonDrawable": backButtonDrawable ?? "",
+      "okButtonDrawable": okButtonDrawable ?? ""
     };
   }
 }

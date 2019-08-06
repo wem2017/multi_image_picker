@@ -373,6 +373,8 @@ public class MultiImagePickerPlugin implements
 
         // API LEVEL 24
         String[] tags_str = {
+                ExifInterface.TAG_DATETIME,
+                ExifInterface.TAG_GPS_DATESTAMP,
                 ExifInterface.TAG_GPS_LATITUDE_REF,
                 ExifInterface.TAG_GPS_LONGITUDE_REF,
                 ExifInterface.TAG_GPS_PROCESSING_METHOD,
@@ -535,12 +537,12 @@ public class MultiImagePickerPlugin implements
         }
 
 
-        String TAG_DATETIME = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
-        String TAG_GPS_TIMESTAMP = exifInterface.getAttribute(ExifInterface.TAG_GPS_TIMESTAMP);
-        long dateTime = formatTime(TAG_DATETIME, "yy:mm:dd hh:mm:ss");
-        long gpsDateTime = formatTime(TAG_GPS_TIMESTAMP, "hh:mm:ss");
-        if (dateTime != 0) result.put(ExifInterface.TAG_DATETIME, dateTime);
-        if (gpsDateTime != 0) result.put(ExifInterface.TAG_GPS_TIMESTAMP, TAG_GPS_TIMESTAMP);
+//        String TAG_DATETIME = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
+//        String TAG_GPS_TIMESTAMP = exifInterface.getAttribute(ExifInterface.TAG_GPS_TIMESTAMP);
+//        long dateTime = formatTime(TAG_DATETIME, "yy:mm:dd hh:mm:ss");
+//        long gpsDateTime = formatTime(TAG_GPS_TIMESTAMP, "hh:mm:ss");
+//        if (dateTime != 0) result.put(ExifInterface.TAG_DATETIME, dateTime);
+//        if (gpsDateTime != 0) result.put(ExifInterface.TAG_GPS_TIMESTAMP, TAG_GPS_TIMESTAMP);
 
         return result;
     }
@@ -635,6 +637,9 @@ public class MultiImagePickerPlugin implements
         String useDetailsView = options.get("useDetailsView");
         String selectCircleStrokeColor = options.get("selectCircleStrokeColor");
         String selectionLimitReachedText = options.get("selectionLimitReachedText");
+        String textOnNothingSelected = options.get("textOnNothingSelected");
+        String backButtonDrawable = options.get("backButtonDrawable");
+        String okButtonDrawable = options.get("okButtonDrawable");
         ArrayList<Uri> selectedUris = new ArrayList<Uri>();
 
         for (String path : selectedAssets) {
@@ -650,6 +655,20 @@ public class MultiImagePickerPlugin implements
                 .exceptGif(true)
                 .setIsUseDetailView(useDetailsView.equals("true"))
                 .isStartInAllView(startInAllView.equals("true"));
+
+        if (!textOnNothingSelected.isEmpty()) {
+            fishBun.textOnNothingSelected(textOnNothingSelected);
+        }
+
+        if (!backButtonDrawable.isEmpty()) {
+            int id = context.getResources().getIdentifier(backButtonDrawable, "drawable", context.getPackageName());
+            fishBun.setHomeAsUpIndicatorDrawable(ContextCompat.getDrawable(context, id));
+        }
+
+        if (!okButtonDrawable.isEmpty()) {
+            int id = context.getResources().getIdentifier(okButtonDrawable, "drawable", context.getPackageName());
+            fishBun.setOkButtonDrawable(ContextCompat.getDrawable(context, id));
+        }
 
         if (actionBarColor != null && !actionBarColor.isEmpty()) {
             int color = Color.parseColor(actionBarColor);
@@ -693,7 +712,9 @@ public class MultiImagePickerPlugin implements
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_CHOOSE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CODE_CHOOSE && resultCode == Activity.RESULT_CANCELED) {
+            finishWithError("CANCELLED", "The user has cancelled the selection");
+        } else if (requestCode == REQUEST_CODE_CHOOSE && resultCode == Activity.RESULT_OK) {
             List<Uri> photos = data.getParcelableArrayListExtra(Define.INTENT_PATH);
             List<HashMap<String, Object>> result = new ArrayList<>(photos.size());
             for (Uri uri : photos) {

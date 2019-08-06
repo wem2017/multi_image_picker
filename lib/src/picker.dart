@@ -4,6 +4,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:multi_image_picker/src/exceptions.dart';
 
 class MultiImagePicker {
   static const MethodChannel _channel =
@@ -45,27 +46,39 @@ class MultiImagePicker {
       throw new ArgumentError.value(maxImages, 'maxImages cannot be negative');
     }
 
-    final List<dynamic> images =
-        await _channel.invokeMethod('pickImages', <String, dynamic>{
-      'maxImages': maxImages,
-      'enableCamera': enableCamera,
-      'iosOptions': cupertinoOptions.toJson(),
-      'androidOptions': materialOptions.toJson(),
-      'selectedAssets':
-          selectedAssets.map((Asset asset) => asset.identifier).toList(),
-    });
-
-    var assets = List<Asset>();
-    for (var item in images) {
-      var asset = Asset(
-        item['identifier'],
-        item['name'],
-        item['width'],
-        item['height'],
-      );
-      assets.add(asset);
+    try {
+      final List<dynamic> images =
+          await _channel.invokeMethod('pickImages', <String, dynamic>{
+        'maxImages': maxImages,
+        'enableCamera': enableCamera,
+        'iosOptions': cupertinoOptions.toJson(),
+        'androidOptions': materialOptions.toJson(),
+        'selectedAssets':
+            selectedAssets.map((Asset asset) => asset.identifier).toList(),
+      });
+      var assets = List<Asset>();
+      for (var item in images) {
+        var asset = Asset(
+          item['identifier'],
+          item['name'],
+          item['width'],
+          item['height'],
+        );
+        assets.add(asset);
+      }
+      return assets;
+    } on PlatformException catch (e) {
+      switch (e.code) {
+        case "CANCELLED":
+          throw NoImagesSelectedException(e.message);
+        case "PERMISSION_DENIED":
+          throw PermissionDeniedException(e.message);
+        case "PERMISSION_PERMANENTLY_DENIED":
+          throw PermissionPermanentlyDeniedExeption(e.message);
+        default:
+          throw e;
+      }
     }
-    return assets;
   }
 
   /// Requests a thumbnail with [width], [height]

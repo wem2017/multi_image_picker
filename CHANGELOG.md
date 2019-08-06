@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v4.4.1)
+
+## 2019-08-06
+
+- Pin minimum Flutter version required to 1.7.8
+
 ### Changed (v4.4.0)
 
 ## 2019-08-06

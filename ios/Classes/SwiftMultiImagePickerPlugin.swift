@@ -198,21 +198,35 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
         case "refreshImage":
             result(true) ;
             break ;
-        case "deleteImages":
+        case "requestFilePath":
             let arguments = call.arguments as! Dictionary<String, AnyObject>
-            let identifiers = arguments["identifiers"] as! Array<String>
-            let assets: PHFetchResult = PHAsset.fetchAssets(withLocalIdentifiers: identifiers, options: nil)
-            PHPhotoLibrary.shared().performChanges( {
-                PHAssetChangeRequest.deleteAssets(assets)
-            },
-            completionHandler: { success, error in
-                if(success) {
-                    result(true)
+            let identifier = arguments["identifier"] as! String
+            let manager = PHImageManager.default()
+            let options = PHImageRequestOptions()
+
+            options.deliveryMode = PHImageRequestOptionsDeliveryMode.highQualityFormat
+            options.isSynchronous = false
+            options.isNetworkAccessAllowed = true
+
+            let assets: PHFetchResult = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil)
+
+            if (assets.count > 0) {
+                let asset: PHAsset = assets[0];
+
+                self.getURL(ofPhotoWith: asset) { (url) in
+                    if let url = url {
+                        let absoluteUrl = url.absoluteString;
+                        let start = absoluteUrl.index(absoluteUrl.startIndex, offsetBy: 7)
+                        let end = absoluteUrl.index(absoluteUrl.endIndex, offsetBy: 0)
+                        let range = start..<end
+                        
+                        // Remove all file:// crap
+                        let slicedUrl = absoluteUrl[range]
+                        
+                        result(String(slicedUrl))
+                    }
                 }
-                else {
-                    result(false)
-                }
-            })
+            }
             break ;
         case "requestMetadata":
             let arguments = call.arguments as! Dictionary<String, AnyObject>
@@ -227,6 +241,16 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
         default:
             result(FlutterMethodNotImplemented)
         }
+    }
+
+    func getURL(ofPhotoWith mPhasset: PHAsset, completionHandler : @escaping ((_ responseURL : URL?) -> Void)) {
+        let options: PHContentEditingInputRequestOptions = PHContentEditingInputRequestOptions()
+        options.canHandleAdjustmentData = {(adjustmeta: PHAdjustmentData) -> Bool in
+            return true
+        }
+        mPhasset.requestContentEditingInput(with: options, completionHandler: { (contentEditingInput, info) in
+            completionHandler(contentEditingInput!.fullSizeImageURL)
+        })
     }
     
     func readPhotosMetadata(result: PHFetchResult<PHAsset>, operationQueue: OperationQueue, callback: @escaping FlutterResult) {

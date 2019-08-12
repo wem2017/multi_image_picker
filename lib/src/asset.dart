@@ -74,7 +74,7 @@ class Asset {
   ///
   /// Once you don't need this thumb data it is a good practice to release it,
   /// by calling releaseThumb() method.
-  Future<ByteData> requestThumbnail(int width, int height,
+  Future<ByteData> getThumbByteData(int width, int height,
       {int quality = 100}) async {
     assert(width != null);
     assert(height != null);
@@ -113,10 +113,7 @@ class Asset {
   /// The method returns a Future with the [ByteData] for the image,
   /// as well as storing it in the _imageData property which can be requested
   /// later again, without need to call this method again.
-  ///
-  /// Once you don't need this data it is a good practice to release it,
-  /// by calling releaseOriginal() method.
-  Future<ByteData> requestOriginal({int quality = 100}) {
+  Future<ByteData> getByteData({int quality = 100}) {
     if (quality < 0 || quality > 100) {
       throw new ArgumentError.value(
           quality, 'quality should be in range 0-100');
@@ -135,7 +132,37 @@ class Asset {
   }
 
   /// Requests the original image meta data
-  Future<Metadata> requestMetadata() {
+  Future<Metadata> get metadata {
     return MultiImagePicker.requestMetadata(_identifier);
+  }
+
+  /// Requests the original image file path
+  Future<String> get filePath {
+    return MultiImagePicker.requestFilePath(_identifier);
+  }
+
+  @Deprecated(
+    'This method will be deprecated in the next major release. Please use getByteData method instead.',
+  )
+  Future<ByteData> requestOriginal({int quality = 100}) {
+    return getByteData(quality: quality);
+  }
+
+  @Deprecated(
+    'This method will be deprecated in the next major release. Please use getThumbByteData method instead.',
+  )
+  Future<ByteData> requestThumbnail(
+    int width,
+    int height, {
+    int quality = 100,
+  }) async {
+    return getThumbByteData(width, height, quality: quality);
+  }
+
+  @Deprecated(
+    'This method will be deprecated in the next major release. Please use metadata getter instead.',
+  )
+  Future<Metadata> requestMetadata() {
+    return metadata;
   }
 }

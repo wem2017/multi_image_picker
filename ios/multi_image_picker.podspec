@@ -3,7 +3,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'multi_image_picker'
-  s.version          = '4.4.1'
+  s.version          = '4.5.0'
   s.summary          = 'Multi image picker'
   s.description      = <<-DESC
 A new flutter plugin project.

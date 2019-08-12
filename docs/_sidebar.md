@@ -19,8 +19,6 @@
   - [Android](androudtroubleshooting.md)
   - [iOS](iostroubleshooting.md)
 
-- [FAQ](faq.md)
-
 - [Upgrading](upgrading.md)
 
 - API Reference

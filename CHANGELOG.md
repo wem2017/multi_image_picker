@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v4.5.0)
+
+## 2019-08-12
+
+- The plugin now returns file paths as well. To obtain the asset file path use `await asset.filePath`
+- Removed `deleteImages` method. This plugin purpose is only to pick images.
+- Deprecated `Asset.requestThumbnail` method. Use `Asset.getThumbByteData` instead.
+- Deprecated `Asset.requestOriginal` method. Use `Asset.getByteData` instead.
+- Deprecated `Asset.requestMetadata` method. Use `Asset.metadata` instead.
+
 ### Changed (v4.4.1)
 
 ## 2019-08-06

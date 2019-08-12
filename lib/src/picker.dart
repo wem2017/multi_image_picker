@@ -151,20 +151,13 @@ class MultiImagePicker {
     return Metadata.fromMap(metadata);
   }
 
-  /// Refresh image gallery with specific path
-  /// [path].
-  ///
-  /// This method is used by refresh image gallery
-  /// Some of the image picker would not be refresh automatically
-  /// You can refresh it manually.
-  static Future<bool> refreshImage({
-    @required String path,
-  }) async {
-    assert(path != null);
-    bool result = await _channel
-        .invokeMethod("refreshImage", <String, dynamic>{"path": path});
-
-    return result;
+  /// Request a file path for given identifier
+  static Future<String> requestFilePath(String identifier) async {
+    String ret =
+        await _channel.invokeMethod("requestFilePath", <String, String>{
+      "identifier": identifier,
+    });
+    return ret;
   }
 
   /// Normalizes the meta data returned by iOS.
@@ -191,18 +184,5 @@ class MultiImagePicker {
     });
 
     return map;
-  }
-
-  /// Delete images from the gallery
-  /// [List<Asset>].
-  ///
-  /// Allows you to delete array of Asset objects from the filesystem.
-  static Future<bool> deleteImages({@required List<Asset> assets}) async {
-    assert(assets != null);
-    List<String> identifiers = assets.map((a) => a.identifier).toList();
-    bool result = await _channel.invokeMethod(
-        "deleteImages", <String, dynamic>{"identifiers": identifiers});
-
-    return result;
   }
 }

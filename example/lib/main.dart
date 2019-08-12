@@ -33,13 +33,6 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Future<void> deleteAssets() async {
-    await MultiImagePicker.deleteImages(assets: images);
-    setState(() {
-      images = List<Asset>();
-    });
-  }
-
   Future<void> loadAssets() async {
     List<Asset> resultList = List<Asset>();
     String error = 'No Error Dectected';
@@ -59,6 +52,11 @@ class _MyAppState extends State<MyApp> {
           backButtonDrawable: "ic_back_arrow",
         ),
       );
+
+      for (var r in resultList) {
+        var t = await r.filePath;
+        print(t);
+      }
     } on Exception catch (e) {
       error = e.toString();
     }
@@ -88,12 +86,6 @@ class _MyAppState extends State<MyApp> {
               child: Text("Pick images"),
               onPressed: loadAssets,
             ),
-            images.length > 0
-                ? RaisedButton(
-                    child: Text("Delete images"),
-                    onPressed: deleteAssets,
-                  )
-                : Container(),
             Expanded(
               child: buildGridView(),
             )

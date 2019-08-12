@@ -75,8 +75,8 @@ public class MultiImagePickerPlugin implements
     private static final String REQUEST_THUMBNAIL = "requestThumbnail";
     private static final String REQUEST_ORIGINAL = "requestOriginal";
     private static final String REQUEST_METADATA = "requestMetadata";
+    private static final String REQUEST_FILE_PATH = "requestFilePath";
     private static final String PICK_IMAGES = "pickImages";
-    private static final String DELETE_IMAGES = "deleteImages";
     private static final String REFRESH_IMAGE = "refreshImage" ;
     private static final String MAX_IMAGES = "maxImages";
     private static final String SELECTED_ASSETS = "selectedAssets";
@@ -202,66 +202,6 @@ public class MultiImagePickerPlugin implements
         }
     }
 
-    private static void deleteMedia(Context context, ArrayList<File> files) {
-        // Query for the ID of the media matching the file path
-        Uri queryUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        ContentResolver contentResolver = context.getContentResolver();
-
-        ArrayList<ContentProviderOperation> operationList = new ArrayList<>();
-        ContentProviderOperation contentProviderOperation;
-
-        for (File file: files) {
-            // Match on the file path
-            contentProviderOperation = ContentProviderOperation.newDelete(queryUri)
-                    .withSelection(MediaStore.Images.Media.DATA + " =? ", new String[]{file.getAbsolutePath()}).build();
-            operationList.add(contentProviderOperation);
-        }
-
-        try {
-            contentResolver.applyBatch(MediaStore.AUTHORITY, operationList);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private static class DeleteImageTask extends AsyncTask<String, Void, Void> {
-        private final WeakReference<Activity> activityReference;
-
-        final ArrayList<String> identifiers;
-
-        DeleteImageTask(Activity context, ArrayList<String> identifiers) {
-            super();
-            this.identifiers = identifiers;
-            this.activityReference = new WeakReference<>(context);
-        }
-
-        @Override
-        protected Void doInBackground(String... strings) {
-            ArrayList<File> files = new ArrayList<>();
-
-            try {
-                // get a reference to the activity if it is still there
-                Activity activity = activityReference.get();
-                if (activity == null || activity.isFinishing()) return null;
-                for (String identifier: this.identifiers) {
-                    final Uri uri = Uri.parse(identifier);
-                    String path = getPath(activity, uri);
-                    File file = new File(path);
-                    if (file.exists()) {
-                        files.add(file);
-                    }
-                }
-
-                deleteMedia(activity, files);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-    }
-
     private static class GetImageTask extends AsyncTask<String, Void, ByteBuffer> {
         private final WeakReference<Activity> activityReference;
 
@@ -325,12 +265,6 @@ public class MultiImagePickerPlugin implements
         if (PICK_IMAGES.equals(call.method)) {
             final HashMap<String, String> options = call.argument(ANDROID_OPTIONS);
             openImagePicker(options);
-        }
-        else if (DELETE_IMAGES.equals(call.method)) {
-            final ArrayList<String> identifiers = call.argument("identifiers");
-            DeleteImageTask task = new DeleteImageTask(this.activity, identifiers);
-            task.execute();
-            finishWithSuccess();
         } else if (REQUEST_ORIGINAL.equals(call.method)) {
             final String identifier = call.argument("identifier");
             final int quality = (int) call.argument("quality");
@@ -346,6 +280,11 @@ public class MultiImagePickerPlugin implements
             GetThumbnailTask task = new GetThumbnailTask(this.activity, this.messenger, identifier, width, height, quality);
             task.execute();
             finishWithSuccess();
+        } else if (REQUEST_FILE_PATH.equals(call.method)) {
+            final String identifier = call.argument("identifier");
+            final Uri uri = Uri.parse(identifier);
+            String path = getPath(activity, uri);
+            finishWithSuccess(path);
         } else if (REQUEST_METADATA.equals(call.method)) {
             final String identifier = call.argument("identifier");
 
@@ -893,6 +832,12 @@ public class MultiImagePickerPlugin implements
     private void finishWithSuccess(List imagePathList) {
         if (pendingResult != null)
             pendingResult.success(imagePathList);
+        clearMethodCallAndResult();
+    }
+
+    private void finishWithSuccess(String path) {
+        if (pendingResult != null)
+            pendingResult.success(path);
         clearMethodCallAndResult();
     }
 

@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v4.5.0+2)
+
+## 2019-08-13
+
+- Don't pin meta package version
+
 ### Changed (v4.5.0+1)
 
 ## 2019-08-13

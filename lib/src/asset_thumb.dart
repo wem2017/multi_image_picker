@@ -66,7 +66,7 @@ class _AssetThumbState extends State<AssetThumb> {
       _thumbData = null;
     });
 
-    ByteData thumbData = await asset.requestThumbnail(
+    ByteData thumbData = await asset.getThumbByteData(
       width,
       height,
       quality: quality,

@@ -39,7 +39,7 @@ class AssetThumbImageProvider extends ImageProvider<AssetThumbImageProvider> {
     assert(key == this);
 
     ByteData data = await key.asset
-        .requestThumbnail(key.width, key.height, quality: key.quality);
+        .getThumbByteData(key.width, key.height, quality: key.quality);
     final bytes = data.buffer.asUint8List();
 
     return await ui.instantiateImageCodec(bytes);

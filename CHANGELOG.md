@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v4.5.1)
+
+## 2019-08-17
+
+- Permission Denied error now will be correctly thrown on iOS if the user has disabled camera access.
+
 ### Changed (v4.5.0+2)
 
 ## 2019-08-13

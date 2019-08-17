@@ -50,6 +50,12 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch (call.method) {
         case "pickImages":
+            let status: PHAuthorizationStatus = PHPhotoLibrary.authorizationStatus()
+            
+            if (status == PHAuthorizationStatus.denied) {
+                return result(FlutterError(code: "PERMISSION_PERMANENTLY_DENIED", message: "The user has denied the gallery access.", details: nil))
+            }
+            
             let vc = BSImagePickerViewController()
             let arguments = call.arguments as! Dictionary<String, AnyObject>
             let maxImages = arguments["maxImages"] as! Int

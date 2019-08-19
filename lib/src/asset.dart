@@ -100,7 +100,8 @@ class Asset {
       return message;
     });
 
-    MultiImagePicker.requestThumbnail(_identifier, width, height, quality);
+    await MultiImagePicker.requestThumbnail(
+        _identifier, width, height, quality);
     return completer.future;
   }
 
@@ -113,7 +114,7 @@ class Asset {
   /// The method returns a Future with the [ByteData] for the image,
   /// as well as storing it in the _imageData property which can be requested
   /// later again, without need to call this method again.
-  Future<ByteData> getByteData({int quality = 100}) {
+  Future<ByteData> getByteData({int quality = 100}) async {
     if (quality < 0 || quality > 100) {
       throw new ArgumentError.value(
           quality, 'quality should be in range 0-100');
@@ -127,7 +128,7 @@ class Asset {
       return message;
     });
 
-    MultiImagePicker.requestOriginal(_identifier, quality);
+    await MultiImagePicker.requestOriginal(_identifier, quality);
     return completer.future;
   }
 

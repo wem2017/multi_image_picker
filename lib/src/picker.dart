@@ -108,14 +108,23 @@ class MultiImagePicker {
           quality, 'quality should be in range 0-100');
     }
 
-    bool ret = await _channel.invokeMethod(
-        "requestThumbnail", <String, dynamic>{
-      "identifier": identifier,
-      "width": width,
-      "height": height,
-      "quality": quality
-    });
-    return ret;
+    try {
+      bool ret = await _channel.invokeMethod(
+          "requestThumbnail", <String, dynamic>{
+        "identifier": identifier,
+        "width": width,
+        "height": height,
+        "quality": quality
+      });
+      return ret;
+    } on PlatformException catch (e) {
+      switch (e.code) {
+        case "ASSET_DOES_NOT_EXIST":
+          throw AssetNotFoundException(e.message);
+        default:
+          throw e;
+      }
+    }
   }
 
   /// Requests the original image data for a given
@@ -127,11 +136,21 @@ class MultiImagePicker {
   ///
   /// The actual image data is sent via BinaryChannel.
   static Future<bool> requestOriginal(String identifier, quality) async {
-    bool ret = await _channel.invokeMethod("requestOriginal", <String, dynamic>{
-      "identifier": identifier,
-      "quality": quality,
-    });
-    return ret;
+    try {
+      bool ret =
+          await _channel.invokeMethod("requestOriginal", <String, dynamic>{
+        "identifier": identifier,
+        "quality": quality,
+      });
+      return ret;
+    } on PlatformException catch (e) {
+      switch (e.code) {
+        case "ASSET_DOES_NOT_EXIST":
+          throw AssetNotFoundException(e.message);
+        default:
+          throw e;
+      }
+    }
   }
 
   // Requests image metadata for a given [identifier]

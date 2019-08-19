@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v4.5.2)
+
+## 2019-08-19
+
+- Trying to read images that does not exists will now throw AssetNotFoundException [#222](https://github.com/Sh1d0w/multi_image_picker/issues/222)
+ 
 ### Changed (v4.5.1)
 
 ## 2019-08-17

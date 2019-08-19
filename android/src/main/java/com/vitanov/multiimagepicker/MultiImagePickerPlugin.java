@@ -25,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.FileNotFoundException;
 import java.lang.Math;
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
@@ -268,23 +269,37 @@ public class MultiImagePickerPlugin implements
         } else if (REQUEST_ORIGINAL.equals(call.method)) {
             final String identifier = call.argument("identifier");
             final int quality = (int) call.argument("quality");
-            GetImageTask task = new GetImageTask(this.activity, this.messenger, identifier, quality);
-            task.execute();
-            finishWithSuccess();
 
+            if (!this.uriExists(identifier)) {
+                finishWithError("ASSET_DOES_NOT_EXIST", "The requested image does not exist.");
+            } else {
+                GetImageTask task = new GetImageTask(this.activity, this.messenger, identifier, quality);
+                task.execute();
+                finishWithSuccess();
+            }
         } else if (REQUEST_THUMBNAIL.equals(call.method)) {
             final String identifier = call.argument("identifier");
             final int width = (int) call.argument("width");
             final int height = (int) call.argument("height");
             final int quality = (int) call.argument("quality");
-            GetThumbnailTask task = new GetThumbnailTask(this.activity, this.messenger, identifier, width, height, quality);
-            task.execute();
-            finishWithSuccess();
+
+            if (!this.uriExists(identifier)) {
+                finishWithError("ASSET_DOES_NOT_EXIST", "The requested image does not exist.");
+            } else {
+                GetThumbnailTask task = new GetThumbnailTask(this.activity, this.messenger, identifier, width, height, quality);
+                task.execute();
+                finishWithSuccess();
+            }
         } else if (REQUEST_FILE_PATH.equals(call.method)) {
             final String identifier = call.argument("identifier");
-            final Uri uri = Uri.parse(identifier);
-            String path = getPath(activity, uri);
-            finishWithSuccess(path);
+
+            if (!this.uriExists(identifier)) {
+                finishWithError("ASSET_DOES_NOT_EXIST", "The requested image does not exist.");
+            } else {
+                final Uri uri = Uri.parse(identifier);
+                String path = getPath(activity, uri);
+                finishWithSuccess(path);
+            }
         } else if (REQUEST_METADATA.equals(call.method)) {
             final String identifier = call.argument("identifier");
 
@@ -298,9 +313,6 @@ public class MultiImagePickerPlugin implements
                 finishWithError("Exif error", e.toString());
             }
 
-        } else if (REFRESH_IMAGE.equals(call.method)) {
-            String path = call.argument("path") ;
-            refreshGallery(path);
         } else {
             pendingResult.notImplemented();
             clearMethodCallAndResult();
@@ -548,21 +560,19 @@ public class MultiImagePickerPlugin implements
 
     }
 
-    private void refreshGallery(String path) {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                MediaScannerConnection.scanFile(context, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                    public void onScanCompleted(String path, Uri uri) {
-                        finishWithSuccess();
-                    }
-                });
-            } else {
-                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
-                finishWithSuccess();
+    private boolean uriExists(String identifier) {
+        Boolean exists = false;
+        ContentResolver cr = context.getContentResolver();
+        String[] projection = {MediaStore.MediaColumns.DATA};
+        Cursor cur = cr.query(Uri.parse(identifier), projection, null, null, null);
+        if (cur != null) {
+            if (cur.moveToFirst()) {
+                String filePath = cur.getString(0);
+                exists = new File(filePath).exists();
             }
-        } catch (Exception e) {
-            finishWithError("unknown error", e.toString());
         }
+
+        return exists;
     }
 
     private void presentPicker(int maxImages, boolean enableCamera, ArrayList<String> selectedAssets, HashMap<String, String> options) {

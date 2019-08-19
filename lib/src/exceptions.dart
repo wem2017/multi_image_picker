@@ -15,3 +15,9 @@ class PermissionPermanentlyDeniedExeption implements Exception {
   const PermissionPermanentlyDeniedExeption(this.message);
   String toString() => message;
 }
+
+class AssetNotFoundException implements Exception {
+  final String message;
+  const AssetNotFoundException(this.message);
+  String toString() => message;
+}

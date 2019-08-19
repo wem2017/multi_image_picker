@@ -166,9 +166,11 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
                         })
 
                 if(PHInvalidImageRequestID != ID) {
-                    result(true);
+                    return result(true);
                 }
             }
+            
+            return result(FlutterError(code: "ASSET_DOES_NOT_EXIST", message: "The requested image does not exist.", details: nil))
             break;
         case "requestOriginal":
             let arguments = call.arguments as! Dictionary<String, AnyObject>
@@ -197,9 +199,11 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
                 })
 
                 if(PHInvalidImageRequestID != ID) {
-                    result(true);
+                    return result(true);
                 }
             }
+            
+            return result(FlutterError(code: "ASSET_DOES_NOT_EXIST", message: "The requested image does not exist.", details: nil))
             break;
         case "refreshImage":
             result(true) ;
@@ -232,6 +236,8 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
                         result(String(slicedUrl))
                     }
                 }
+            } else {
+                return result(FlutterError(code: "ASSET_DOES_NOT_EXIST", message: "The requested image does not exist.", details: nil))
             }
             break ;
         case "requestMetadata":

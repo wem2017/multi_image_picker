@@ -15,30 +15,30 @@ String path = await asset.filePath;
 
 ## Image Data
 
-`async requestOriginal(quality: int)`
+`async getByteData(quality: int)`
 
 This method will return the original image data, with a given optional quality. The default
 quality is 100.
 
 ```dart
-ByteData byteData = await asset.requestOriginal();
+ByteData byteData = await asset.getByteData();
 
 // or
 
-ByteData byteData = await asset.requestOriginal(quality: 80);
+ByteData byteData = await asset.getByteData(quality: 80);
 ```
 
 ## Thumbnail Data
 
-`async requestThumbnail(width: int, height: int, quality: int)`
+`async getThumbByteData(width: int, height: int, quality: int)`
 
-This method will return the thumbnail image data, with a given width, height and optional quality. 
+This method will return the thumbnail image data, with a given width, height and optional quality.
 The default quality is 100.
 
 ```dart
-ByteData byteData = await asset.requestThumbnail(300, 300);
+ByteData byteData = await asset.getThumbByteData(300, 300);
 
 // or
 
-ByteData byteData = await asset.requestThumbnail(300, 300, quality: 60);
+ByteData byteData = await asset.getThumbByteData(300, 300, quality: 60);
 ```

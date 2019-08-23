@@ -11,7 +11,7 @@ Uri uri = Uri.parse('$_apiEndpoint/some/path');
 // create multipart request
 MultipartRequest request = http.MultipartRequest("POST", uri);
 
-ByteData byteData = await asset.requestOriginal();
+ByteData byteData = await asset.getByteData();
 List<int> imageData = byteData.buffer.asUint8List();
 
 MultipartFile multipartFile = MultipartFile.fromBytes(

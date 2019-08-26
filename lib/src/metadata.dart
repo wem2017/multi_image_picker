@@ -730,7 +730,7 @@ class GpsMetadata {
   final String gpsImgDirectionRef;
 
   /// Indicates the direction of the image when it was captured.
-  final double gpsImgDirection;
+  final String gpsImgDirection;
 
   /// Indicates the geodetic survey data used by the GPS receiver. If the survey data is
   /// restricted to Japan,the value of this tag is 'TOKYO' or 'WGS-84'. If a GPS Info tag is
@@ -846,7 +846,7 @@ class GpsMetadata {
         gpsTrackRef = _castAsString(json['GPSTrackRef'] ?? null),
         gpsTrack = _castAsDouble(json['GPSTrack'] ?? null),
         gpsImgDirectionRef = _castAsString(json['GPSImgDirectionRef'] ?? null),
-        gpsImgDirection = _castAsDouble(json['GPSImgDirection'] ?? null),
+        gpsImgDirection = _castAsString(json['GPSImgDirection'] ?? null),
         gpsMapDatum = _castAsString(json['GPSMapDatum'] ?? null),
         gpsDestLatitudeRef = _castAsString(json['GPSDestLatitudeRef'] ?? null),
         gpsDestLatitude = _castAsDouble(json['GPSDestLatitude'] ?? null),

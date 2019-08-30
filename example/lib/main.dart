@@ -49,7 +49,6 @@ class _MyAppState extends State<MyApp> {
           allViewTitle: "All Photos",
           useDetailsView: false,
           selectCircleStrokeColor: "#000000",
-          backButtonDrawable: "ic_back_arrow",
         ),
       );
 

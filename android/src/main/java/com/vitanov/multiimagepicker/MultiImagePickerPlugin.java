@@ -561,18 +561,11 @@ public class MultiImagePickerPlugin implements
     }
 
     private boolean uriExists(String identifier) {
-        Boolean exists = false;
-        ContentResolver cr = context.getContentResolver();
-        String[] projection = {MediaStore.MediaColumns.DATA};
-        Cursor cur = cr.query(Uri.parse(identifier), projection, null, null, null);
-        if (cur != null) {
-            if (cur.moveToFirst()) {
-                String filePath = cur.getString(0);
-                exists = new File(filePath).exists();
-            }
-        }
+        Uri uri = Uri.parse(identifier);
 
-        return exists;
+        String fileName = this.getFileName(uri);
+
+        return (fileName != null);
     }
 
     private void presentPicker(int maxImages, boolean enableCamera, ArrayList<String> selectedAssets, HashMap<String, String> options) {
@@ -616,7 +609,7 @@ public class MultiImagePickerPlugin implements
 
         if (!okButtonDrawable.isEmpty()) {
             int id = context.getResources().getIdentifier(okButtonDrawable, "drawable", context.getPackageName());
-            fishBun.setOkButtonDrawable(ContextCompat.getDrawable(context, id));
+            fishBun.setDoneButtonDrawable(ContextCompat.getDrawable(context, id));
         }
 
         if (actionBarColor != null && !actionBarColor.isEmpty()) {

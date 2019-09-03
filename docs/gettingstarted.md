@@ -10,7 +10,7 @@ The first thing we need to do is add the multi_image_picker package to our `pubs
 
 ```yaml
 dependencies:
-  multi_image_picker: ^4.5.2
+  multi_image_picker: ^4.5.3
 ```
 
 Next we need to install the plugin.

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 2019-09-03
 
 - Update FishBun to version 0.11.1
+- Fixed picking image using camera does not return FilePath [#226](https://github.com/Sh1d0w/multi_image_picker/issues/226)
 
 ### Changed (v4.5.2)
 

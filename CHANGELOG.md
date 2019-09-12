@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v4.5.4)
+
+## 2019-09-11
+
+- Update BSImagePicker version to 2.10.1
+
 ### Changed (v4.5.3)
 
 ## 2019-09-03
@@ -16,7 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 2019-08-19
 
 - Trying to read images that does not exists will now throw AssetNotFoundException [#222](https://github.com/Sh1d0w/multi_image_picker/issues/222)
- 
+
 ### Changed (v4.5.1)
 
 ## 2019-08-17

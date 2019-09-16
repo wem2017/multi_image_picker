@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v4.5.5)
+
+## 2019-09-16
+
+- Update BSImagePicker version to 2.10.2
+
 ### Changed (v4.5.4)
 
 ## 2019-09-11

@@ -171,7 +171,6 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
             }
             
             return result(FlutterError(code: "ASSET_DOES_NOT_EXIST", message: "The requested image does not exist.", details: nil))
-            break;
         case "requestOriginal":
             let arguments = call.arguments as! Dictionary<String, AnyObject>
             let identifier = arguments["identifier"] as! String
@@ -204,14 +203,12 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
             }
             
             return result(FlutterError(code: "ASSET_DOES_NOT_EXIST", message: "The requested image does not exist.", details: nil))
-            break;
         case "refreshImage":
             result(true) ;
             break ;
         case "requestFilePath":
             let arguments = call.arguments as! Dictionary<String, AnyObject>
             let identifier = arguments["identifier"] as! String
-            let manager = PHImageManager.default()
             let options = PHImageRequestOptions()
 
             options.deliveryMode = PHImageRequestOptionsDeliveryMode.highQualityFormat
@@ -257,6 +254,7 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
 
     func getURL(ofPhotoWith mPhasset: PHAsset, completionHandler : @escaping ((_ responseURL : URL?) -> Void)) {
         let options: PHContentEditingInputRequestOptions = PHContentEditingInputRequestOptions()
+        options.isNetworkAccessAllowed = true
         options.canHandleAdjustmentData = {(adjustmeta: PHAdjustmentData) -> Bool in
             return true
         }

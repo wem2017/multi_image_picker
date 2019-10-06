@@ -1,12 +1,12 @@
 PODS:
   - BSGridCollectionViewLayout (1.2.5)
-  - BSImagePicker (2.10.1):
+  - BSImagePicker (2.10.3):
     - BSGridCollectionViewLayout (= 1.2.5)
     - BSImageView (= 1.0.3)
   - BSImageView (1.0.3)
   - Flutter (1.0.0)
-  - multi_image_picker (4.5.4):
-    - BSImagePicker (~> 2.10.1)
+  - multi_image_picker (4.5.7):
+    - BSImagePicker (~> 2.10.3)
     - Flutter
 
 DEPENDENCIES:
@@ -27,10 +27,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   BSGridCollectionViewLayout: 333dcb457a5a3bdd9212607ab5756553dcfe06cb
-  BSImagePicker: faa0a2d95edaaddd2da649e6ebcc9b040d1c76eb
+  BSImagePicker: 07404254f2fcdaf5a2eb403c0f8c337267ce8738
   BSImageView: a149459433a2687157d034c78e059d30ac7f2544
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  multi_image_picker: b0e37df1ae01ed78cefc5ce57a07b1076438fae2
+  multi_image_picker: bbf6f48e6c5b371b58797488161973d5cbf8c03d
 
 PODFILE CHECKSUM: 9d1304459c9b2a5e72e756c28173c2289a3b25f9
 

@@ -62,6 +62,8 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
             let enableCamera = arguments["enableCamera"] as! Bool
             let options = arguments["iosOptions"] as! Dictionary<String, String>
             let selectedAssets = arguments["selectedAssets"] as! Array<String>
+            var totalImagesSelected = 0
+            
             vc.maxNumberOfSelections = maxImages
 
             if (enableCamera) {
@@ -117,9 +119,17 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
 
             controller!.bs_presentImagePickerController(vc, animated: true,
                 select: { (asset: PHAsset) -> Void in
-
+                    totalImagesSelected += 1
+                    
+                    if let autoCloseOnSelectionLimit = options["autoCloseOnSelectionLimit"] {
+                        if (!autoCloseOnSelectionLimit.isEmpty && autoCloseOnSelectionLimit == "true") {
+                            if (maxImages == totalImagesSelected) {
+                                UIApplication.shared.sendAction(vc.doneButton.action!, to: vc.doneButton.target, from: self, for: nil)
+                            }
+                        }
+                    }
                 }, deselect: { (asset: PHAsset) -> Void in
-
+                    totalImagesSelected -= 1
                 }, cancel: { (assets: [PHAsset]) -> Void in
                     result(FlutterError(code: "CANCELLED", message: "The user has cancelled the selection", details: nil))
                 }, finish: { (assets: [PHAsset]) -> Void in
@@ -203,9 +213,6 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
             }
             
             return result(FlutterError(code: "ASSET_DOES_NOT_EXIST", message: "The requested image does not exist.", details: nil))
-        case "refreshImage":
-            result(true) ;
-            break ;
         case "requestFilePath":
             let arguments = call.arguments as! Dictionary<String, AnyObject>
             let identifier = arguments["identifier"] as! String

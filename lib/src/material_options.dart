@@ -12,6 +12,7 @@ class MaterialOptions {
   final String textOnNothingSelected;
   final String backButtonDrawable;
   final String okButtonDrawable;
+  final bool autoCloseOnSelectionLimit;
 
   const MaterialOptions({
     this.actionBarColor,
@@ -27,6 +28,7 @@ class MaterialOptions {
     this.textOnNothingSelected,
     this.backButtonDrawable,
     this.okButtonDrawable,
+    this.autoCloseOnSelectionLimit,
   });
 
   Map<String, String> toJson() {
@@ -43,7 +45,8 @@ class MaterialOptions {
       "selectionLimitReachedText": selectionLimitReachedText ?? "",
       "textOnNothingSelected": textOnNothingSelected ?? "",
       "backButtonDrawable": backButtonDrawable ?? "",
-      "okButtonDrawable": okButtonDrawable ?? ""
+      "okButtonDrawable": okButtonDrawable ?? "",
+      "autoCloseOnSelectionLimit": autoCloseOnSelectionLimit == true ? "true" : "false"
     };
   }
 }

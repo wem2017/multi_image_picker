@@ -582,6 +582,7 @@ public class MultiImagePickerPlugin implements
         String textOnNothingSelected = options.get("textOnNothingSelected");
         String backButtonDrawable = options.get("backButtonDrawable");
         String okButtonDrawable = options.get("okButtonDrawable");
+        String autoCloseOnSelectionLimit = options.get("autoCloseOnSelectionLimit");
         ArrayList<Uri> selectedUris = new ArrayList<Uri>();
 
         for (String path : selectedAssets) {
@@ -596,6 +597,7 @@ public class MultiImagePickerPlugin implements
                 .setSelectedImages(selectedUris)
                 .exceptGif(true)
                 .setIsUseDetailView(useDetailsView.equals("true"))
+                .setReachLimitAutomaticClose(autoCloseOnSelectionLimit.equals("true"))
                 .isStartInAllView(startInAllView.equals("true"));
 
         if (!textOnNothingSelected.isEmpty()) {

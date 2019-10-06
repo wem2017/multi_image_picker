@@ -34,6 +34,7 @@ Available options are:
  - textOnNothingSelected - string
  - backButtonDrawable - string
  - okButtonDrawable - string
+ - autoCloseOnSelectionLimit - automatically close the image picker when selection limit is reached
 
 !> backButtonDrawable and okButtonDrawable must exists as drawable resources under your `android/app/src/res/drawable` folder.
 
@@ -62,6 +63,7 @@ Available options are:
  - selectionTextColor - HEX string
  - selectionCharacter - Unicode character
  - takePhotoIcon - Name of the icon, as defined in your Assets
+ - autoCloseOnSelectionLimit - automatically close the image picker when selection limit is reached
 
 > **Note**: To add an icon to your XCode Assets, follow these steps:
 > >

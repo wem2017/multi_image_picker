@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v4.5.7)
+
+## 2019-10-06
+
+- Add new option for both Android and iOS `autoCloseOnSelectionLimit`. It will close the image picker as soon as the selection limit is reached.
+
 ### Changed (v4.5.6)
 
 ## 2019-09-26

@@ -6,6 +6,7 @@ class CupertinoOptions {
   final String selectionTextColor;
   final String selectionCharacter;
   final String takePhotoIcon;
+  final bool autoCloseOnSelectionLimit;
 
   const CupertinoOptions({
     this.backgroundColor,
@@ -15,6 +16,7 @@ class CupertinoOptions {
     this.selectionTextColor,
     this.selectionCharacter,
     this.takePhotoIcon,
+    this.autoCloseOnSelectionLimit,
   });
 
   Map<String, String> toJson() {
@@ -26,6 +28,8 @@ class CupertinoOptions {
       "selectionTextColor": selectionTextColor ?? "",
       "selectionCharacter": selectionCharacter ?? "",
       "takePhotoIcon": takePhotoIcon ?? "",
+      "autoCloseOnSelectionLimit":
+          autoCloseOnSelectionLimit == true ? "true" : "false"
     };
   }
 }

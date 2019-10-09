@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v4.5.8)
+
+## 2019-10-09
+
+- `getByteData` and `getThumbByteData` now will return the current image with all adjustments on iOS [#277](https://github.com/Sh1d0w/multi_image_picker/issues/277)
+
 ### Changed (v4.5.7)
 
 ## 2019-10-06

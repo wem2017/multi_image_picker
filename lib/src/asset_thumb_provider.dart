@@ -49,4 +49,23 @@ class AssetThumbImageProvider extends ImageProvider<AssetThumbImageProvider> {
   Future<AssetThumbImageProvider> obtainKey(ImageConfiguration configuration) {
     return SynchronousFuture<AssetThumbImageProvider>(this);
   }
+
+  @override
+  bool operator ==(dynamic other) {
+    if (other.runtimeType != runtimeType) return false;
+    final AssetThumbImageProvider typedOther = other;
+    return asset?.identifier == typedOther.asset?.identifier &&
+        scale == typedOther.scale &&
+        width == typedOther.width &&
+        height == typedOther.height &&
+        quality == typedOther.quality;
+  }
+
+  @override
+  int get hashCode =>
+      hashValues(asset?.identifier, scale, width, height, quality);
+
+  @override
+  String toString() => '$runtimeType(${asset?.identifier}, scale: $scale, '
+      'width: $width, height: $height, quality: $quality)';
 }

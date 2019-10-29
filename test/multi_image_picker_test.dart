@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('MultiImagePicker', () {
     const MethodChannel channel = MethodChannel('multi_image_picker');
 

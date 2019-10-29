@@ -241,6 +241,8 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
                         let slicedUrl = absoluteUrl[range]
                         
                         result(String(slicedUrl))
+                    } else {
+                        result(FlutterError(code: "ASSET_FAILED_TO_DOWNLOAD_AVAILABLE", message: "The requested image failed to download.", details: nil))
                     }
                 }
             } else {
@@ -269,7 +271,12 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
             return true
         }
         mPhasset.requestContentEditingInput(with: options, completionHandler: { (contentEditingInput, info) in
-            completionHandler(contentEditingInput!.fullSizeImageURL)
+            if let image = contentEditingInput {
+                completionHandler(image.fullSizeImageURL)
+            } else {
+                completionHandler(nil)
+            }
+            
         })
     }
     

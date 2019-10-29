@@ -21,3 +21,9 @@ class AssetNotFoundException implements Exception {
   const AssetNotFoundException(this.message);
   String toString() => message;
 }
+
+class AssetFailedToDownloadException implements Exception {
+  final String message;
+  const AssetFailedToDownloadException(this.message);
+  String toString() => message;
+}

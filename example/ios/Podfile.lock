@@ -5,7 +5,7 @@ PODS:
     - BSImageView (= 1.0.3)
   - BSImageView (1.0.3)
   - Flutter (1.0.0)
-  - multi_image_picker (4.5.7):
+  - multi_image_picker (4.5.8):
     - BSImagePicker (~> 2.10.3)
     - Flutter
 
@@ -14,7 +14,7 @@ DEPENDENCIES:
   - multi_image_picker (from `.symlinks/plugins/multi_image_picker/ios`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - BSGridCollectionViewLayout
     - BSImagePicker
     - BSImageView
@@ -30,8 +30,8 @@ SPEC CHECKSUMS:
   BSImagePicker: 07404254f2fcdaf5a2eb403c0f8c337267ce8738
   BSImageView: a149459433a2687157d034c78e059d30ac7f2544
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  multi_image_picker: bbf6f48e6c5b371b58797488161973d5cbf8c03d
+  multi_image_picker: b1f4d88e59966c2083848c605dbe36a5d05a3fb2
 
 PODFILE CHECKSUM: 9d1304459c9b2a5e72e756c28173c2289a3b25f9
 
-COCOAPODS: 1.7.5
+COCOAPODS: 1.8.3

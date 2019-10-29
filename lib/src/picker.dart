@@ -172,11 +172,22 @@ class MultiImagePicker {
 
   /// Request a file path for given identifier
   static Future<String> requestFilePath(String identifier) async {
-    String ret =
-        await _channel.invokeMethod("requestFilePath", <String, String>{
-      "identifier": identifier,
-    });
-    return ret;
+    try {
+      String ret =
+          await _channel.invokeMethod("requestFilePath", <String, String>{
+        "identifier": identifier,
+      });
+      return ret;
+    } on PlatformException catch (e) {
+      switch (e.code) {
+        case "ASSET_DOES_NOT_EXIST":
+          throw AssetNotFoundException(e.message);
+        case "ASSET_FAILED_TO_DOWNLOAD_AVAILABLE":
+          throw AssetFailedToDownloadException(e.message);
+        default:
+          throw e;
+      }
+    }
   }
 
   /// Normalizes the meta data returned by iOS.

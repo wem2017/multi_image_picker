@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Changed (v4.5.9)
+
+## 2019-10-29
+
+- Images that fail to download from iCloud on iOS will now throw `AssetFailedToDownloadException` exception if you try to access the path.
+  
 ### Changed (v4.5.8)
 
 ## 2019-10-09

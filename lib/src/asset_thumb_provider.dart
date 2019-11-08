@@ -28,10 +28,18 @@ class AssetThumbImageProvider extends ImageProvider<AssetThumbImageProvider> {
         assert(height != null);
 
   @override
-  ImageStreamCompleter load(AssetThumbImageProvider key) {
+  ImageStreamCompleter load(
+      AssetThumbImageProvider key, DecoderCallback decode) {
     return new MultiFrameImageStreamCompleter(
       codec: _loadAsync(key),
       scale: key.scale,
+      informationCollector: () sync* {
+        yield DiagnosticsProperty<ImageProvider>(
+          'AssetThumbImageProvider: $this \n Image key: $key',
+          this,
+          style: DiagnosticsTreeStyle.errorProperty,
+        );
+      },
     );
   }
 

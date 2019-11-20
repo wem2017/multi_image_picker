@@ -26,13 +26,13 @@ extension PHAsset {
 }
 
 public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
-    var controller: FlutterViewController!
+    var controller: UIViewController!
     var imagesResult: FlutterResult?
     var messenger: FlutterBinaryMessenger;
 
     let genericError = "500"
 
-    init(cont: FlutterViewController, messenger: FlutterBinaryMessenger) {
+    init(cont: UIViewController, messenger: FlutterBinaryMessenger) {
         self.controller = cont;
         self.messenger = messenger;
         super.init();
@@ -42,7 +42,17 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
         let channel = FlutterMethodChannel(name: "multi_image_picker", binaryMessenger: registrar.messenger())
 
         let app =  UIApplication.shared
-        let controller : FlutterViewController = app.delegate!.window!!.rootViewController as! FlutterViewController;
+        let rootController = app.delegate!.window!!.rootViewController
+        var flutterController: FlutterViewController? = nil
+        if rootController is FlutterViewController {
+            flutterController = rootController as! FlutterViewController
+        } else if app.delegate is FlutterAppDelegate {
+            if (app.delegate?.responds(to: Selector("flutterEngine")))! {
+                let engine: FlutterEngine? = app.delegate?.perform(Selector("flutterEngine"))?.takeRetainedValue() as! FlutterEngine
+                flutterController = engine?.viewController
+            }
+        }
+        let controller : UIViewController = flutterController ?? rootController!;
         let instance = SwiftMultiImagePickerPlugin.init(cont: controller, messenger: registrar.messenger())
         registrar.addMethodCallDelegate(instance, channel: channel)
     }

@@ -46,7 +46,8 @@ class MaterialOptions {
       "textOnNothingSelected": textOnNothingSelected ?? "",
       "backButtonDrawable": backButtonDrawable ?? "",
       "okButtonDrawable": okButtonDrawable ?? "",
-      "autoCloseOnSelectionLimit": autoCloseOnSelectionLimit == true ? "true" : "false"
+      "autoCloseOnSelectionLimit":
+          autoCloseOnSelectionLimit == true ? "true" : "false"
     };
   }
 }

@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Change (v4.6.0-rc.2)
+
+## 2019-11-20
+
+- Annotate controller type with UIViewController  [#316](https://github.com/Sh1d0w/multi_image_picker/pull/316)
+
 ### Change (v4.6.0-rc.1)
 
 ## 2019-11-08

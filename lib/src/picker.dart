@@ -170,26 +170,6 @@ class MultiImagePicker {
     return Metadata.fromMap(metadata);
   }
 
-  /// Request a file path for given identifier
-  static Future<String> requestFilePath(String identifier) async {
-    try {
-      String ret =
-          await _channel.invokeMethod("requestFilePath", <String, String>{
-        "identifier": identifier,
-      });
-      return ret;
-    } on PlatformException catch (e) {
-      switch (e.code) {
-        case "ASSET_DOES_NOT_EXIST":
-          throw AssetNotFoundException(e.message);
-        case "ASSET_FAILED_TO_DOWNLOAD_AVAILABLE":
-          throw AssetFailedToDownloadException(e.message);
-        default:
-          throw e;
-      }
-    }
-  }
-
   /// Normalizes the meta data returned by iOS.
   static Map<String, dynamic> _normalizeMetadata(Map<String, dynamic> json) {
     Map map = Map<String, dynamic>();

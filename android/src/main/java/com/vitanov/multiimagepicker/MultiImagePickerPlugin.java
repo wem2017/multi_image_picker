@@ -76,7 +76,6 @@ public class MultiImagePickerPlugin implements
     private static final String REQUEST_THUMBNAIL = "requestThumbnail";
     private static final String REQUEST_ORIGINAL = "requestOriginal";
     private static final String REQUEST_METADATA = "requestMetadata";
-    private static final String REQUEST_FILE_PATH = "requestFilePath";
     private static final String PICK_IMAGES = "pickImages";
     private static final String REFRESH_IMAGE = "refreshImage" ;
     private static final String MAX_IMAGES = "maxImages";
@@ -289,16 +288,6 @@ public class MultiImagePickerPlugin implements
                 GetThumbnailTask task = new GetThumbnailTask(this.activity, this.messenger, identifier, width, height, quality);
                 task.execute();
                 finishWithSuccess();
-            }
-        } else if (REQUEST_FILE_PATH.equals(call.method)) {
-            final String identifier = call.argument("identifier");
-
-            if (!this.uriExists(identifier)) {
-                finishWithError("ASSET_DOES_NOT_EXIST", "The requested image does not exist.");
-            } else {
-                final Uri uri = Uri.parse(identifier);
-                String path = getPath(activity, uri);
-                finishWithSuccess(path);
             }
         } else if (REQUEST_METADATA.equals(call.method)) {
             final String identifier = call.argument("identifier");
@@ -837,12 +826,6 @@ public class MultiImagePickerPlugin implements
     private void finishWithSuccess(List imagePathList) {
         if (pendingResult != null)
             pendingResult.success(imagePathList);
-        clearMethodCallAndResult();
-    }
-
-    private void finishWithSuccess(String path) {
-        if (pendingResult != null)
-            pendingResult.success(path);
         clearMethodCallAndResult();
     }
 

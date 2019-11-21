@@ -225,40 +225,6 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
             }
             
             return result(FlutterError(code: "ASSET_DOES_NOT_EXIST", message: "The requested image does not exist.", details: nil))
-        case "requestFilePath":
-            let arguments = call.arguments as! Dictionary<String, AnyObject>
-            let identifier = arguments["identifier"] as! String
-            let options = PHImageRequestOptions()
-
-            options.deliveryMode = PHImageRequestOptionsDeliveryMode.highQualityFormat
-            options.isSynchronous = false
-            options.isNetworkAccessAllowed = true
-            options.version = .current
-            
-            let assets: PHFetchResult = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil)
-
-            if (assets.count > 0) {
-                let asset: PHAsset = assets[0];
-
-                self.getURL(ofPhotoWith: asset) { (url) in
-                    if let url = url {
-                        let absoluteUrl = url.absoluteString;
-                        let start = absoluteUrl.index(absoluteUrl.startIndex, offsetBy: 7)
-                        let end = absoluteUrl.index(absoluteUrl.endIndex, offsetBy: 0)
-                        let range = start..<end
-                        
-                        // Remove all file:// crap
-                        let slicedUrl = absoluteUrl[range]
-                        
-                        result(String(slicedUrl))
-                    } else {
-                        result(FlutterError(code: "ASSET_FAILED_TO_DOWNLOAD_AVAILABLE", message: "The requested image failed to download.", details: nil))
-                    }
-                }
-            } else {
-                return result(FlutterError(code: "ASSET_DOES_NOT_EXIST", message: "The requested image does not exist.", details: nil))
-            }
-            break ;
         case "requestMetadata":
             let arguments = call.arguments as! Dictionary<String, AnyObject>
             let identifier = arguments["identifier"] as! String
@@ -272,22 +238,6 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
         default:
             result(FlutterMethodNotImplemented)
         }
-    }
-
-    func getURL(ofPhotoWith mPhasset: PHAsset, completionHandler : @escaping ((_ responseURL : URL?) -> Void)) {
-        let options: PHContentEditingInputRequestOptions = PHContentEditingInputRequestOptions()
-        options.isNetworkAccessAllowed = true
-        options.canHandleAdjustmentData = {(adjustmeta: PHAdjustmentData) -> Bool in
-            return true
-        }
-        mPhasset.requestContentEditingInput(with: options, completionHandler: { (contentEditingInput, info) in
-            if let image = contentEditingInput {
-                completionHandler(image.fullSizeImageURL)
-            } else {
-                completionHandler(nil)
-            }
-            
-        })
     }
     
     func readPhotosMetadata(result: PHFetchResult<PHAsset>, operationQueue: OperationQueue, callback: @escaping FlutterResult) {

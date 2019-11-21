@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Change (v4.6.0-rc.3)
+
+## 2019-11-21
+
+- Remove direct access to file URL, beacause of breaking change in iOS 13. Please use `getByteData` or `getThumbData` to obtain the images.
+
 ### Change (v4.6.0-rc.2)
 
 ## 2019-11-20

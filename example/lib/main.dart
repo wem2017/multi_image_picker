@@ -51,11 +51,6 @@ class _MyAppState extends State<MyApp> {
           selectCircleStrokeColor: "#000000",
         ),
       );
-
-      for (var r in resultList) {
-        var t = await r.filePath;
-        print(t);
-      }
     } on Exception catch (e) {
       error = e.toString();
     }

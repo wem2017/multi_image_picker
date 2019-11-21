@@ -139,11 +139,6 @@ class Asset {
     return MultiImagePicker.requestMetadata(_identifier);
   }
 
-  /// Requests the original image file path
-  Future<String> get filePath {
-    return MultiImagePicker.requestFilePath(_identifier);
-  }
-
   @Deprecated(
     'This method will be deprecated in the next major release. Please use getByteData method instead.',
   )

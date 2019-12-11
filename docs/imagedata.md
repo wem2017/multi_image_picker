@@ -3,16 +3,6 @@
 The `Asset` class have several handy methods that allow you to access either
 the original image data or a thumb data.
 
-## Image file path
-
-`async get filePath`
-
-This getter will return the original image file path.
-
-```dart
-String path = await asset.filePath;
-```
-
 ## Image Data
 
 `async getByteData(quality: int)`

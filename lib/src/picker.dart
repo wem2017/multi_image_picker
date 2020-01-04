@@ -47,15 +47,20 @@ class MultiImagePicker {
     }
 
     try {
-      final List<dynamic> images =
-          await _channel.invokeMethod('pickImages', <String, dynamic>{
-        'maxImages': maxImages,
-        'enableCamera': enableCamera,
-        'iosOptions': cupertinoOptions.toJson(),
-        'androidOptions': materialOptions.toJson(),
-        'selectedAssets':
-            selectedAssets.map((Asset asset) => asset.identifier).toList(),
-      });
+      final List<dynamic> images = await _channel.invokeMethod(
+        'pickImages',
+        <String, dynamic>{
+          'maxImages': maxImages,
+          'enableCamera': enableCamera,
+          'iosOptions': cupertinoOptions.toJson(),
+          'androidOptions': materialOptions.toJson(),
+          'selectedAssets': selectedAssets
+              .map(
+                (Asset asset) => asset.identifier,
+              )
+              .toList(),
+        },
+      );
       var assets = List<Asset>();
       for (var item in images) {
         var asset = Asset(
@@ -71,10 +76,6 @@ class MultiImagePicker {
       switch (e.code) {
         case "CANCELLED":
           throw NoImagesSelectedException(e.message);
-        case "PERMISSION_DENIED":
-          throw PermissionDeniedException(e.message);
-        case "PERMISSION_PERMANENTLY_DENIED":
-          throw PermissionPermanentlyDeniedExeption(e.message);
         default:
           throw e;
       }
@@ -121,6 +122,10 @@ class MultiImagePicker {
       switch (e.code) {
         case "ASSET_DOES_NOT_EXIST":
           throw AssetNotFoundException(e.message);
+        case "PERMISSION_DENIED":
+          throw PermissionDeniedException(e.message);
+        case "PERMISSION_PERMANENTLY_DENIED":
+          throw PermissionPermanentlyDeniedExeption(e.message);
         default:
           throw e;
       }

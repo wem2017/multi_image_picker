@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Change (v4.6.1)
+
+## 2020-01-04
+
+- Update FishBun version and remove permission handling from the library. FishBun and BSImagePicker handle permission requests by themselves
+  
 ### Change (v4.6.0-rc.3)
 
 ## 2019-11-21

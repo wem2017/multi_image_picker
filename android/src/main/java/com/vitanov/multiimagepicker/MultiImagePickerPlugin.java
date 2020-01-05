@@ -252,7 +252,13 @@ public class MultiImagePickerPlugin implements
         } else if (REQUEST_METADATA.equals(call.method)) {
             final String identifier = call.argument("identifier");
 
-            final Uri uri = Uri.parse(identifier);
+            Uri uri = Uri.parse(identifier);
+
+            // Scoped storage related code. We can only get gps location if we ask for original image
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                uri = MediaStore.setRequireOriginal(uri);
+            }
+
             try (InputStream in = context.getContentResolver().openInputStream(uri)) {
                 assert in != null;
                 ExifInterface exifInterface = new ExifInterface(in);
@@ -303,14 +309,17 @@ public class MultiImagePickerPlugin implements
         HashMap<String, Object> exif_double = getExif_double(exifInterface, tags_double);
         result.putAll(exif_double);
 
-        // A Temp fix while location data is not returned from the exifInterface due to the errors:
-        //
+        // A Temp fix while location data is not returned from the exifInterface due to the errors. It also
+        // covers Android >= 10 not loading GPS information from getExif_double
         if (exif_double.isEmpty()
                 || !exif_double.containsKey(ExifInterface.TAG_GPS_LATITUDE)
                 || !exif_double.containsKey(ExifInterface.TAG_GPS_LONGITUDE)) {
 
             if (uri != null) {
-                HashMap<String, Object> hotfix_map = getLatLng(uri);
+                HashMap<String, Object> hotfix_map = Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
+                        ? getLatLng(uri)
+                        : getLatLng(exifInterface, uri);
+
                 result.putAll(hotfix_map);
             }
         }
@@ -604,6 +613,16 @@ public class MultiImagePickerPlugin implements
             clearMethodCallAndResult();
         }
         return false;
+    }
+
+    private HashMap<String, Object> getLatLng(ExifInterface exifInterface, @NonNull Uri uri) {
+        HashMap<String, Object> result = new HashMap<>();
+        double[] latLong = exifInterface.getLatLong();
+        if (latLong != null && latLong.length == 2) {
+            result.put(ExifInterface.TAG_GPS_LATITUDE, Math.abs(latLong[0]));
+            result.put(ExifInterface.TAG_GPS_LONGITUDE, Math.abs(latLong[1]));
+        }
+        return result;
     }
 
     private HashMap<String, Object> getLatLng(@NonNull Uri uri) {

@@ -27,17 +27,20 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget buildGridView() {
-    return GridView.count(
-      crossAxisCount: 3,
-      children: List.generate(images.length, (index) {
-        Asset asset = images[index];
-        return AssetThumb(
-          asset: asset,
-          width: 300,
-          height: 300,
-        );
-      }),
-    );
+    if (images != null)
+      return GridView.count(
+        crossAxisCount: 3,
+        children: List.generate(images.length, (index) {
+          Asset asset = images[index];
+          return AssetThumb(
+            asset: asset,
+            width: 300,
+            height: 300,
+          );
+        }),
+      );
+    else
+      return Container(color: Colors.white);
   }
 
   Future<void> loadAssets() async {
@@ -53,7 +56,7 @@ class _MyAppState extends State<MyApp> {
         maxImages: 300,
       );
     } on Exception catch (e) {
-      error = e.message;
+      error = e.toString();
     }
 
     // If the widget was removed from the tree while the asynchronous platform

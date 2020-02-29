@@ -47,7 +47,7 @@ You can customize different parts of the gallery picker. To do so, you can simpl
 ```dart
 List resultList = await MultiImagePicker.pickImages(
     maxImages: 3,
-    options: CupertinoOptions(
+    cupertinoOptions: CupertinoOptions(
       selectionFillColor: "#ff11ab",
       selectionTextColor: "#ff00a5",
       selectionCharacter: "✓",

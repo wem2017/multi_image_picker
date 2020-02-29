@@ -49,7 +49,7 @@ List resultList = await MultiImagePicker.pickImages(
     maxImages: 3,
     cupertinoOptions: CupertinoOptions(
       selectionFillColor: "#ff11ab",
-      selectionTextColor: "#ff00a5",
+      selectionTextColor: "#ffffff",
       selectionCharacter: "✓",
     ),
   );

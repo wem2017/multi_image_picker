@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Change (v4.6.2)
+
+## 2020-03-05
+
+- Adding support for Android API Level 16 and up [#339](https://github.com/Sh1d0w/multi_image_picker/pull/399)
+
+
 ### Change (v4.6.1)
 
 ## 2020-01-04

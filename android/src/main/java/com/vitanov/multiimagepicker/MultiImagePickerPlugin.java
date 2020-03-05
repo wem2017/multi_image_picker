@@ -1,6 +1,7 @@
 package com.vitanov.multiimagepicker;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -259,7 +260,8 @@ public class MultiImagePickerPlugin implements
                 uri = MediaStore.setRequireOriginal(uri);
             }
 
-            try (InputStream in = context.getContentResolver().openInputStream(uri)) {
+            try {
+                InputStream in = context.getContentResolver().openInputStream(uri);
                 assert in != null;
                 ExifInterface exifInterface = new ExifInterface(in);
                 finishWithSuccess(getPictureExif(exifInterface, uri));
@@ -700,19 +702,16 @@ public class MultiImagePickerPlugin implements
     }
 
     private static int getOrientation(Context context, Uri photoUri) {
-        try (Cursor cursor = context.getContentResolver().query(photoUri,
-                new String[]{MediaStore.Images.ImageColumns.ORIENTATION}, null, null, null)) {
-
-            if (cursor == null || cursor.getCount() != 1) {
-                return -1;
-            }
-
-            cursor.moveToFirst();
-            return cursor.getInt(0);
-        } catch (CursorIndexOutOfBoundsException ignored) {
+        int orientation = -1;
+        try {
+            InputStream in = context.getContentResolver().openInputStream(photoUri);
+            assert (in != null);
+            ExifInterface exifInterface = new ExifInterface(in);
+            orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1);
+        } catch (Exception ignored) {
 
         }
-        return -1;
+        return orientation;
     }
 
     private static Bitmap getCorrectlyOrientedImage(Context context, Uri photoUri) throws IOException {

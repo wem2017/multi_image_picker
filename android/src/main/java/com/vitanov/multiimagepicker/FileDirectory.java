@@ -1,6 +1,5 @@
 package com.vitanov.multiimagepicker;
 
-import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -10,9 +9,6 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
-import androidx.loader.content.CursorLoader;
-
-// https://gist.github.com/tatocaster/32aad15f6e0c50311626
 
 public class FileDirectory {
 
@@ -25,25 +21,7 @@ public class FileDirectory {
      * @param uri The Uri to query.
      * @author paulburke
      */
-    public static String getPath(final Context context, final Uri uri){
-        String _path;
-        // SDK < API11
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            _path = getPath_BelowAPI11(context, uri);
-        }
-        // SDK >= 11 && SDK < 19
-        else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            _path = getPath_API11to18(context, uri);
-        }
-        // SDK > 19 (Android 4.4) and up
-        else {
-            _path = getPath_API19(context, uri);
-        }
-        return _path;
-    }
-
-    @SuppressLint("NewApi")
-    public static String getPath_API19(final Context context, final Uri uri) {
+    public static String getPath(final Context context, final Uri uri) {
 
         final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
 
@@ -105,38 +83,6 @@ public class FileDirectory {
         return null;
     }
 
-    @SuppressLint("NewApi")
-    public static String getPath_API11to18(Context context, Uri contentUri) {
-        String[] proj = {MediaStore.Images.Media.DATA};
-        String result = null;
-
-        CursorLoader cursorLoader = new CursorLoader(context, contentUri, proj, null, null, null);
-        Cursor cursor = cursorLoader.loadInBackground();
-
-        if (cursor != null) {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            result = cursor.getString(column_index);
-            cursor.close();
-        }
-        return result;
-    }
-
-    public static String getPath_BelowAPI11(final Context context, final Uri contentUri) {
-        String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-        int column_index = 0;
-        String result = "";
-        if (cursor != null) {
-            column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            result = cursor.getString(column_index);
-            cursor.close();
-            return result;
-        }
-        return result;
-    }
-
     /**
      * Get the value of the data column for this Uri. This is useful for
      * MediaStore Uris, and other file-based ContentProviders.
@@ -151,19 +97,14 @@ public class FileDirectory {
                                         String[] selectionArgs) {
 
         final String column = "_data";
-        Cursor cursor = null;
         final String[] projection = {
                 column
         };
-        try{
-            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+        try (Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+                null)) {
             if (cursor != null && cursor.moveToFirst()) {
                 final int column_index = cursor.getColumnIndexOrThrow(column);
                 return cursor.getString(column_index);
-            }
-        }finally {
-            if(cursor != null){
-                cursor.close();
             }
         }
         return null;

@@ -9,3 +9,13 @@ pubspec.lock
 build/
 .vscode
 .flutter-plugins-dependencies
+example/android/app/app.iml
+example/android/app/.classpath
+example/android/.settings/org.eclipse.buildship.core.prefs
+example/android/android.iml
+example/android/.project
+example/android/app/.settings/org.eclipse.buildship.core.prefs
+android/.classpath
+android/.project
+android/.settings/org.eclipse.buildship.core.prefs
+example/android/app/.project

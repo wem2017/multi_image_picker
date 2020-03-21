@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Change (v4.6.4-rc.1)
+
+## 2020-03-07
+
+- Add support for Android minSdkVersion 16 and up & fixing incorrect rotation in Android 10 [#414](https://github.com/Sh1d0w/multi_image_picker/pull/414)
+
 ### Change (v4.6.3)
 
 ## 2020-03-07

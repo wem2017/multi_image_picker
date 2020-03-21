@@ -161,7 +161,7 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
             let width = arguments["width"] as! Int
             let height = arguments["height"] as! Int
             let quality = arguments["quality"] as! Int
-
+            let compressionQuality = Float(quality) / Float(100)
             let manager = PHImageManager.default()
             let options = PHImageRequestOptions()
 
@@ -183,7 +183,7 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
                     options: options,
                     resultHandler: {
                         (image: UIImage?, info) in
-                        self.messenger.send(onChannel: "multi_image_picker/image/" + identifier + ".thumb", message: image?.jpegData(compressionQuality: CGFloat(quality / 100)))
+                        self.messenger.send(onChannel: "multi_image_picker/image/" + identifier + ".thumb", message: image?.jpegData(compressionQuality: CGFloat(compressionQuality)))
                         })
 
                 if(PHInvalidImageRequestID != ID) {
@@ -196,6 +196,7 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
             let arguments = call.arguments as! Dictionary<String, AnyObject>
             let identifier = arguments["identifier"] as! String
             let quality = arguments["quality"] as! Int
+            let compressionQuality = Float(quality) / Float(100)
             let manager = PHImageManager.default()
             let options = PHImageRequestOptions()
 
@@ -216,7 +217,7 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
                     options: options,
                     resultHandler: {
                         (image: UIImage?, info) in
-                        self.messenger.send(onChannel: "multi_image_picker/image/" + identifier + ".original", message: image!.jpegData(compressionQuality: CGFloat(quality / 100)))
+                        self.messenger.send(onChannel: "multi_image_picker/image/" + identifier + ".original", message: image!.jpegData(compressionQuality: CGFloat(compressionQuality)))
                 })
 
                 if(PHInvalidImageRequestID != ID) {

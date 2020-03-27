@@ -45,10 +45,10 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
         let rootController = app.delegate!.window!!.rootViewController
         var flutterController: FlutterViewController? = nil
         if rootController is FlutterViewController {
-            flutterController = rootController as! FlutterViewController
+            flutterController = rootController as? FlutterViewController
         } else if app.delegate is FlutterAppDelegate {
-            if (app.delegate?.responds(to: Selector("flutterEngine")))! {
-                let engine: FlutterEngine? = app.delegate?.perform(Selector("flutterEngine"))?.takeRetainedValue() as! FlutterEngine
+            if (app.delegate?.responds(to: Selector(("flutterEngine"))))! {
+                let engine: FlutterEngine? = app.delegate?.perform(Selector(("flutterEngine")))?.takeRetainedValue() as? FlutterEngine
                 flutterController = engine?.viewController
             }
         }
@@ -67,6 +67,11 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
             }
             
             let vc = BSImagePickerViewController()
+            
+            if #available(iOS 13.0, *) {
+                // Disables iOS 13 swipe to dismiss - to force user to press cancel or done.
+                vc.isModalInPresentation = true
+            }
             let arguments = call.arguments as! Dictionary<String, AnyObject>
             let maxImages = arguments["maxImages"] as! Int
             let enableCamera = arguments["enableCamera"] as! Bool

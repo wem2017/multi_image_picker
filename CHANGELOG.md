@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Change (v4.6.5+rc.1)
+
+## 2020-03-27
+
+- Disable iOS 13 swipe to dismiss - to force user to press cancel or done.
+
 ### Change (v4.6.4)
 
 ## 2020-03-21

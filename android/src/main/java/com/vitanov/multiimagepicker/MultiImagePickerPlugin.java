@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -44,7 +43,6 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
-import static android.media.ThumbnailUtils.OPTIONS_RECYCLE_INPUT;
 
 /**
  * MultiImagePickerPlugin
@@ -116,8 +114,7 @@ public class MultiImagePickerPlugin implements
                 Activity activity = activityReference.get();
                 if (activity == null || activity.isFinishing()) return null;
 
-                Bitmap sourceBitmap = getCorrectlyOrientedImage(activity, uri, this.width, this.height);
-                Bitmap bitmap = ThumbnailUtils.extractThumbnail(sourceBitmap, this.width, this.height, OPTIONS_RECYCLE_INPUT);
+                Bitmap bitmap = getCorrectlyOrientedImage(activity, uri, this.width, this.height);
 
                 if (bitmap == null) return null;
 
@@ -746,29 +743,25 @@ public class MultiImagePickerPlugin implements
         return srcBitmap;
     }
 
+    // https://developer.android.com/topic/performance/graphics/load-bitmap#java
     private static Bitmap getCorrectlyOrientedImage(Context context, Uri photoUri, int width, int height) throws IOException {
         int orientation = getOrientation(context, photoUri);
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-
         InputStream is = context.getContentResolver().openInputStream(photoUri);
         BitmapFactory.decodeStream(is, null, options);
-        if (is != null) {
-            is.close();
-        }
 
+        // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
         options.inDither = false;
-        options.inSampleSize = calculateInSampleSize(options, width,height);
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, width, height);
         options.inScaled = false;
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
         InputStream is2 = context.getContentResolver().openInputStream(photoUri);
-        Bitmap srcBitmap =  BitmapFactory.decodeStream(is2, null, options);
-        if (is2 != null) {
-            is2.close();
-        }
+        Bitmap srcBitmap = BitmapFactory.decodeStream(is2, null, options);
 
         if (orientation > 0) {
             Matrix matrix = new Matrix();
@@ -781,18 +774,26 @@ public class MultiImagePickerPlugin implements
         return srcBitmap;
     }
 
-    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        final int width = options.outWidth;
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
         final int height = options.outHeight;
+        final int width = options.outWidth;
         int inSampleSize = 1;
 
-        if (width > reqWidth || height > reqHeight) {
-            if (width > height) {
-                inSampleSize = Math.round((float) height / (float) reqHeight);
-            } else {
-                inSampleSize = Math.round((float) width / (float) reqWidth);
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
             }
         }
+
         return inSampleSize;
     }
 

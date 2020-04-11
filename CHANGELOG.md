@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Change (v4.6.5)
+
+## 2020-04-11
+
+- Fix resizing an image causes jagged lines on Android
+
 ### Change (v4.6.5+rc.1)
 
 ## 2020-03-27

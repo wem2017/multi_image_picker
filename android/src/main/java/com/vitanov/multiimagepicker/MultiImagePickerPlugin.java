@@ -116,7 +116,7 @@ public class MultiImagePickerPlugin implements
                 Activity activity = activityReference.get();
                 if (activity == null || activity.isFinishing()) return null;
 
-                Bitmap sourceBitmap = getCorrectlyOrientedImage(activity, uri);
+                Bitmap sourceBitmap = getCorrectlyOrientedImage(activity, uri, this.width, this.height);
                 Bitmap bitmap = ThumbnailUtils.extractThumbnail(sourceBitmap, this.width, this.height, OPTIONS_RECYCLE_INPUT);
 
                 if (bitmap == null) return null;
@@ -744,6 +744,56 @@ public class MultiImagePickerPlugin implements
         }
 
         return srcBitmap;
+    }
+
+    private static Bitmap getCorrectlyOrientedImage(Context context, Uri photoUri, int width, int height) throws IOException {
+        int orientation = getOrientation(context, photoUri);
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+        InputStream is = context.getContentResolver().openInputStream(photoUri);
+        BitmapFactory.decodeStream(is, null, options);
+        if (is != null) {
+            is.close();
+        }
+
+        options.inJustDecodeBounds = false;
+        options.inDither = false;
+        options.inSampleSize = calculateInSampleSize(options, width,height);
+        options.inScaled = false;
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+
+        InputStream is2 = context.getContentResolver().openInputStream(photoUri);
+        Bitmap srcBitmap =  BitmapFactory.decodeStream(is2, null, options);
+        if (is2 != null) {
+            is2.close();
+        }
+
+        if (orientation > 0) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(orientation);
+
+            srcBitmap = Bitmap.createBitmap(srcBitmap, 0, 0, srcBitmap.getWidth(),
+                    srcBitmap.getHeight(), matrix, true);
+        }
+
+        return srcBitmap;
+    }
+
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        final int width = options.outWidth;
+        final int height = options.outHeight;
+        int inSampleSize = 1;
+
+        if (width > reqWidth || height > reqHeight) {
+            if (width > height) {
+                inSampleSize = Math.round((float) height / (float) reqHeight);
+            } else {
+                inSampleSize = Math.round((float) width / (float) reqWidth);
+            }
+        }
+        return inSampleSize;
     }
 
     private void finishWithSuccess(List imagePathList) {

@@ -14,6 +14,7 @@ import android.os.Build;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
+import android.media.ThumbnailUtils;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -42,6 +43,8 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
+
+import static android.media.ThumbnailUtils.OPTIONS_RECYCLE_INPUT;
 
 
 /**
@@ -114,7 +117,8 @@ public class MultiImagePickerPlugin implements
                 Activity activity = activityReference.get();
                 if (activity == null || activity.isFinishing()) return null;
 
-                Bitmap bitmap = getCorrectlyOrientedImage(activity, uri, this.width, this.height);
+                Bitmap sourceBitmap = getCorrectlyOrientedImage(activity, uri);
+                Bitmap bitmap = ThumbnailUtils.extractThumbnail(sourceBitmap, this.width, this.height, OPTIONS_RECYCLE_INPUT);
 
                 if (bitmap == null) return null;
 
@@ -731,37 +735,6 @@ public class MultiImagePickerPlugin implements
         if (is != null) {
             is.close();
         }
-
-        if (orientation > 0) {
-            Matrix matrix = new Matrix();
-            matrix.postRotate(orientation);
-
-            srcBitmap = Bitmap.createBitmap(srcBitmap, 0, 0, srcBitmap.getWidth(),
-                    srcBitmap.getHeight(), matrix, true);
-        }
-
-        return srcBitmap;
-    }
-
-    // https://developer.android.com/topic/performance/graphics/load-bitmap#java
-    private static Bitmap getCorrectlyOrientedImage(Context context, Uri photoUri, int width, int height) throws IOException {
-        int orientation = getOrientation(context, photoUri);
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        InputStream is = context.getContentResolver().openInputStream(photoUri);
-        BitmapFactory.decodeStream(is, null, options);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        options.inDither = false;
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, width, height);
-        options.inScaled = false;
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-
-        InputStream is2 = context.getContentResolver().openInputStream(photoUri);
-        Bitmap srcBitmap = BitmapFactory.decodeStream(is2, null, options);
 
         if (orientation > 0) {
             Matrix matrix = new Matrix();

@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Change (v4.6.8)
+
+## 2020-07-21
+
+- Supporting the new Android plugins APIs
+
 ### Change (v4.6.7)
 
 ## 2020-04-30

@@ -36,6 +36,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -51,6 +54,8 @@ import static android.media.ThumbnailUtils.OPTIONS_RECYCLE_INPUT;
  * MultiImagePickerPlugin
  */
 public class MultiImagePickerPlugin implements
+        FlutterPlugin,
+        ActivityAware,
         MethodCallHandler,
         PluginRegistry.ActivityResultListener {
 
@@ -64,29 +69,64 @@ public class MultiImagePickerPlugin implements
     private static final String ENABLE_CAMERA = "enableCamera";
     private static final String ANDROID_OPTIONS = "androidOptions";
     private static final int REQUEST_CODE_CHOOSE = 1001;
-    private final MethodChannel channel;
-    private final Activity activity;
-    private final Context context;
-    private final BinaryMessenger messenger;
+    private MethodChannel channel;
+    private Activity activity;
+    private Context context;
+    private BinaryMessenger messenger;
     private Result pendingResult;
     private MethodCall methodCall;
 
-    private MultiImagePickerPlugin(Activity activity, Context context, MethodChannel channel, BinaryMessenger messenger) {
-        this.activity = activity;
-        this.context = context;
-        this.channel = channel;
-        this.messenger = messenger;
-    }
 
     /**
      * Plugin registration.
      */
     public static void registerWith(Registrar registrar) {
-        final MethodChannel channel = new MethodChannel(registrar.messenger(), CHANNEL_NAME);
-        MultiImagePickerPlugin instance = new MultiImagePickerPlugin(registrar.activity(), registrar.context(), channel, registrar.messenger());
-        registrar.addActivityResultListener(instance);
-        channel.setMethodCallHandler(instance);
+        MultiImagePickerPlugin instance = new MultiImagePickerPlugin();
+        instance.onAttachedToEngine(registrar.context(), registrar.messenger());
+    }
 
+    private void onAttachedToEngine(Context applicationContext, BinaryMessenger binaryMessenger) {
+        context = applicationContext;
+        messenger = binaryMessenger;
+        channel = new MethodChannel(binaryMessenger, CHANNEL_NAME);
+        channel.setMethodCallHandler(this);
+    }
+
+    @Override
+    public void onAttachedToEngine(FlutterPluginBinding binding) {
+        onAttachedToEngine(binding.getApplicationContext(), binding.getBinaryMessenger());
+    }
+
+    @Override
+    public void onDetachedFromEngine(FlutterPluginBinding binding) {
+        context = null;
+        if (channel != null) {
+            channel.setMethodCallHandler(null);
+            channel = null;
+        }
+        messenger = null;
+    }
+
+    @Override
+    public void onAttachedToActivity(ActivityPluginBinding binding) {
+        binding.addActivityResultListener(this);
+        activity = binding.getActivity();
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+        activity = null;
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+        activity = null;
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(ActivityPluginBinding binding) {
+        binding.addActivityResultListener(this);
+        activity = binding.getActivity();
     }
 
     private static class GetThumbnailTask extends AsyncTask<String, Void, ByteBuffer> {
@@ -441,7 +481,7 @@ public class MultiImagePickerPlugin implements
         return result;
     }
 
-    private HashMap<String, Object> getExif_str(ExifInterface exifInterface, String[] tags){
+    private HashMap<String, Object> getExif_str(ExifInterface exifInterface, String[] tags) {
         HashMap<String, Object> result = new HashMap<>();
         for (String tag : tags) {
             String attribute = exifInterface.getAttribute(tag);
@@ -452,7 +492,7 @@ public class MultiImagePickerPlugin implements
         return result;
     }
 
-    private HashMap<String, Object> getExif_double(ExifInterface exifInterface, String[] tags){
+    private HashMap<String, Object> getExif_double(ExifInterface exifInterface, String[] tags) {
         HashMap<String, Object> result = new HashMap<>();
         for (String tag : tags) {
             double attribute = exifInterface.getAttributeDouble(tag, 0.0);
@@ -477,7 +517,7 @@ public class MultiImagePickerPlugin implements
         String lightStatusBar = options.get("lightStatusBar");
         String actionBarTitle = options.get("actionBarTitle");
         String actionBarTitleColor = options.get("actionBarTitleColor");
-        String allViewTitle =  options.get("allViewTitle");
+        String allViewTitle = options.get("allViewTitle");
         String startInAllView = options.get("startInAllView");
         String useDetailsView = options.get("useDetailsView");
         String selectCircleStrokeColor = options.get("selectCircleStrokeColor");
@@ -713,7 +753,7 @@ public class MultiImagePickerPlugin implements
         } catch (Exception ignored) {
 
         }
-        return  rotationDegrees;
+        return rotationDegrees;
     }
 
     private static Bitmap getCorrectlyOrientedImage(Context context, Uri photoUri) throws IOException {

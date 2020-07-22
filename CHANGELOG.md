@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Change (v4.6.8)
 
+## 2020-07-22
+
+- Downgrade minimum Flutter version
+
+### Change (v4.6.8)
+
 ## 2020-07-21
 
 - Supporting the new Android plugins APIs

@@ -88,7 +88,9 @@ public class MultiImagePickerPlugin implements
     private void onAttachedToEngine(Context applicationContext, BinaryMessenger binaryMessenger, Activity activity) {
         context = applicationContext;
         messenger = binaryMessenger;
-        this.activity = activity;
+        if (activity != null) {
+          this.activity = activity;
+        }
         channel = new MethodChannel(binaryMessenger, CHANNEL_NAME);
         channel.setMethodCallHandler(this);
     }

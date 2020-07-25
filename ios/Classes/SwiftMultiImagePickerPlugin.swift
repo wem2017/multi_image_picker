@@ -25,15 +25,22 @@ extension PHAsset {
     }
 }
 
+fileprivate extension UIViewController {
+    class func topViewController(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
+        if let presented = base?.presentedViewController {
+            return topViewController(base: presented)
+        }
+        return base
+    }
+}
+
 public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
-    var controller: UIViewController!
     var imagesResult: FlutterResult?
     var messenger: FlutterBinaryMessenger;
 
     let genericError = "500"
 
-    init(cont: UIViewController, messenger: FlutterBinaryMessenger) {
-        self.controller = cont;
+    init(messenger: FlutterBinaryMessenger) {
         self.messenger = messenger;
         super.init();
     }
@@ -41,19 +48,7 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "multi_image_picker", binaryMessenger: registrar.messenger())
 
-        let app =  UIApplication.shared
-        let rootController = app.delegate!.window!!.rootViewController
-        var flutterController: FlutterViewController? = nil
-        if rootController is FlutterViewController {
-            flutterController = rootController as? FlutterViewController
-        } else if app.delegate is FlutterAppDelegate {
-            if (app.delegate?.responds(to: Selector(("flutterEngine"))))! {
-                let engine: FlutterEngine? = app.delegate?.perform(Selector(("flutterEngine")))?.takeRetainedValue() as? FlutterEngine
-                flutterController = engine?.viewController
-            }
-        }
-        let controller : UIViewController = flutterController ?? rootController!;
-        let instance = SwiftMultiImagePickerPlugin.init(cont: controller, messenger: registrar.messenger())
+        let instance = SwiftMultiImagePickerPlugin.init(messenger: registrar.messenger())
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
 
@@ -67,6 +62,8 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
             }
             
             let vc = BSImagePickerViewController()
+//            vc.modalPresentationStyle = .fullScreen
+            vc.navigationBar.isTranslucent = false
             
             if #available(iOS 13.0, *) {
                 // Disables iOS 13 swipe to dismiss - to force user to press cancel or done.
@@ -132,7 +129,7 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
                 }
             }
 
-            controller!.bs_presentImagePickerController(vc, animated: true,
+            UIViewController.topViewController()?.bs_presentImagePickerController(vc, animated: true,
                 select: { (asset: PHAsset) -> Void in
                     totalImagesSelected += 1
                     

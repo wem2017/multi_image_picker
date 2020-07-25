@@ -62,7 +62,6 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
             }
             
             let vc = BSImagePickerViewController()
-//            vc.modalPresentationStyle = .fullScreen
             vc.navigationBar.isTranslucent = false
             
             if #available(iOS 13.0, *) {

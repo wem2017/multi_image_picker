@@ -82,19 +82,22 @@ public class MultiImagePickerPlugin implements
      */
     public static void registerWith(Registrar registrar) {
         MultiImagePickerPlugin instance = new MultiImagePickerPlugin();
-        instance.onAttachedToEngine(registrar.context(), registrar.messenger());
+        instance.onAttachedToEngine(registrar.context(), registrar.messenger(), registrar.activity());
     }
 
-    private void onAttachedToEngine(Context applicationContext, BinaryMessenger binaryMessenger) {
+    private void onAttachedToEngine(Context applicationContext, BinaryMessenger binaryMessenger, Activity activity) {
         context = applicationContext;
         messenger = binaryMessenger;
+        if (activity != null) {
+          this.activity = activity;
+        }
         channel = new MethodChannel(binaryMessenger, CHANNEL_NAME);
         channel.setMethodCallHandler(this);
     }
 
     @Override
     public void onAttachedToEngine(FlutterPluginBinding binding) {
-        onAttachedToEngine(binding.getApplicationContext(), binding.getBinaryMessenger());
+        onAttachedToEngine(binding.getApplicationContext(), binding.getBinaryMessenger(), null);
     }
 
     @Override

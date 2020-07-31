@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Change (v4.7.10)
+
+## 2020-07-31
+
+- Support activity in v1 embedding (https://github.com/Sh1d0w/multi_image_picker/pull/506)
+- Fix on iOS can't present picker in some cases (https://github.com/Sh1d0w/multi_image_picker/pull/507)
+
 ### Change (v4.6.9)
 
 ## 2020-07-22

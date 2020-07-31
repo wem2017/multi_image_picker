@@ -62,7 +62,6 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
             }
             
             let vc = BSImagePickerViewController()
-            vc.navigationBar.isTranslucent = false
             
             if #available(iOS 13.0, *) {
                 // Disables iOS 13 swipe to dismiss - to force user to press cancel or done.

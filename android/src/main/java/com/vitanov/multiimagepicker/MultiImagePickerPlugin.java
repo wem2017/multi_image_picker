@@ -606,6 +606,10 @@ public class MultiImagePickerPlugin implements
             finishWithError("CANCELLED", "The user has cancelled the selection");
         } else if (requestCode == REQUEST_CODE_CHOOSE && resultCode == Activity.RESULT_OK) {
             List<Uri> photos = data.getParcelableArrayListExtra(Define.INTENT_PATH);
+            if (photos == null) {
+                clearMethodCallAndResult();
+                return false;
+            }
             List<HashMap<String, Object>> result = new ArrayList<>(photos.size());
             for (Uri uri : photos) {
                 HashMap<String, Object> map = new HashMap<>();

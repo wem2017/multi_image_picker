@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Change (v4.7.11)
+
+## 2020-08-19
+
+- Fix image picker regression on Android 
+
 ### Change (v4.7.10)
 
 ## 2020-07-31

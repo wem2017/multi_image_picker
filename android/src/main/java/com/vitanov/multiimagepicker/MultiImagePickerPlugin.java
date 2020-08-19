@@ -83,6 +83,7 @@ public class MultiImagePickerPlugin implements
     public static void registerWith(Registrar registrar) {
         MultiImagePickerPlugin instance = new MultiImagePickerPlugin();
         instance.onAttachedToEngine(registrar.context(), registrar.messenger(), registrar.activity());
+        registrar.addActivityResultListener(instance);
     }
 
     private void onAttachedToEngine(Context applicationContext, BinaryMessenger binaryMessenger, Activity activity) {

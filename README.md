@@ -79,4 +79,4 @@ MIT
 
 ---
 > GitHub [@Sh1d0w](https://github.com/Sh1d0w) &nbsp;&middot;&nbsp;
-> Twitter [@RadoslavVitanov](http://twitter.com/RadoslavVitanov)
+> Twitter [@RadoslavVitanov](https://twitter.com/RadoslavVitanov)

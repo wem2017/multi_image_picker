@@ -40,6 +40,8 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
 
     let genericError = "500"
 
+    let vc = BSImagePickerViewController()
+
     init(messenger: FlutterBinaryMessenger) {
         self.messenger = messenger;
         super.init();
@@ -61,7 +63,6 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
                 return result(FlutterError(code: "PERMISSION_PERMANENTLY_DENIED", message: "The user has denied the gallery access.", details: nil))
             }
             
-            let vc = BSImagePickerViewController()
             
             if #available(iOS 13.0, *) {
                 // Disables iOS 13 swipe to dismiss - to force user to press cancel or done.
@@ -134,7 +135,7 @@ public class SwiftMultiImagePickerPlugin: NSObject, FlutterPlugin {
                     if let autoCloseOnSelectionLimit = options["autoCloseOnSelectionLimit"] {
                         if (!autoCloseOnSelectionLimit.isEmpty && autoCloseOnSelectionLimit == "true") {
                             if (maxImages == totalImagesSelected) {
-                                UIApplication.shared.sendAction(vc.doneButton.action!, to: vc.doneButton.target, from: self, for: nil)
+                                UIApplication.shared.sendAction(self.vc.doneButton.action!, to: self.vc.doneButton.target, from: self, for: nil)
                             }
                         }
                     }

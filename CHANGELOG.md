@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+### Change (v4.7.13)
+
+## 2020-09-09
+
+- Fix picking live images on iOS will now pick the correct image
+
 ### Change (v4.7.12)
 
 ## 2020-08-22

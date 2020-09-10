@@ -711,7 +711,7 @@ class GpsMetadata {
 
   /// Indicates the GPS DOP (data degree of precision). An HDOP value is written during
   /// two-dimensional measurement, and PDOP during three-dimensional measurement.
-  final double gpsDOP;
+  final String gpsDOP;
 
   /// Indicates the unit used to express the GPS receiver speed of movement.
   final String gpsSpeedRef;

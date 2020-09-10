@@ -840,7 +840,7 @@ class GpsMetadata {
         gpsSatellites = _castAsString(json['GPSSatellites'] ?? null),
         gpsStatus = _castAsString(json['GPSStatus'] ?? null),
         gpsMeasureMode = _castAsString(json['GPSMeasureMode'] ?? null),
-        gpsDOP = _castAsDouble(json['GPSDOP'] ?? null),
+        gpsDOP = _castAsString(json['GPSDOP'] ?? null),
         gpsSpeedRef = _castAsString(json['GPSSpeedRef'] ?? null),
         gpsSpeed = _castAsDouble(json['GPSSpeed'] ?? null),
         gpsTrackRef = _castAsString(json['GPSTrackRef'] ?? null),

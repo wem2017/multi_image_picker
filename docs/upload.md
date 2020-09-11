@@ -33,9 +33,9 @@ You can pass the image data directly, like this:
 
 ```dart
 Future saveImage(Asset asset) async {
-  ByteData byteData = await asset.requestOriginal();
+  ByteData byteData = await asset.getByteData(); // requestOriginal is being deprecated
   List<int> imageData = byteData.buffer.asUint8List();
-  StorageReference ref = FirebaseStorage.instance.ref().child("some_image_bame.jpg");
+  StorageReference ref = FirebaseStorage().ref().child("some_image_bame.jpg"); // To be aligned with the latest firebase API(4.0)
   StorageUploadTask uploadTask = ref.putData(imageData);
 
   return await (await uploadTask.onComplete).ref.getDownloadURL();

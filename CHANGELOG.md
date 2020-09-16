@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+### Change (v4.7.14)
+
+## 2020-09-16
+
+- Revert a commit, causing a bug with mage selection on iOS
+
 ### Change (v4.7.13)
 
 ## 2020-09-09

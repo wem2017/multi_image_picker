@@ -234,6 +234,9 @@ public class MultiImagePickerPlugin implements
             }
 
             assert bytesArray != null;
+            if(bytesArray == null){
+                return null;
+            }
             final ByteBuffer buffer = ByteBuffer.allocateDirect(bytesArray.length);
             buffer.put(bytesArray);
             return buffer;
@@ -243,7 +246,9 @@ public class MultiImagePickerPlugin implements
         protected void onPostExecute(ByteBuffer buffer) {
             super.onPostExecute(buffer);
             this.messenger.send("multi_image_picker/image/" + this.identifier + ".original", buffer);
-            buffer.clear();
+            if(buffer != null) {
+                buffer.clear();
+            }
         }
     }
 
@@ -613,6 +618,9 @@ public class MultiImagePickerPlugin implements
             }
             List<HashMap<String, Object>> result = new ArrayList<>(photos.size());
             for (Uri uri : photos) {
+                if(uri == null){
+                    continue;
+                }
                 HashMap<String, Object> map = new HashMap<>();
                 map.put("identifier", uri.toString());
                 InputStream is = null;
